@@ -5,7 +5,7 @@
          <div class="container mx-auto px-4">
              <!-- Título de la sección -->
              <div class="text-center mb-8">
-                 <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">LICENCIATURA EN GEOGRAFÍA</h2>
+                 <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">LICENCIATURA EN GEOGRAFÍA / HISTORIA</h2>
                  <p class="text-gray-500 dark:text-gray-400 mt-2"></p>
                  <hr class="mt-4 border-gray-300 dark:border-gray-700">
              </div>
