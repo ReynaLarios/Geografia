@@ -9,16 +9,7 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
-    a 1
-    INICIO{
+  
+//
 
-       
-        
-    }
-
-    MOSTRAR{
-        aP_CTYPE
-         PA=1
-         R V LAYOUT
-    }
 }
