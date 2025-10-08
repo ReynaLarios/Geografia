@@ -30,7 +30,8 @@ Route::view('/horarios', 'horarios.horarios')->name('dashboard');
 Route::view('/cursos', 'cursos.cursos')->name('dashboard');
 Route::view('/normatividad', 'normatividad.normatividad')->name('dashboard');
 Route::view('/egresados', 'egresados.egresados')->name('dashboard');
-
+Route::view('/cont', 'Formularios.formularioscont')->name('dashboard');
+Route::view('/secc', 'Formularios.formulariosecc')->name('dashboard');
 
 
 Route::get('/', function () {

@@ -15,13 +15,14 @@ protected $table = 'contenidos';
     {
         return $this->belongsTo(secciones::class);
 
+    }
 
-        public function archivos ()
+        public function archivo ()
         {
         return $this->belongsTo(archivos::class);
     }
 
      
    
-}
+
 }
