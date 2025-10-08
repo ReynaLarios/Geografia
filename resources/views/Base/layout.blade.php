@@ -330,10 +330,10 @@
                 <li><a href="licenciatura" class="fancy">Licenciatura en Geografía</a></li>
                 <li><a href="conoce" class="fancy">Conoce la Licenciatura</a></li>
                 <li><a href="alumnos" class="fancy">Alumnos</a></li>
-                <li><a href="horarios.html" class="fancy">Horarios</a></li>
-                <li><a href="cursos.html" class="fancy">Cursos de Inducción</a></li>
-                <li><a href="normatividad.html" class="fancy">Normatividad</a></li>
-                <li><a href="egresados.html" class="fancy">Egresados</a></li>
+                <li><a href="horarios" class="fancy">Horarios</a></li>
+                <li><a href="cursos" class="fancy">Cursos de Inducción</a></li>
+                <li><a href="normatividad" class="fancy">Normatividad</a></li>
+                <li><a href="egresados" class="fancy">Egresados</a></li>
                 <li><a href="consejo.html" class="fancy">Maestría en Desarrollo Local y Territorio</a></li>
                 <li><a href="revista.html" class="fancy">Revista Geocalli</a></li>
                 <li><a href="videoteca" class="fancy">Videoteca</a></li>

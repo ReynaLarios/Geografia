@@ -26,6 +26,11 @@ Route::view('/videoteca/recientes', 'videoteca.recientes')->name('dashboard');
 Route::view('/videoteca/populares', 'videoteca.varios')->name('dashboard');
 Route::view('/alumnos', 'alumnos.alumnos')->name('dashboard');
 Route::view('/acerca', 'acerca.acerca')->name('dashboard');
+Route::view('/horarios', 'horarios.horarios')->name('dashboard');
+Route::view('/cursos', 'cursos.cursos')->name('dashboard');
+Route::view('/normatividad', 'normatividad.normatividad')->name('dashboard');
+Route::view('/egresados', 'egresados.egresados')->name('dashboard');
+
 
 
 Route::get('/', function () {
