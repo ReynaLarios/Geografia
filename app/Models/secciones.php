@@ -9,15 +9,8 @@ class secciones extends Model
 {
     use HasFactory;
 
-     protected $table = 'secciones';
-
-    public function contenido()
-    {
-        return $this->hasMany(contenidos::class);
-       }
-    
-   
-       }
-
-    
-
+public function contenido()
+{
+    return $this->belongsTo(Contenidos::class, 'contenido_id');
+}
+}

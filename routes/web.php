@@ -1,5 +1,9 @@
 <?php
 
+
+use App\Http\Controllers\SeccionController;
+use App\Http\Controllers\ContenidoController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,6 +36,16 @@ Route::view('/normatividad', 'normatividad.normatividad')->name('dashboard');
 Route::view('/egresados', 'egresados.egresados')->name('dashboard');
 Route::view('/cont', 'Formularios.formularioscont')->name('dashboard');
 Route::view('/secc', 'Formularios.formulariosecc')->name('dashboard');
+
+
+// Rutas de Secciones
+Route::get('/secc/{id}', [App\Http\Controllers\SeccionController::class, 'edit'])->name('seccion.edit');
+Route::post('/actse/{id}', [App\Http\Controllers\SeccionController::class, 'update'])->name('seccion.update');
+
+// Rutas de Contenidos
+Route::get('/cont/{id}', [App\Http\Controllers\ContenidosController::class, 'edit'])->name('contenido.edit');
+Route::post('/actcont/{id}', [App\Http\Controllers\ContenidosController::class, 'update'])->name('contenido.update');
+
 
 
 Route::get('/', function () {

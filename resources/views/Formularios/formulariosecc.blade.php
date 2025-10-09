@@ -1,57 +1,44 @@
    
-@extends('base.layout')
+
 
 @section('contenido')
-   <section class="bg-gray-50 dark:bg-gray-900 py-3 sm:py-5">
-        <div class="px-4 mx-auto max-w-screen-2xl lg:px-12">
-            <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg p-4">
-                <div class="mb-8">
-                    <h3 class="text-xl font-semibold mb-4">Seccion</h3>
+   @extends('base.layout')
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
-                                <input type="text" name="Nombre" id="Nombre" 
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
-                            </div>
-                            <div>
-                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descripcion </label>
-                                <input type="text" name="descripcion" id="descripcion"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
-                            </div>
-             
-                              <section class="bg-gray-50 dark:bg-gray-900 py-3 sm:py-5">
-        <div class="px-4 mx-auto max-w-screen-2xl lg:px-12">
-            <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg p-4">
-                <div class="mb-8">
-                    <h3 class="text-xl font-semibold mb-4">Contenido</h3>
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Editar Sección</h2>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Titulo</label>
-                                <input type="text" name="titulo" id="titulo" 
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
-                            </div>
-                            <div>
-                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descripcion </label>
-                                <input type="text" name="descripcion" id="descripcion"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
-                            </div>
-             
-                             <div>
-                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">contenido </label>
-                                <input type="text" name="contenido_id" id="contenido_id"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
-                            </div>
-                        </div>
-                        <div class="flex justify-center mt-6">
-                            <button type="submit" class="text-white bg-black-700 hover:bg-black-800 focus:ring-4 focus:ring-black-300 font-medium rounded-lg text-sm px-8 py-3 text-center">
-                                Guardar cambios
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+    @if(session('success'))
+        <div class="alert alert-success text-center">{{ session('success') }}</div>
+    @endif
+
+    <form action="{{ route('secc', $seccion->id) }}" method="POST">
+        @csrf
+
+        <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" name="nombre" class="form-control" value="{{ old('nombre', $seccion->nombre) }}">
         </div>
-    </section>
- @endsection
+
+        <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea name="descripcion" class="form-control" rows="3">{{ old('descripcion', $seccion->descripcion) }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Contenido asociado</label>
+            <select name="contenido_id" class="form-select">
+                <option value="">-- Ninguno --</option>
+                @foreach($contenidos as $contenido)
+                    <option value="{{ $contenido->id }}" {{ $seccion->contenido_id == $contenido->id ? 'selected' : '' }}>
+                        {{ $contenido->titulo }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary px-4">Actualizar Sección</button>
+        </div>
+    </form>
+</div>
+@endsection

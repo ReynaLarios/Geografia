@@ -5,24 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class contenidos extends Model
+class contenidos extends Model 
 {
     use HasFactory;
-
-protected $table = 'contenidos';
-
-    public function seccion ()
-    {
-        return $this->belongsTo(secciones::class);
-
-    }
-
-        public function archivo ()
-        {
-        return $this->belongsTo(archivos::class);
-    }
-
-     
-   
-
+public function seccion()
+{
+    return $this->hasOne(Secciones::class, 'contenido_id');
+}
 }
