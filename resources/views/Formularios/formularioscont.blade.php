@@ -8,8 +8,9 @@
         <div class="alert alert-success text-center">{{ session('success') }}</div>
     @endif
 
-    <form action="{{ route('cont', $contenido->id) }}" method="POST">
+    <form action="{{ route('cont') }}" method="POST">
         @csrf
+      @method ('PUT')
 
         <div class="mb-3">
             <label class="form-label">Título</label>

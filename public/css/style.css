@@ -5,12 +5,12 @@ body {
 
 /* Carrusel */
 .carousel-img {
-  height: 400px;      /* altura fija, más visible */
+  height: 600px;      /* altura fija, más visible */
   width: 100%;        /* ocupa todo el contenedor */
-  max-width: 600px;   /* pero no demasiado grande en pantallas grandes */
+  max-width: 800px;   /* pero no demasiado grande en pantallas grandes */
   object-fit: cover;  /* mantiene proporción y recorta si es necesario */
-  border-radius: 10px;
-  display: block;
+  border-radius: 30px;
+  display: flex;
   margin: 0 auto;     /* centra la imagen */
 }
 

@@ -301,7 +301,7 @@
                     </div>
 
                     <div class="paste-button">
-                        <button class="button">LABORATORIO ▼</button>
+                        <button class="button">LABORATORIO \ CENTRO DE INVESTIGACION ▼</button>
                         <div class="dropdown-content">
                             <a href="#">Nuevas Tecnologías</a>
                             <a href="#">Tecnologías en geografía </a>

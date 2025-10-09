@@ -4,16 +4,16 @@
 <div class="container mt-4">
 
   <!-- ====== CARRUSEL ====== -->
-  <div id="carouselNoticias" class="carousel slide mb-5" data-bs-ride="carousel">
+  <div id="carouselNoticias" class="carousel slide mb-6" data-bs-ride="carousel">
     <div class="carousel-inner text-center">
       <div class="carousel-item active">
-        <img src="{{ asset('vol.jpg') }}" class="d-block mx-auto carousel-img" alt="Imagen 1">
+        <img src="{{ asset('geDones en geografía.png') }}" class="d-block mx-auto carousel-img" alt="Imagen 1">
       </div>
       <div class="carousel-item">
-        <img src="{{ asset('vol.jpg') }}" class="d-block mx-auto carousel-img" alt="Imagen 2">
+        <img src="{{ asset('geo.jpg') }}" class="d-block mx-auto carousel-img" alt="Imagen 2">
       </div>
       <div class="carousel-item">
-        <img src="{{ asset('vol.jpg') }}" class="d-block mx-auto carousel-img" alt="Imagen 3">
+        <img src="{{ asset('geo.jpg') }}" class="d-block mx-auto carousel-img" alt="Imagen 3">
       </div>
     </div>
 
