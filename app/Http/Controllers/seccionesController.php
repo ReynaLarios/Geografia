@@ -11,7 +11,7 @@ class SeccionesController extends Controller
     public function edit($id)
     {
         $seccion = Seccion::findOrFail($id);
-        $contenidos = Contenido::all(); // para mostrar en select
+        $contenidos = Contenido::all(); 
         return view('secciones.editar', compact('seccion', 'contenidos'));
     }
 

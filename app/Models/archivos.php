@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class archivos extends Model
 {
-protected $table = 'archivos';
-
+  
+     use HasFactory;
      public function contenidos () {
 return $this->hasMany(contenidos::class);
 }

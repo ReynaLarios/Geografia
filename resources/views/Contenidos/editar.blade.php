@@ -8,7 +8,7 @@
         <div class="alert alert-success text-center">{{ session('success') }}</div>
     @endif
 
-    <form action="{{ route('cont') }}" method="POST">
+    <form action="/contenidos/{{ $contenido->id }}/actualizar" method="POST" enctype="multipart/form-data">
         @csrf
       @method ('PUT')
 

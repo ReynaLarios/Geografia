@@ -2,7 +2,7 @@
 
 
 use App\Http\Controllers\SeccionController;
-use App\Http\Controllers\ContenidoController;
+use App\Http\Controllers\ContenidosController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -38,13 +38,18 @@ Route::view('/cont', 'Formularios.formularioscont')->name('dashboard');
 Route::view('/secc', 'Formularios.formulariosecc')->name('dashboard');
 
 
+// Rutas de Contenidos
+    Route::get('/contenidos/crear', [ContenidosController::class, 'crear']);
+    Route::post('/contenidos/guardar', [ContenidosController::class, 'guardar']);
+    Route::get('/contenidos/listar', [ContenidosController::class, 'listar']);
+    Route::get('/contenidos/{id}/editar', [ContenidosController::class, 'editar']);
+    Route::post('/contenidos/{id}/actualizar', [ContenidosController::class, 'actualizar']);
+    Route::get('/contenidos/{id}/mostrar', [ContenidosController::class, 'mostrar']);
+    Route::post('/contenidos/{id}/borrar', [ContenidosController::class, 'borrar']);
+
 // Rutas de Secciones
 Route::get('/secc/{id}', [App\Http\Controllers\SeccionController::class, 'edit'])->name('seccion.edit');
 Route::post('/actse/{id}', [App\Http\Controllers\SeccionController::class, 'update'])->name('seccion.update');
-
-// Rutas de Contenidos
-Route::get('/cont/{id}', [App\Http\Controllers\ContenidosController::class, 'edit'])->name('contenido.edit');
-Route::post('/actcont/{id}', [App\Http\Controllers\ContenidosController::class, 'update'])->name('contenido.update');
 
 
 

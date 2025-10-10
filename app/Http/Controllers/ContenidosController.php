@@ -3,30 +3,67 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Contenidos;
+use App\Models\archivos;
+use App\Models\contenidos;
 
 class ContenidosController extends Controller
 {
-    public function edit($id)
-    {
-        $contenido = Contenidos::findOrFail($id);
-        return view('contenidos.editar', compact('contenido'));
+    public function crear()
+        {
+            return view('Contenidos.contenidos')
+                ->with('archivos', archivos::all());
+        }
+
+    public function guardar(Request $req){
+        //dd($req->all());
+        $contenido = new contenidos();
+
+        $contenido->titulo= $req->nombre;
+        $contenido->descipcion = $req->apellido;
+        $contenido->estado = 'ACTIVO';
+        $contenido->archivo_id = intval($req->archivo_id);
+
+        $contenido->save();
+        return redirect('/contenidos/listar');
     }
 
-    public function update(Request $request, $id)
+    public function listar()
     {
-        $request->validate([
-            'titulo' => 'required|string|max:255',
-            'descripcion' => 'required|string',
-            'archivo_id' => 'nullable|integer',
-        ]);
+        return view('/Contenidos/listado')
+            ->with('contenidos', contenido::with('archivos')->get());
+    }
 
-        $contenido = Contenidos::findOrFail($id);
-        $contenido->titulo = $request->titulo;
-        $contenido->descripcion = $request->descripcion;
-        $contenido->archivo_id = $request->archivo_id;
+    public function editar($id)
+    {
+        return view('/Contenidos/editar')
+            ->with('contenido', contenidos::find($id))
+            ->with('archivos', archivos::all());
+    }
+
+    public function actualizar($id, Request $req)
+    {
+        $proveedor = Proveedor::find($id);
+
+        $contenido->Titulo = $req->titulo;
+        $contenido->descripcion = $req->descripcion;
+        $contenido->estado = 'ACTIVO';
+        $contenido->archivo_id = intval($req->archivo_id);
+
+        $proveedor->save();
+        return redirect('/contenidos/listar');
+    }
+
+    public function mostrar($id)
+    {
+        return view('/Contenidos/mostrar')
+            ->with('contenido', contenido::with('contenidos')->find($id));
+    }
+
+    public function borrar($id)
+    {
+        $contenido = contenido::find($id);
+        $contenido->estado = 'INACTIVO';
         $contenido->save();
-
-        return redirect()->back()->with('success', 'Contenido actualizado correctamente.');
+        return redirect('/contenidos/listar');
     }
 }

@@ -6,7 +6,7 @@
         <!-- Título de la sección -->
         <div class="text-center mb-8">
             <h2 class="font-extrabold text-gray-900 dark:text-white">
-                LICENCIATURA EN GEOGRAFÍA/CIENCIAS
+                LICENCIATURA EN GEOGRAFÍA
             </h2>
             <hr class="mt-4 border-gray-300 dark:border-gray-700">
         </div>

@@ -10,6 +10,6 @@ class contenidos extends Model
     use HasFactory;
 public function seccion()
 {
-    return $this->hasOne(Secciones::class, 'contenido_id');
+    return $this->hasMany(Secciones::class, 'seccion_id');
 }
 }
