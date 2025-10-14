@@ -3,25 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\archivos;
+use App\Models\secciones;
 use App\Models\contenidos;
 
 class ContenidosController extends Controller
 {
-    public function crear()
+    public function crear() 
         {
             return view('Contenidos.contenidos')
-                ->with('archivos', archivos::all());
+                ->with('secciones', secciones::all());
         }
 
     public function guardar(Request $req){
         //dd($req->all());
         $contenido = new contenidos();
 
-        $contenido->titulo= $req->nombre;
-        $contenido->descipcion = $req->apellido;
+        $contenido->titulo= $req->titulo;
+        $contenido->descipcion = $req->descripcion;
         $contenido->estado = 'ACTIVO';
-        $contenido->archivo_id = intval($req->archivo_id);
+        $contenido->seccion_id = intval($req->seccion_id);
 
         $contenido->save();
         return redirect('/contenidos/listar');
@@ -30,26 +30,26 @@ class ContenidosController extends Controller
     public function listar()
     {
         return view('/Contenidos/listado')
-            ->with('contenidos', contenido::with('archivos')->get());
+            ->with('contenidos', contenido::with('secciones')->get());
     }
 
     public function editar($id)
     {
         return view('/Contenidos/editar')
             ->with('contenido', contenidos::find($id))
-            ->with('archivos', archivos::all());
+            ->with('secciones', secciones::all());
     }
 
     public function actualizar($id, Request $req)
     {
-        $proveedor = Proveedor::find($id);
+        $contenido = Contenido::find($id);
 
         $contenido->Titulo = $req->titulo;
         $contenido->descripcion = $req->descripcion;
         $contenido->estado = 'ACTIVO';
         $contenido->archivo_id = intval($req->archivo_id);
 
-        $proveedor->save();
+        $contenido->save();
         return redirect('/contenidos/listar');
     }
 

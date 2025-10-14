@@ -47,9 +47,18 @@ Route::view('/secc', 'Formularios.formulariosecc')->name('dashboard');
     Route::get('/contenidos/{id}/mostrar', [ContenidosController::class, 'mostrar']);
     Route::post('/contenidos/{id}/borrar', [ContenidosController::class, 'borrar']);
 
-// Rutas de Secciones
-Route::get('/secc/{id}', [App\Http\Controllers\SeccionController::class, 'edit'])->name('seccion.edit');
-Route::post('/actse/{id}', [App\Http\Controllers\SeccionController::class, 'update'])->name('seccion.update');
+
+    // Rutas de Secciones
+    Route::get('/secciones/crear', [seccionesController::class, 'crear']);
+    Route::post('/secciones/guardar', [seccionesController::class, 'guardar']);
+    Route::get('/secciones/listar', [seccionesController::class, 'listar']);
+    Route::get('/secciones/{id}/editar', [seccionesController::class, 'editar']);
+    Route::post('/secciones/{id}/actualizar', [seccionesController::class, 'actualizar']);
+    Route::get('/secciones/{id}/mostrar', [seccionesController::class, 'mostrar']);
+    Route::post('/secciones/{id}/borrar', [seccionesController::class, 'borrar']);
+
+
+
 
 
 

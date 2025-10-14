@@ -23,8 +23,8 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Archivo ID (por ahora manual)</label>
-            <input type="number" name="archivo_id" class="form-control" value="{{ old('archivo_id', $contenido->archivo_id) }}">
+            <label class="form-label">Seccion ID</label>
+            <input type="number" name="seccion_id" class="form-control" value="{{ old('seccion_id', $contenido->seccion_id) }}">
         </div>
 
         <div class="text-center mt-4">

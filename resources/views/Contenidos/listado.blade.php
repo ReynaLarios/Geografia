@@ -18,7 +18,7 @@
                                 <th scope="col" class="px-4 py-3">ID</th>
                                 <th scope="col" class="px-4 py-3">Titulo</th>
                                 <th scope="col" class="px-4 py-3">Descripcion</th>
-                                <th scope="col" class="px-4 py-3">Archivo</th>
+                                <th scope="col" class="px-4 py-3">Seccion</th>
                                 <th scope="col" class="px-4 py-3">Acciones</th>
                             </tr>
                         </thead>
@@ -34,10 +34,10 @@
                                         {{ $cont->estado }}
                                     </div>
                                 </td>
-                                <td class="px-4 py-3">{{ optional($cont->archivo)->nombre }}</td>
+                                <td class="px-4 py-3">{{ optional($cont->seccion)->nombre }}</td>
                                 <td class="px-4 py-3">
-                                    <a href="/proveedores/{{ $cont->id }}/editar" class="font-medium text-blue-600 dark:text-blue-500 hover:underline ml-2">Editar</a>
-                                    <a href="/proveedores/{{ $cont->id }}/mostrar" class="font-medium text-blue-600 dark:text-blue-500 hover:underline ml-2">Borrar</a>
+                                    <a href="/contenidos/{{ $cont->id }}/editar" class="font-medium text-blue-600 dark:text-blue-500 hover:underline ml-2">Editar</a>
+                                    <a href="/contenidos/{{ $cont->id }}/mostrar" class="font-medium text-blue-600 dark:text-blue-500 hover:underline ml-2">Borrar</a>
                                 </td>
                             </tr>
                             @endforeach

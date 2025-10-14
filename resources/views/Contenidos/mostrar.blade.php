@@ -20,7 +20,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                                 <div>
                                 <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                    Archivo: {{ optional($contenido->archivo)->nombre ?? 'no hay archivo' }}
+                                    Archivo: {{ optional($contenido->seccion)->nombre ?? 'no hay seccion' }}
                                 </label>
                             </div>
                         </div>

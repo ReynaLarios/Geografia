@@ -3,32 +3,61 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Seccion;
-use App\Models\Contenido;
+use App\Models\secciones;
 
-class SeccionesController extends Controller
+
+class seccionesController extends Controller
 {
-    public function edit($id)
-    {
-        $seccion = Seccion::findOrFail($id);
-        $contenidos = Contenido::all(); 
-        return view('secciones.editar', compact('seccion', 'contenidos'));
+    public function crear()
+        {
+            return view('Secciones.secciones');
+        }
+
+    public function guardar(Request $req){
+        //dd($req->all());
+        $seccion = new secciones();
+
+        $seccion->nombre= $req->nombre;
+        $seccion->descripcion = $req->descripcion;
+        $seccion->estado = 'ACTIVO';
+      
+        $seccion->save();
+        return redirect('/secciones/listar');
     }
 
-    public function update(Request $request, $id)
+    public function listar()
     {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'required|string',
-            'contenido_id' => 'nullable|exists:contenidos,id',
-        ]);
+        return view('/secciones/listado');
+    }
 
-        $seccion = Seccion::findOrFail($id);
-        $seccion->nombre = $request->nombre;
-        $seccion->descripcion = $request->descripcion;
-        $seccion->contenido_id = $request->contenido_id;
+    public function editar($id)
+    {
+        return view('/secciones/editar')
+            ->with('secciones', secciones::find($id));
+    }
+
+    public function actualizar($id, Request $req)
+    {
+        $seccion = Secciones::find($id);
+
+        $seccion->nombre = $req->nombre;
+        $seccion->descripcion = $req->descripcion;
+        $seccion->estado = 'ACTIVO';
+       
         $seccion->save();
+        return redirect('/secciones/listar');
+    }
 
-        return redirect()->back()->with('success', 'Sección actualizada correctamente.');
+    public function mostrar($id)
+    {
+        return view('/secciones/mostrar') ;
+    }
+
+    public function borrar($id)
+    {
+        $seccion = contenido::find($id);
+        $seccion->estado = 'INACTIVO';
+        $seccion->save();
+        return redirect('/secciones/listar');
     }
 }
