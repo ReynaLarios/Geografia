@@ -46,7 +46,7 @@ Route::view('/secc', 'Formularios.formulariosecc')->name('dashboard');
 Route::get('/contenidos/{id}/editar', [ContenidosController::class, 'editar'])->name('contenidos.edit');
 Route::put('/contenidos/{id}/actualizar', [ContenidosController::class, 'actualizar'])->name('contenidos.update');
   Route::get('/contenidos/{id}/mostrar', [ContenidosController::class, 'mostrar'])->name('contenidos.mostrar');
-    Route::post('/contenidos/{id}/borrar', [ContenidosController::class, 'borrar']);
+    Route::post('/contenidos/{id}/borrar', [ContenidosController::class, 'borrar'])->name('contenidos.borrar');
 
 
     // Rutas de Secciones
@@ -54,9 +54,9 @@ Route::put('/contenidos/{id}/actualizar', [ContenidosController::class, 'actuali
     Route::post('/secciones/guardar', [SeccionesController::class, 'guardar']);
     Route::get('/secciones/listar', [SeccionesController::class, 'listar']);
     Route::get('/secciones/{id}/editar', [SeccionesController::class, 'editar']);
-    Route::post('/secciones/{id}/actualizar', [SeccionesController::class, 'actualizar']);
+    Route::put('/secciones/{id}/actualizar', [SeccionesController::class, 'actualizar'])->name('secciones.update');
     Route::get('/secciones/{id}/mostrar', [SeccionesController::class, 'mostrar']);
-    Route::post('/secciones/{id}/borrar', [SeccionesController::class, 'borrar']);
+    Route::post('/secciones/{id}/borrar', [SeccionesController::class, 'borrar'])->name('secciones.borrar');
 
 
 

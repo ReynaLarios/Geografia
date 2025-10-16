@@ -84,6 +84,6 @@ class ContenidosController extends Controller
     {
         $contenido = Contenidos::findOrFail($id);
         $contenido->delete();
-        return redirect('/contenidos/listar')->with('success', 'Contenido eliminado correctamente');
+        return redirect('contenidos.listar')->with('success', 'Contenido eliminado correctamente');
     }
 }

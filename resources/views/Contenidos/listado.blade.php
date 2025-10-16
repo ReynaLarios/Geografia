@@ -19,7 +19,7 @@
                                 <th scope="col" class="px-4 py-3">Titulo</th>
                                 <th scope="col" class="px-4 py-3">Descripcion</th>
                                 <th scope="col" class="px-4 py-3">Seccion</th>
-                                <th scope="col" class="px-4 py-3">Acciones</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -29,10 +29,6 @@
                                 <td class="px-4 py-3">{{ $cont->Titulo}}</td>
                                 <td class="px-4 py-3">{{ $cont->descripcion }}</td>
                                 <td class="px-4 py-3">
-                                    <div class="flex items-center">
-                                        <div class="h-2.5 w-2.5 rounded-full {{ $cont->estado=='ACTIVO'?'bg-green-500':'bg-red-500' }} me-2"></div>
-                                        {{ $cont->estado }}
-                                    </div>
                                 </td>
                                 <td class="px-4 py-3">{{ optional($cont->seccion)->nombre }}</td>
                                 <td class="px-4 py-3">

@@ -8,7 +8,7 @@
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-semibold">Lista de secciones</h3>
                 <a href="/secciones/crear" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                    Agregar seccion
+                    Agregar secciones
                 </a>
             </div>
                 <div class="overflow-x-auto">
@@ -18,21 +18,24 @@
                                 <th scope="col" class="px-4 py-3">ID</th>
                                 <th scope="col" class="px-4 py-3">Nombre</th>
                                 <th scope="col" class="px-4 py-3">Descripcion</th>
-                                <th scope="col" class="px-4 py-3">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($secciones as $secc)
+
+                           @foreach ($secciones as $secc)
                             <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
                                 <td class="px-4 py-3">{{ $secc->id }}</td>
                                 <td class="px-4 py-3">{{ $secc->nombre}}</td>
                                 <td class="px-4 py-3">{{ $secc->descripcion }}</td>
+                                <td class="px-4 py-3">
                                 </td>
+                                <td class="px-4 py-3">
                                     <a href="/secciones/{{ $secc->id }}/editar" class="font-medium text-blue-600 dark:text-blue-500 hover:underline ml-2">Editar</a>
                                     <a href="/secciones/{{ $secc->id }}/mostrar" class="font-medium text-blue-600 dark:text-blue-500 hover:underline ml-2">Borrar</a>
                                 </td>
                             </tr>
                             @endforeach
+                        </tbody>
                         </tbody>
                     </table>
                 </div>
