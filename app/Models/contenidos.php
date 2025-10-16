@@ -5,11 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class contenidos extends Model 
+class Contenidos extends Model
 {
     use HasFactory;
-public function seccion()
-{
-    return $this->hasMany(Secciones::class, 'seccion_id');
-}
+
+    protected $table = 'contenidos';
+    protected $fillable = ['titulo', 'descripcion', 'seccion_id'];
+
+    public function secciones()
+    {
+        return $this->belongsTo(Secciones::class, 'seccion_id');
+    }
 }

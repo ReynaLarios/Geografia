@@ -5,10 +5,12 @@
   <section class="bg-gray-50 dark:bg-gray-900 py-3 sm:py-5">
         <div class="px-4 mx-auto max-w-screen-2xl lg:px-12">
             <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg p-4">
-                <div class="mb-8">
-                    <h3 class="text-xl font-semibold mb-4">Agregar nuevo contenido</h3>
-                    <form class="space-y-4" action="/contenido/{{ $contenido->id }}/borrar" method="POST" enctype="multipart/form-data">
-                        @csrf
+             <a href="{{ url('/contenidos/'.$contenido->id.'/mostrar') }}" class="btn btn-info">Ver</a>
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="btn btn-danger">Borrar</button>
+</form>
+
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Titulo:{{ $contenido->titulo }}</label>

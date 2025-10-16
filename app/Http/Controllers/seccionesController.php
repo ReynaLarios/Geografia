@@ -3,61 +3,59 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\secciones;
+use App\Models\secciones; 
 
-
-class seccionesController extends Controller
+class SeccionesController extends Controller
 {
     public function crear()
-        {
-            return view('Secciones.secciones');
-        }
+    {
+        return view('secciones.secciones');
+    }
 
-    public function guardar(Request $req){
-        //dd($req->all());
+    public function guardar(Request $req)
+    {
         $seccion = new secciones();
 
-        $seccion->nombre= $req->nombre;
+        $seccion->nombre = $req->nombre;
         $seccion->descripcion = $req->descripcion;
-        $seccion->estado = 'ACTIVO';
-      
         $seccion->save();
         return redirect('/secciones/listar');
     }
 
     public function listar()
     {
-        return view('/secciones/listado');
+        $secciones = secciones::all();
+        return view('secciones.listado', compact('secciones'));
     }
 
     public function editar($id)
     {
-        return view('/secciones/editar')
-            ->with('secciones', secciones::find($id));
+        $seccion = secciones::find($id);
+        return view('secciones.editar', compact('seccion'));
     }
 
     public function actualizar($id, Request $req)
     {
-        $seccion = Secciones::find($id);
+        $seccion = secciones::find($id);
 
         $seccion->nombre = $req->nombre;
         $seccion->descripcion = $req->descripcion;
-        $seccion->estado = 'ACTIVO';
-       
+
         $seccion->save();
         return redirect('/secciones/listar');
     }
 
     public function mostrar($id)
     {
-        return view('/secciones/mostrar') ;
+        $seccion = secciones::find($id);
+        return view('secciones.mostrar', compact('seccion'));
     }
 
     public function borrar($id)
     {
-        $seccion = contenido::find($id);
-        $seccion->estado = 'INACTIVO';
+        $seccion = secciones::find($id);
         $seccion->save();
+
         return redirect('/secciones/listar');
     }
 }

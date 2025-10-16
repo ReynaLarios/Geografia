@@ -17,12 +17,6 @@
                             <div>
                                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descripcion:{{ $seccion->descripcion }}</label>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                                <div>
-                                <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                    contenido: {{ optional($seccion->contenido)->nombre ?? 'no hay contenido' }}
-                                </label>
-                            </div>
                         </div>
 
                         <div class="flex justify-center mt-6">

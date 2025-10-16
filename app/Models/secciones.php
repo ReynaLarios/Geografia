@@ -9,8 +9,9 @@ class secciones extends Model
 {
     use HasFactory;
 
-public function contenido()
+public function contenidos()
 {
-    return $this->belongsTo(Contenidos::class, 'contenido_id');
+    return $this->hasMany(Contenidos::class, 'seccion_id');
 }
+
 }

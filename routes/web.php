@@ -3,6 +3,7 @@
 
 use App\Http\Controllers\SeccionController;
 use App\Http\Controllers\ContenidosController;
+use App\Http\Controllers\SeccionesController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -40,22 +41,22 @@ Route::view('/secc', 'Formularios.formulariosecc')->name('dashboard');
 
 // Rutas de Contenidos
     Route::get('/contenidos/crear', [ContenidosController::class, 'crear']);
-    Route::post('/contenidos/guardar', [ContenidosController::class, 'guardar']);
+   Route::post('/contenidos/guardar', [ContenidosController::class, 'guardar'])->name('contenidos.guardar');
     Route::get('/contenidos/listar', [ContenidosController::class, 'listar']);
-    Route::get('/contenidos/{id}/editar', [ContenidosController::class, 'editar']);
-    Route::post('/contenidos/{id}/actualizar', [ContenidosController::class, 'actualizar']);
-    Route::get('/contenidos/{id}/mostrar', [ContenidosController::class, 'mostrar']);
+Route::get('/contenidos/{id}/editar', [ContenidosController::class, 'editar'])->name('contenidos.edit');
+Route::put('/contenidos/{id}/actualizar', [ContenidosController::class, 'actualizar'])->name('contenidos.update');
+  Route::get('/contenidos/{id}/mostrar', [ContenidosController::class, 'mostrar'])->name('contenidos.mostrar');
     Route::post('/contenidos/{id}/borrar', [ContenidosController::class, 'borrar']);
 
 
     // Rutas de Secciones
-    Route::get('/secciones/crear', [seccionesController::class, 'crear']);
-    Route::post('/secciones/guardar', [seccionesController::class, 'guardar']);
-    Route::get('/secciones/listar', [seccionesController::class, 'listar']);
-    Route::get('/secciones/{id}/editar', [seccionesController::class, 'editar']);
-    Route::post('/secciones/{id}/actualizar', [seccionesController::class, 'actualizar']);
-    Route::get('/secciones/{id}/mostrar', [seccionesController::class, 'mostrar']);
-    Route::post('/secciones/{id}/borrar', [seccionesController::class, 'borrar']);
+    Route::get('/secciones/crear', [SeccionesController::class, 'crear']);
+    Route::post('/secciones/guardar', [SeccionesController::class, 'guardar']);
+    Route::get('/secciones/listar', [SeccionesController::class, 'listar']);
+    Route::get('/secciones/{id}/editar', [SeccionesController::class, 'editar']);
+    Route::post('/secciones/{id}/actualizar', [SeccionesController::class, 'actualizar']);
+    Route::get('/secciones/{id}/mostrar', [SeccionesController::class, 'mostrar']);
+    Route::post('/secciones/{id}/borrar', [SeccionesController::class, 'borrar']);
 
 
 

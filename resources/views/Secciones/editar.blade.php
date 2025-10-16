@@ -18,13 +18,6 @@
             <textarea name="descripcion" class="form-control" rows="3"></textarea>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Contenido asociado</label>
-            <select name="contenido_id" class="form-select">
-                
-            </select>
-        </div>
-
         <div class="text-center mt-4">
             <button type="submit" class="btn btn-primary px-4">Actualizar Sección</button>
         </div>

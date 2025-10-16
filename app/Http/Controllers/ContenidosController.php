@@ -3,67 +3,87 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\secciones;
-use App\Models\contenidos;
+use App\Models\Secciones;
+use App\Models\Contenidos;
 
 class ContenidosController extends Controller
 {
     public function crear() 
-        {
-            return view('Contenidos.contenidos')
-                ->with('secciones', secciones::all());
-        }
+    {
+        return view('Contenidos.contenidos')
+            ->with('secciones', Secciones::all());
+    }
 
-    public function guardar(Request $req){
-        //dd($req->all());
-        $contenido = new contenidos();
+    public function guardar(Request $req)
+    {
+        $req->validate([
+            'titulo' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'seccion_id' => 'required|exists:secciones,id',
+            'archivo' => 'nullable|file|mimes:jpg,jpeg,png,mp4,pdf|max:10240',
+        ]);
 
-        $contenido->titulo= $req->titulo;
-        $contenido->descipcion = $req->descripcion;
-        $contenido->estado = 'ACTIVO';
+        $contenido = new Contenidos();
+        $contenido->titulo = $req->titulo;
+        $contenido->descripcion = $req->descripcion;
         $contenido->seccion_id = intval($req->seccion_id);
 
+        if ($req->hasFile('archivo')) {
+            $contenido->archivo = $req->file('archivo')->store('archivos', 'public');
+        }
+
         $contenido->save();
-        return redirect('/contenidos/listar');
+        return redirect('/contenidos/listar')->with('success', 'Contenido creado correctamente');
     }
 
     public function listar()
     {
-        return view('/Contenidos/listado')
-            ->with('contenidos', contenido::with('secciones')->get());
+        return view('Contenidos.listado')
+            ->with('contenidos', Contenidos::with('secciones')->get());
     }
 
     public function editar($id)
     {
-        return view('/Contenidos/editar')
-            ->with('contenido', contenidos::find($id))
-            ->with('secciones', secciones::all());
+        $contenido = Contenidos::findOrFail($id);
+        $secciones = Secciones::all();
+
+        return view('Contenidos.editar', compact('contenido', 'secciones'));
     }
 
-    public function actualizar($id, Request $req)
+    public function actualizar(Request $req, $id)
     {
-        $contenido = Contenido::find($id);
+        $req->validate([
+            'titulo' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'seccion_id' => 'required|exists:secciones,id',
+            'archivo' => 'nullable|file|mimes:jpg,jpeg,png,mp4,pdf|max:10240',
+        ]);
 
-        $contenido->Titulo = $req->titulo;
+        $contenido = Contenidos::findOrFail($id);
+        $contenido->titulo = $req->titulo;
         $contenido->descripcion = $req->descripcion;
-        $contenido->estado = 'ACTIVO';
-        $contenido->archivo_id = intval($req->archivo_id);
+        $contenido->seccion_id = intval($req->seccion_id);
+
+        if ($req->hasFile('archivo')) {
+            $contenido->archivo = $req->file('archivo')->store('archivos', 'public');
+        }
 
         $contenido->save();
-        return redirect('/contenidos/listar');
+        return redirect()->back()->with('success', 'Contenido actualizado correctamente');
     }
 
     public function mostrar($id)
-    {
-        return view('/Contenidos/mostrar')
-            ->with('contenido', contenido::with('contenidos')->find($id));
-    }
+{
+    $contenido = Contenidos::with('secciones')->findOrFail($id);
+    return view('Contenidos.mostrar', compact('contenido'));
+}
+
+
 
     public function borrar($id)
     {
-        $contenido = contenido::find($id);
-        $contenido->estado = 'INACTIVO';
-        $contenido->save();
-        return redirect('/contenidos/listar');
+        $contenido = Contenidos::findOrFail($id);
+        $contenido->delete();
+        return redirect('/contenidos/listar')->with('success', 'Contenido eliminado correctamente');
     }
 }

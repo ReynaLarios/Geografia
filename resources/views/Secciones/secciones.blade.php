@@ -21,23 +21,6 @@
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                                 required>
                         </div>
-                             
-                             <div class="mt-4">
-                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Estado</label>
-                                <textarea name="estado" id=estado class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" rows="3" required></textarea>
-                            </div>
-
-                             <div>
-                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">contenido</label>
-                                <select name="contenido_id" id="contenido_id"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
-                                    <option value="">Seleccione un contenido</option>
-                                    @foreach($contenidos as $contenidos)
-                                        <option value="{{ $contenidos->id }}">{{ $contenidos->nombre }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
                          </div>
                          <button type="submit"
                              class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
