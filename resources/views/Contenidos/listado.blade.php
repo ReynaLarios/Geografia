@@ -26,10 +26,8 @@
                             @foreach ($contenidos as $cont)
                             <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
                                 <td class="px-4 py-3">{{ $cont->id }}</td>
-                                <td class="px-4 py-3">{{ $cont->Titulo}}</td>
+                                <td class="px-4 py-3">{{ $cont->titulo}}</td>
                                 <td class="px-4 py-3">{{ $cont->descripcion }}</td>
-                                <td class="px-4 py-3">
-                                </td>
                                 <td class="px-4 py-3">{{ optional($cont->seccion)->nombre }}</td>
                                 <td class="px-4 py-3">
                                     <a href="/contenidos/{{ $cont->id }}/editar" class="font-medium text-blue-600 dark:text-blue-500 hover:underline ml-2">Editar</a>
