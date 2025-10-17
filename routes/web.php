@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 */
 // Rutas del Panel
 // Rutas del Panel
-Route::view('/panel', 'base.layout')->name('dashboard');
+Route::view('/', 'base.layout')->name('dashboard');
 Route::view('/inicio', 'Inicio.Inicio')->name('dashboard');
 Route::view('/mision', 'Mision.Mision')->name('dashboard');
 Route::view('/vision', 'Vision.Vision')->name('dashboard');
@@ -63,6 +63,4 @@ Route::delete('/contenidos/{id}/borrar', [ContenidosController::class, 'borrar']
 
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
