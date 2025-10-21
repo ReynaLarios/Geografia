@@ -12,10 +12,21 @@ class secciones extends Model
     protected $table = 'secciones';
     protected $fillable = ['nombre', 'descripcion'];
 
+
+    
     public function contenidos()
 {
     return $this->hasMany(Contenidos::class, 'seccion_id');
 }
 
+ protected function firstName(): Attribute
+    {
+        return Attribute::make(
+            get: fn (string $value) => ucfirst($value),
+            
+        );
     }
+}
+
+    
 

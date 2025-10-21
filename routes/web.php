@@ -67,6 +67,18 @@ Route::delete('/archivos/{id}/borrar', [ArchivoController::class, 'borrar'])->na
 Route::get('/archivos/{id}/descargar', [ArchivoController::class, 'descargar'])->name('archivos.descargar');
 
 
+// Rutas de Administradores
+    Route::prefix('administradores')->group(function () {
+        Route::get('/crear', [AdministradorController::class, 'crear'])->name('administradores.crear');
+        Route::post('/guardar', [AdministradorController::class, 'guardar'])->name('administradores.guardar');
+        Route::get('/listar', [AdministradorController::class, 'listar'])->name('administradores.listar');
+        Route::get('/{id}/editar', [AdministradorController::class, 'editar'])->name('administradores.editar');
+        Route::post('/{id}/actualizar', [AdministradorController::class, 'actualizar'])->name('administradores.actualizar');
+        Route::post('/{id}/borrar', [AdministradorController::class, 'borrar'])->name('administradores.borrar');
+    });
+
+
+
 
 
 
