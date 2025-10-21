@@ -9,11 +9,16 @@ class Contenidos extends Model
 {
     use HasFactory;
 
-    protected $table = 'contenidos';
-    protected $fillable = ['titulo', 'descripcion', 'seccion_id'];
+    protected $fillable = ['seccion_id', 'titulo', 'descripcion'];
 
-    public function secciones()
+    public function seccion()
     {
         return $this->belongsTo(Secciones::class, 'seccion_id');
+        
     }
+    public function archivos()
+{
+    return $this->hasMany(Archivo::class);
+}
+
 }

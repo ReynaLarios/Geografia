@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class archivos extends Model
 {
-  
-     use HasFactory;
-     public function contenidos () {
-return $this->hasMany(contenidos::class);
-}
+    use HasFactory;
 
+    protected $fillable = ['nombre', 'ruta', 'tipo', 'contenido_id'];
+
+    // Relación con Contenidos
+    public function contenido()
+    {
+        return $this->belongsTo(Contenidos::class);
+    }
 }

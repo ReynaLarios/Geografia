@@ -9,9 +9,13 @@ class secciones extends Model
 {
     use HasFactory;
 
-public function contenidos()
+    protected $table = 'secciones';
+    protected $fillable = ['nombre', 'descripcion'];
+
+    public function contenidos()
 {
     return $this->hasMany(Contenidos::class, 'seccion_id');
 }
 
-}
+    }
+

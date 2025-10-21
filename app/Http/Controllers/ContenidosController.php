@@ -2,88 +2,98 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Secciones;
 use App\Models\Contenidos;
+use App\Models\Secciones;
+use Illuminate\Http\Request;
 
 class ContenidosController extends Controller
 {
-    public function crear() 
-    {
-        return view('Contenidos.contenidos')
-            ->with('secciones', Secciones::all());
-    }
-
-    public function guardar(Request $req)
-    {
-        $req->validate([
-            'titulo' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'seccion_id' => 'required|exists:secciones,id',
-            'archivo' => 'nullable|file|mimes:jpg,jpeg,png,mp4,pdf|max:10240',
-        ]);
-
-        $contenido = new Contenidos();
-        $contenido->titulo = $req->titulo;
-        $contenido->descripcion = $req->descripcion;
-        $contenido->seccion_id = intval($req->seccion_id);
-
-        if ($req->hasFile('archivo')) {
-            $contenido->archivo = $req->file('archivo')->store('archivos', 'public');
-        }
-
-        $contenido->save();
-        return redirect('/contenidos/listar')->with('success', 'Contenido creado correctamente');
-    }
-
+    // Mostrar todos los contenidos
     public function listar()
     {
-        return view('Contenidos.listado')
-            ->with('contenidos', Contenidos::with('secciones')->get());
+        $contenidos = Contenidos::with('seccion')->get();
+        $secciones = Secciones::all();
+        return view('contenidos.listado', compact('contenidos', 'secciones'));
     }
 
+    // Mostrar formulario para crear contenido
+    public function crear(Request $request)
+    {
+        $secciones = Secciones::all();
+        return view('contenidos.contenidos', compact('secciones'));
+    }
+
+    // Guardar un nuevo contenido
+    public function guardar(Request $request)
+    {
+        $request->validate([
+            'seccion_id' => 'required|exists:secciones,id',
+            'titulo' => 'required|string|max:255',
+            'descripcion' => 'required|string',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
+        ]);
+
+        $datos = $request->only(['seccion_id', 'titulo', 'descripcion']);
+
+        // Subida de imagen si existe
+        if ($request->hasFile('imagen')) {
+            $datos['imagen'] = $request->file('imagen')->store('contenidos', 'public');
+        }
+
+        Contenidos::create($datos);
+
+        return redirect()->route('contenidos.listar')->with('success', 'Contenido creado correctamente');
+    }
+
+    // Mostrar formulario para editar contenido
     public function editar($id)
     {
         $contenido = Contenidos::findOrFail($id);
         $secciones = Secciones::all();
-
-        return view('Contenidos.editar', compact('contenido', 'secciones'));
+        return view('contenidos.contenidos', compact('contenido', 'secciones'));
     }
 
-    public function actualizar(Request $req, $id)
+    // Actualizar contenido
+    public function actualizar(Request $request, $id)
     {
-        $req->validate([
-            'titulo' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
+        $contenido = Contenidos::findOrFail($id);
+
+        $request->validate([
             'seccion_id' => 'required|exists:secciones,id',
-            'archivo' => 'nullable|file|mimes:jpg,jpeg,png,mp4,pdf|max:10240',
+            'titulo' => 'required|string|max:255',
+            'descripcion' => 'required|string',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
         ]);
 
-        $contenido = Contenidos::findOrFail($id);
-        $contenido->titulo = $req->titulo;
-        $contenido->descripcion = $req->descripcion;
-        $contenido->seccion_id = intval($req->seccion_id);
+        $datos = $request->only(['seccion_id', 'titulo', 'descripcion']);
 
-        if ($req->hasFile('archivo')) {
-            $contenido->archivo = $req->file('archivo')->store('archivos', 'public');
+        // Subida de imagen si existe
+        if ($request->hasFile('imagen')) {
+            $datos['imagen'] = $request->file('imagen')->store('contenidos', 'public');
         }
 
-        $contenido->save();
-        return redirect()->back()->with('success', 'Contenido actualizado correctamente');
+        $contenido->update($datos);
+
+        return redirect()->route('contenidos.listar')->with('success', 'Contenido actualizado correctamente');
     }
 
-    public function mostrar($id)
-{
-    $contenido = Contenidos::with('secciones')->findOrFail($id);
-    return view('Contenidos.mostrar', compact('contenido'));
+    // Mostrar un contenido específico
+   public function mostrar($id) {
+    $contenido = Contenidos::with('seccion')->findOrFail($id);
+    $seccion = $contenido->seccion; // para sidebar
+    return view('contenidos.mostrar', compact('contenido', 'seccion'));
 }
 
 
-
+    // Borrar contenido
     public function borrar($id)
-    {
-        $contenido = Contenidos::findOrFail($id);
-        $contenido->delete();
-        return redirect('contenidos.listar')->with('success', 'Contenido eliminado correctamente');
-    }
+{
+    $contenido = Contenidos::findOrFail($id); // Encontrar el contenido
+    $contenido->delete(); // Borrar el contenido
+
+    // Redirigir a la página de la sección a la que pertenecía
+    return redirect()->route('secciones.{id}.mostrar', $contenido->seccion_id)
+                     ->with('success', 'Contenido eliminado correctamente');
+}
+
 }

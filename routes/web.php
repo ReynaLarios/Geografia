@@ -40,23 +40,33 @@ Route::view('/secc', 'Formularios.formulariosecc')->name('dashboard');
 
 
 // Rutas de Contenidos
-    Route::get('/contenidos/crear', [ContenidosController::class, 'crear']);
-   Route::post('/contenidos/guardar', [ContenidosController::class, 'guardar'])->name('contenidos.guardar');
+    Route::get('/contenidos/crear', [ContenidosController::class, 'crear'])->name('contenidos.crear');
     Route::get('/contenidos/listar', [ContenidosController::class, 'listar']);
+   Route::post('/contenidos/guardar', [ContenidosController::class, 'guardar'])->name('contenidos.guardar');
+    Route::get('/contenidos/listar', [ContenidosController::class, 'listar'])->name('contenidos.listar');
 Route::get('/contenidos/{id}/editar', [ContenidosController::class, 'editar'])->name('contenidos.edit');
 Route::put('/contenidos/{id}/actualizar', [ContenidosController::class, 'actualizar'])->name('contenidos.update');
-  Route::get('/contenidos/{id}/mostrar', [ContenidosController::class, 'mostrar'])->name('contenidos.mostrar');
-Route::delete('/contenidos/{id}/borrar', [ContenidosController::class, 'borrar'])->name('contenidos.borrar');
+  Route::get('/contenidos/{id}/mostrar', [ContenidosController::class, 'mostrar'])->name('contenidos.{id}.mostrar');
+Route::delete('/contenidos/{id}/borrar', [ContenidosController::class, 'borrar'])->name('contenidos.{id}.borrar');
 
 
     // Rutas de Secciones
-    Route::get('/secciones/crear', [SeccionesController::class, 'crear']);
-    Route::post('/secciones/guardar', [SeccionesController::class, 'guardar']);
-    Route::get('/secciones/listar', [SeccionesController::class, 'listar']);
-    Route::get('/secciones/{id}/editar', [SeccionesController::class, 'editar']);
+    Route::get('/secciones/crear', [SeccionesController::class, 'crear'])->name('secciones.crear');
+    Route::post('/secciones/guardar', [SeccionesController::class, 'guardar'])->name('secciones.guardar');
+    Route::get('/secciones/listar', [SeccionesController::class, 'listar'])->name('secciones.listar');
+    Route::get('/secciones/{id}/editar', [SeccionesController::class, 'editar'])->name('secciones.{id}.editar');
     Route::put('/secciones/{id}/actualizar', [SeccionesController::class, 'actualizar'])->name('secciones.update');
-    Route::get('/secciones/{id}/mostrar', [SeccionesController::class, 'mostrar']);
-    Route::post('/secciones/{id}/borrar', [SeccionesController::class, 'borrar'])->name('secciones.borrar');
+   Route::get('/secciones/{id}/mostrar', [SeccionesController::class, 'mostrar'])->name('secciones.{id}.mostrar');
+   Route::delete('/secciones/{id}/borrar', [SeccionesController::class, 'borrar'])->name('secciones.{id}.borrar');
+
+   
+   Route::get('/contenidos/{contenido_id}/archivos', [ArchivoController::class, 'listar'])->name('archivos.listar');
+Route::get('/contenidos/{contenido_id}/archivos/crear', [ArchivoController::class, 'crear'])->name('archivos.crear');
+Route::post('/contenidos/{contenido_id}/archivos/guardar', [ArchivoController::class, 'guardar'])->name('archivos.guardar');
+Route::delete('/archivos/{id}/borrar', [ArchivoController::class, 'borrar'])->name('archivos.borrar');
+Route::get('/archivos/{id}/descargar', [ArchivoController::class, 'descargar'])->name('archivos.descargar');
+
+
 
 
 
