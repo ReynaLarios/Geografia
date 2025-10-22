@@ -78,6 +78,9 @@ Route::get('/archivos/{id}/descargar', [ArchivoController::class, 'descargar'])-
     });
 
 
+use App\Http\Controllers\InicioController;
+
+Route::resource('inicio', InicioController::class);
 
 
 
