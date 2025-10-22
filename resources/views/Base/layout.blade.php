@@ -378,8 +378,6 @@
         <ul class="nav flex-column">
             @foreach($secciones ?? [] as $sec)
                 <li class="mb-2 d-flex justify-content-between align-items-center">
-                    url
-                    if isset(inicio)?url = inicio :url = route('secciones.{id}.mostrar', $sec->id)
                     <a href="{{ route('secciones.{id}.mostrar', $sec->id) }}" class="fancy flex-grow-1">
                         {{ $sec->nombre }}
                     </a>

@@ -1,25 +1,35 @@
 <?php
 
-
+use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\SeccionController;
 use App\Http\Controllers\ContenidosController;
 use App\Http\Controllers\SeccionesController;
-
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdministradorController;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\InicioController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-// Rutas del Panel
+// Rutas Públicas
+Route::get('/', function () {
+    return view('/Administrador/login');
+});
+
+Route::get('admin/form', [AdminAuthController::class, 'form'])->name('login');
+Route::post('admin/in', [AdminAuthController::class, 'in'])->name('in');
+Route::post('admin/out', [AdminAuthController::class, 'out'])->name('out');
+    
+// Rutas Protegidas (requieren autenticación)
+Route::middleware('auth')->group(function () {
+
+
 // Rutas del Panel
 Route::view('/', 'base.layout')->name('dashboard');
+
+
+
+
 Route::view('/inicio', 'Inicio.Inicio')->name('dashboard');
 Route::view('/mision', 'Mision.Mision')->name('dashboard');
 Route::view('/vision', 'Vision.Vision')->name('dashboard');
@@ -78,14 +88,22 @@ Route::get('/archivos/{id}/descargar', [ArchivoController::class, 'descargar'])-
     });
 
 
-use App\Http\Controllers\InicioController;
 
-Route::resource('inicio', InicioController::class);
+    Route::resource('inicio', inicioController::class); 
+
+// Rutas para crear usuarios por defecto
+Route::get('/user-default-reyna', function() {
+    $user = new User();
+    $user->name = "reyna";
+    $user->email = "reyna@email.com";
+    $user->password = Hash::make("reyna@email.com");
+    $user->rol = "master";
+    $user->save();
+    return "USUARIO REGISTRADO";
+});
 
 
 
 
 
-
-
-
+});

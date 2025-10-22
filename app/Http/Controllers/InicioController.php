@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Noticia;
+use App\Models\inicio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -10,8 +10,8 @@ class InicioController extends Controller
 {
     public function index()
     {
-        $noticias = Noticia::all();
-        return view('Inicio.index', compact('noticias'));
+        $inicio = inicio::all();
+        return view('Inicio.inicio', compact('inicio'));
     }
 
     public function create()
@@ -33,7 +33,7 @@ class InicioController extends Controller
             $rutaImagen = $request->file('imagen')->store('imagenes', 'public');
         }
 
-        Noticia::create([
+        inicio::create([
             'titulo' => $request->titulo,
             'descripcion' => $request->descripcion,
             'imagen' => $rutaImagen,
@@ -44,14 +44,14 @@ class InicioController extends Controller
 
     public function show($id)
     {
-        $noticia = Noticia::findOrFail($id);
-        return view('Inicio.mostrar', compact('noticia'));
+        $inicio = inicio::findOrFail($id);
+        return view('Inicio.mostrar', compact('inicio'));
     }
 
     public function edit($id)
     {
-        $noticia = Noticia::findOrFail($id);
-        return view('Inicio.editar', compact('noticia'));
+        $inicio = inicio::findOrFail($id);
+        return view('Inicio.editar', compact('inicio'));
     }
 
     public function update(Request $request, $id)
@@ -62,77 +62,35 @@ class InicioController extends Controller
             'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        $noticia = Noticia::findOrFail($id);
+        $inicio = inicio::findOrFail($id);
 
         if ($request->hasFile('imagen')) {
-            if ($noticia->imagen && Storage::disk('public')->exists($noticia->imagen)) {
-                Storage::disk('public')->delete($noticia->imagen);
+            if ($inicio->imagen && Storage::disk('public')->exists($inicio->imagen)) {
+                Storage::disk('public')->delete($inicio->imagen);
             }
 
-            $noticia->imagen = $request->file('imagen')->store('imagenes', 'public');
+            $inicio->imagen = $request->file('imagen')->store('imagenes', 'public');
         }
 
-        $noticia->titulo = $request->titulo;
-        $noticia->descripcion = $request->descripcion;
-        $noticia->save();
+        $inicio->titulo = $request->titulo;
+        $inicio->descripcion = $request->descripcion;
+        $inicio->save();
 
         return redirect()->route('inicio.index')->with('success', 'Noticia actualizada correctamente.');
     }
 
     public function destroy($id)
     {
-        $noticia = Noticia::findOrFail($id);
+        $inicio = inicio::findOrFail($id);
 
-        if ($noticia->imagen && Storage::disk('public')->exists($noticia->imagen)) {
-            Storage::disk('public')->delete($noticia->imagen);
+        if ($inicio->imagen && Storage::disk('public')->exists($inicio->imagen)) {
+            Storage::disk('public')->delete($inicio->imagen);
         }
 
-        $noticia->delete();
+        $inicio->delete();
 
         return redirect()->route('inicio.index')->with('success', 'Noticia eliminada correctamente.');
     }
 }
 
 
-
-
-
-
-
-
-
-
-MODELO
-<?php
-
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class Noticia extends Model
-{
-    use HasFactory;
-
-    protected $fillable = [
-        'titulo',
-        'descripcion',
-        'imagen',
-    ];
-}
-
-
-
-
-MIGRACION
-
-public function up(): void
-{
-    Schema::create('noticias', function (Blueprint $table) {
-        $table->id();
-        $table->string('titulo');
-        $table->text('descripcion');
-        $table->string('imagen')->nullable();
-        $table->timestamps();
-    });
-}

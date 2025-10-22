@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.0.0/dist/flowbite.min.css" rel="stylesheet" />
-    <title>Document</title>
-</head>
-
-<style>
-    body{
+body{
 	margin:0;
 	color:#6a6f8c;
 	background:#c8c8c8;
@@ -94,7 +83,7 @@ a{color:inherit;text-decoration:none}
 	background:rgba(255,255,255,.1);
 }
 .login-form .group input[data-type="password"]{
-	text-security:circle;
+	text-box-edge:circle;
 	-webkit-text-security:circle;
 }
 .login-form .group .label{
@@ -158,73 +147,4 @@ a{color:inherit;text-decoration:none}
 }
 .foot-lnk{
 	text-align:center;
-} 
-</style>
-
-<body>
-    
-<div class="login-wrap">
-	<div class="login-html">
-		<input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Iniciar sesion</label>
-		<input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Registrate</label>
-		<div class="login-form">
-			<div class="sign-in-htm">
-				<div class="group">
-					<label for="usuario" class="label">Usuario</label>
-					<input id="usuario" type="text" class="input">
-				</div>
-				<div class="group">
-					<label for="contraseña" class="label">Contraseña</label>
-					<input id="contraseña" type="contraseña" class="input" data-type="contraseña">
-				</div>
-				<div class="group">
-					<input id="check" type="checkbox" class="check" checked>
-					<label for="check"><span class="icon"></span> Mantener sesion iniciada</label>
-				</div>
-				<div class="group">
-					<input type="submit" class="button" value="Iniciar Sesion">
-				</div>
-				<div class="hr"></div>
-				<div class="foot-lnk">
-					<a href="#forgot">Olvidaste tu contraseña?</a>
-				</div>
-			</div>
-			<div class="sign-up-htm">
-				<div class="group">
-					<label for="user" class="label">Usuario</label>
-					<input id="user" type="text" class="input">
-				</div>
-				<div class="group">
-					<label for="pass" class="label">Contraseña</label>
-					<input id="pass" type="password" class="input" data-type="password">
-				</div>
-				<div class="group">
-					<label for="pass" class="label">Repite tu contraseña</label>
-					<input id="pass" type="password" class="input" data-type="password">
-				</div>
-				<div class="group">
-					<label for="pass" class="label">Correo electronico</label>
-					<input id="pass" type="text" class="input">
-				</div>
-				<div class="group">
-					<input type="submit" class="button" value="Registrate">
-				</div>
-				<div class="hr"></div>
-				<div class="foot-lnk">
-					<label for="tab-1">¿Ya eres miembro?</a>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-                    </form>
-                    @error('email')
-                    <span>{{ $message }}</span>
-                    @enderror
-                </div>
-            </div>
-        </div>
-      </section>
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.0.0/dist/flowbite.min.js"></script>
-</body>
-</html>
+}
