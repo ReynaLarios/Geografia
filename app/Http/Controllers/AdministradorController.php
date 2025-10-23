@@ -20,11 +20,13 @@ class AdministradorController extends Controller
         $credentials = $request->validate([
             'usuario' => ['required'],
             'contraseña' => ['required'],
+            'email' => ['required']
         ]);
 
         if (Auth::attempt([
             'usuario' => $request->usuario,
-            'contraseña' => $request->contraseña
+            'contraseña' => $request->contraseña,
+            'email' => $request->email
         ])) {
             $request->session()->regenerate();
             return redirect()->intended('dashboard');
@@ -44,12 +46,14 @@ class AdministradorController extends Controller
     {
         $request->validate([
             'usuario' => 'required|unique:administradores',
-            'contraseña' => 'required|min:6'
+            'contraseña' => 'required|min:6',
+            'email'  =>'required|unique:administradores'
         ]);
 
-        Administrador::create([
+        Administrador::crear([
             'usuario' => $request->usuario,
-            'contraseña' => Hash::make($request->contraseña)
+            'contraseña' => Hash::make($request->contraseña),
+             'email' => $request->email,
         ]);
 
         return redirect()->route('administradores.listar')
@@ -83,6 +87,14 @@ class AdministradorController extends Controller
         if ($request->filled('contraseña')) {
             $datos['contraseña'] = Hash::make($request->contraseña);
         }
+
+         $request->validate([
+            'email' => 'required|unique:administradores,email,'.$id
+        ]);
+
+        $datos = [
+            'email' => $request->email
+        ];
 
         $administrador->update($datos);
 

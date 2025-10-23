@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class AdminAuthController extends Controller
 {
@@ -14,8 +15,9 @@ class AdminAuthController extends Controller
 public function in(Request $request)
 {
     if (Auth::attempt([
-        'email' => $request-> email,
-        'password' => $request->password
+        'usuario' => $request-> usuario,
+        'password' => $request->password,
+         'email' => $request->email
     ])){
 
         $request->session()->regenerate();
