@@ -16,11 +16,12 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $admin = Administrador::where('email', $request->email)->first();
+        $administrador = Administrador::where('email', $request->email)->first();
 
-        if ($admin && Hash::check($request->contraseña, $admin->contraseña)) {
-            $request->session()->put('administrador_id', $admin->id);
-            return redirect()->route('administrador.listar');
+        if ($administrador && Hash::check($request->contraseña, $administrador->password)) {
+           // Auth::login();
+            $request->session()->put('administrador_id', $administrador->id);
+            return redirect()->route('administrador.listado');
         }
 
         return back()->withErrors(['email' => 'Credenciales incorrectas']);
@@ -28,29 +29,28 @@ class LoginController extends Controller
 
     public function showRegisterForm()
     {
-        return view('administrador.login'); // usamos la misma vista, solo cambia el tab
+        return view('administrador.login'); 
     }
 
     public function register(Request $request)
     {
-        // Validación básica
+      
         $request->validate([
             'email' => 'required|email|unique:administradores,email',
-            'contraseña' => 'required|min:6|confirmed',
+            'password' => 'required|min:6|confirmed',
         ], [
-            'contraseña.confirmed' => 'Las contraseñas no coinciden'
+            'password.confirmed' => 'Las contraseñas no coinciden'
         ]);
 
-        $admin = Administrador::create([
+       $administrador = Administrador::create([
             'email' => $request->email,
-            'contraseña' => Hash::make($request->contraseña),
-            'nombre' => 'Admin Nuevo', // opcional, podrías pedir nombre también
+            'password' => Hash::make($request->password),
         ]);
 
-        // Inicia sesión automáticamente
-        $request->session()->put('administrador_id', $admin->id);
+      
+        $request->session()->put('administrador_id',$administrador->id);
 
-        return redirect()->route('administrador.listar');
+        return redirect()->route('administrador.listado');
     }
 
     public function logout(Request $request)

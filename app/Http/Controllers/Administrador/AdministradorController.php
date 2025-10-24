@@ -9,81 +9,73 @@ use Illuminate\Support\Facades\Hash;
 
 class AdministradorController extends Controller
 {
-    // Aplica el middleware 'admin' a todas las rutas del controlador
     public function __construct()
     {
         $this->middleware('admin');
     }
 
-    // Listar todos los administradores
     public function listar()
     {
         $administradores = Administrador::all();
-        return view('administrador.listar', compact('administradores'));
+        return view('administrador.listado', compact('administradores'));
     }
 
-    // Mostrar formulario de crear administrador
+
     public function crear()
     {
-        return view('administrador.crear');
+        return view('administrador.login');
     }
 
-    // Guardar un nuevo administrador
     public function guardar(Request $request)
     {
         $request->validate([
             'email' => 'required|email|unique:administradores,email',
-            'contraseña' => 'required|min:6|confirmed',
+            'password' => 'required|min:6|confirmed',
         ]);
 
         Administrador::create([
             'email' => $request->email,
-            'contraseña' => Hash::make($request->contraseña),
-            'nombre' => $request->nombre ?? 'Admin Nuevo',
+            'password' => Hash::make($request->contraseña),
         ]);
 
-        return redirect()->route('administrador.listar')->with('success', 'Administrador creado correctamente');
+        return redirect()->route('administrador.listado')->with('success', 'Administrador creado correctamente');
     }
 
-    // Mostrar detalles de un administrador
     public function mostrar($id)
     {
         $administrador = Administrador::findOrFail($id);
         return view('administrador.mostrar', compact('administrador'));
     }
 
-    // Mostrar formulario de edición
     public function editar($id)
     {
         $administrador = Administrador::findOrFail($id);
-        return view('administrador.editar', compact('administrador'));
+        return view('administrador.edicion', compact('administrador'));
     }
 
-    // Actualizar administrador
     public function actualizar(Request $request, $id)
     {
-        $admin = Administrador::findOrFail($id);
+        $administrador = Administrador::findOrFail($id);
 
         $request->validate([
-            'email' => 'required|email|unique:administradores,email,' . $admin->id,
-            'contraseña' => 'nullable|min:6|confirmed',
+            'email' => 'required|email|unique:administradores,email,' . $administrador->id,
+            'password' => 'nullable|min:6|confirmed',
         ]);
 
-        $admin->email = $request->email;
+        $administrador->email = $request->email;
         if($request->contraseña){
-            $admin->contraseña = Hash::make($request->contraseña);
+            $administrador->password = Hash::make($request->password);
         }
-        $admin->save();
+        $administrador->save();
 
-        return redirect()->route('administrador.listar')->with('success', 'Administrador actualizado correctamente');
+        return redirect()->route('administrador.listado')->with('success', 'Administrador actualizado correctamente');
     }
 
-    // Eliminar administrador
     public function eliminar($id)
     {
-        $admin = Administrador::findOrFail($id);
-        $admin->delete();
+        $administrador = Administrador::findOrFail($id);
+        $administrador->delete();
 
-        return redirect()->route('administrador.listar')->with('success', 'Administrador eliminado correctamente');
+        return redirect()->route('administrador.listado')->with('success', 'Administrador eliminado correctamente');
     }
 }

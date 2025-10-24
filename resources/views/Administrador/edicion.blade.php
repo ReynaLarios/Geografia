@@ -7,25 +7,21 @@
         <label for="tab-2" class="tab">Editar Administrador</label>
         <div class="login-form">
             <div class="sign-up-htm">
-                <form action="{{ route('administrador.actualizar', $administrador->id) }}" method="POST">
+                <form action="{{ route('administrador.{id}.actualizar', $administrador->id) }}" method="POST">
                     @csrf
                     @method('PUT')
-                    <div class="group">
-                        <label for="nombre" class="label">Nombre</label>
-                        <input id="nombre" name="nombre" type="text" class="input" value="{{ $administrador->nombre }}" required>
-                    </div>
                     <div class="group">
                         <label for="email" class="label">Correo electrónico</label>
                         <input id="email" name="email" type="email" class="input" value="{{ $administrador->email }}" required>
                     </div>
                     <div class="group">
-                        <label for="contraseña" class="label">Contraseña</label>
-                        <input id="contraseña" name="contraseña" type="password" class="input" data-type="password">
+                        <label for="password" class="label">Contraseña</label>
+                        <input id="password" name="password" type="password" class="input" data-type="password">
                         <small class="text-white">Dejar vacío si no quieres cambiarla</small>
                     </div>
                     <div class="group">
-                        <label for="contraseña_confirmation" class="label">Repetir Contraseña</label>
-                        <input id="contraseña_confirmation" name="contraseña_confirmation" type="password" class="input" data-type="password">
+                        <label for="password_confirmation" class="label">Repetir Contraseña</label>
+                        <input id="password_confirmation" name="password_confirmation" type="password" class="input" data-type="password">
                     </div>
                     <div class="group">
                         <input type="submit" class="button" value="Actualizar">

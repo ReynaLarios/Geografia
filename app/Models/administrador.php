@@ -12,9 +12,9 @@ class Administrador extends Model
     protected $table = 'administradores';
 
     protected $fillable = [
-        'nombre',
+
         'email',
-        'contraseña',
+        'password',
         'activo',
     ];
 

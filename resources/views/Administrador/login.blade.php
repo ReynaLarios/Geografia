@@ -98,8 +98,18 @@ body {
 </style>
 </head>
 <body>
-
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 <div class="login-wrap">
+
+
     <div class="login-html">
 
         <input id="tab-1" type="radio" name="tab" class="sign-in" checked>
@@ -118,8 +128,8 @@ body {
                         <input id="email" name="email" type="email" class="input" required>
                     </div>
                     <div class="group">
-                        <label for="contraseña" class="label">Contraseña</label>
-                        <input id="contraseña" name="contraseña" type="password" class="input" data-type="password" required>
+                        <label for="password" class="label">Contraseña</label>
+                        <input id="password" name="password" type="password" class="input" data-type="password" required>
                     </div>
                     <div class="group">
                         <input id="check" type="checkbox" class="check" checked>
@@ -130,7 +140,7 @@ body {
                     </div>
                     <div class="hr"></div>
                     <div class="foot-lnk">
-                        <label for="tab-2">¿No tienes cuenta?</label>
+                        <label for="tab-2">¿Se te olvido la contraseña?</label>
                     </div>
                 </form>
             </div>
@@ -140,23 +150,19 @@ body {
                 <form action="{{ route('administrador.registrar') }}" method="POST">
                     @csrf
                     <div class="group">
-                        <label for="email2" class="label">Correo electrónico</label>
+                        <label for="email2" class="label">Correo electronico</label>
                         <input id="email2" name="email" type="email" class="input" required>
                     </div>
                     <div class="group">
                         <label for="pass" class="label">Contraseña</label>
-                        <input id="pass" name="contraseña" type="password" class="input" data-type="password" required>
+                        <input id="pass" name="password" type="password" class="input" data-type="password" required>
                     </div>
                     <div class="group">
                         <label for="pass2" class="label">Repite tu contraseña</label>
-                        <input id="pass2" name="contraseña_confirmation" type="password" class="input" data-type="password" required>
+                        <input id="pass2" name="password_confirmation" type="password" class="input" data-type="password" required>
                     </div>
                     <div class="group">
                         <input type="submit" class="button" value="Registrarse">
-                    </div>
-                    <div class="hr"></div>
-                    <div class="foot-lnk">
-                        <label for="tab-1">¿Ya eres miembro?</label>
                     </div>
                 </form>
             </div>

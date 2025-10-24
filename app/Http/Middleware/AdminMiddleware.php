@@ -9,10 +9,12 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
+        Auth::check();
+        $user = Auth::user()->id;
+
         if (!$request->session()->has('administrador_id')) {
             return redirect()->route('administrador.login');
         }
 
-        return $next($request);
     }
 }
