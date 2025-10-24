@@ -1,95 +1,60 @@
 <?php
 
-use App\Http\Controllers\AdminAuthController;
-use App\Http\Controllers\SeccionController;
-use App\Http\Controllers\ContenidosController;
-use App\Http\Controllers\SeccionesController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\AdministradorController;
 use Illuminate\Support\Facades\Route;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use App\Http\Controllers\InicioController;
+use App\Http\Controllers\SeccionesController;
+use App\Http\Controllers\ContenidosController;
 use App\Http\Controllers\VideoController;
+use App\Http\Controllers\ArchivoController;
+use App\Http\Controllers\InicioController;
+use App\Http\Controllers\Administrador\AdministradorController;
+use App\Http\Controllers\Administrador\LoginController;
 
-// Rutas Públicas
-Route::get('/', function () {
-    return view('/Administrador/login');
-});
+// ----------------- RUTAS PÚBLICAS -----------------
+Route::get('/', [LoginController::class, 'showLoginForm'])->name('administrador.login');
+Route::post('/administrador/login', [LoginController::class, 'login'])->name('administrador.login.post');
+Route::post('/administrador/logout', [LoginController::class, 'logout'])->name('administrador.logout');
 
-Route::get('admin/form', [AdminAuthController::class, 'form'])->name('login');
-Route::post('admin/in', [AdminAuthController::class, 'in'])->name('in');
-Route::post('admin/out', [AdminAuthController::class, 'out'])->name('out');
+Route::get('/administrador/registrar', [LoginController::class, 'showRegisterForm'])->name('administrador.register');
+Route::post('/administrador/registrar', [LoginController::class, 'register'])->name('administrador.registrar');
 
-// Rutas Protegidas (requieren autenticación)
-Route::middleware('auth')->group(function () {
+// ----------------- PANEL PROTEGIDO -----------------
+Route::middleware(['admin'])->prefix('administrador')->group(function () {
 
+    // Administradores
+    Route::get('/listar', [AdministradorController::class, 'listar'])->name('administrador.listar');
+    Route::get('/crear', [AdministradorController::class, 'crear'])->name('administrador.crear');
+    Route::post('/guardar', [AdministradorController::class, 'guardar'])->name('administrador.guardar');
+    Route::get('/editar/{id}', [AdministradorController::class, 'editar'])->name('administrador.editar');
+    Route::put('/actualizar/{id}', [AdministradorController::class, 'actualizar'])->name('administrador.actualizar');
+    Route::get('/mostrar/{id}', [AdministradorController::class, 'mostrar'])->name('administrador.mostrar');
+    Route::delete('/eliminar/{id}', [AdministradorController::class, 'eliminar'])->name('administrador.eliminar');
 
-    // Rutas del Panel
-    Route::view('/', 'base.layout')->name('dashboard');
-
-
-
-
-    Route::view('/inicio', 'Inicio.Inicio')->name('dashboard');
-    Route::view('/mision', 'Mision.Mision')->name('dashboard');
-    Route::view('/vision', 'Vision.Vision')->name('dashboard');
-    Route::view('/objetivos', 'Objetivos.Objetivos')->name('dashboard');
-    Route::view('/licenciatura', 'Licenciatura.Licenciatura')->name('dashboard');
-    Route::view('/conoce', 'conoce.conoce')->name('dashboard');
-    Route::view('/videoteca', 'videoteca.videoteca')->name('dashboard');
-    Route::view('/videoteca/recientes', 'videoteca.recientes')->name('dashboard');
-    Route::view('/videoteca/populares', 'videoteca.varios')->name('dashboard');
-    Route::view('/alumnos', 'alumnos.alumnos')->name('dashboard');
-    Route::view('/acerca', 'acerca.acerca')->name('dashboard');
-    Route::view('/horarios', 'horarios.horarios')->name('dashboard');
-    Route::view('/cursos', 'cursos.cursos')->name('dashboard');
-    Route::view('/normatividad', 'normatividad.normatividad')->name('dashboard');
-    Route::view('/egresados', 'egresados.egresados')->name('dashboard');
-    Route::view('/cont', 'Formularios.formularioscont')->name('dashboard');
-    Route::view('/secc', 'Formularios.formulariosecc')->name('dashboard');
-
-
-    // Rutas de Contenidos
-    Route::get('/contenidos/crear', [ContenidosController::class, 'crear'])->name('contenidos.crear');
-    Route::get('/contenidos/listar', [ContenidosController::class, 'listar']);
-    Route::post('/contenidos/guardar', [ContenidosController::class, 'guardar'])->name('contenidos.guardar');
-    Route::get('/contenidos/listar', [ContenidosController::class, 'listar'])->name('contenidos.listar');
-    Route::get('/contenidos/{id}/editar', [ContenidosController::class, 'editar'])->name('contenidos.edit');
-    Route::put('/contenidos/{id}/actualizar', [ContenidosController::class, 'actualizar'])->name('contenidos.update');
-    Route::get('/contenidos/{id}/mostrar', [ContenidosController::class, 'mostrar'])->name('contenidos.{id}.mostrar');
-    Route::delete('/contenidos/{id}/borrar', [ContenidosController::class, 'borrar'])->name('contenidos.{id}.borrar');
-
-
-    // Rutas de Secciones
+    // Secciones
     Route::get('/secciones/crear', [SeccionesController::class, 'crear'])->name('secciones.crear');
     Route::post('/secciones/guardar', [SeccionesController::class, 'guardar'])->name('secciones.guardar');
     Route::get('/secciones/listar', [SeccionesController::class, 'listar'])->name('secciones.listar');
-    Route::get('/secciones/{id}/editar', [SeccionesController::class, 'editar'])->name('secciones.{id}.editar');
-    Route::put('/secciones/{id}/actualizar', [SeccionesController::class, 'actualizar'])->name('secciones.update');
-    Route::get('/secciones/{id}/mostrar', [SeccionesController::class, 'mostrar'])->name('secciones.{id}.mostrar');
-    Route::delete('/secciones/{id}/borrar', [SeccionesController::class, 'borrar'])->name('secciones.{id}.borrar');
+    Route::get('/secciones/{id}/editar', [SeccionesController::class, 'editar'])->name('secciones.editar');
+    Route::put('/secciones/{id}/actualizar', [SeccionesController::class, 'actualizar'])->name('secciones.actualizar');
+    Route::get('/secciones/{id}/mostrar', [SeccionesController::class, 'mostrar'])->name('secciones.mostrar');
+    Route::delete('/secciones/{id}/borrar', [SeccionesController::class, 'borrar'])->name('secciones.borrar');
 
+    // Contenidos
+    Route::get('/contenidos/crear', [ContenidosController::class, 'crear'])->name('contenidos.crear');
+    Route::post('/contenidos/guardar', [ContenidosController::class, 'guardar'])->name('contenidos.guardar');
+    Route::get('/contenidos/listar', [ContenidosController::class, 'listar'])->name('contenidos.listar');
+    Route::get('/contenidos/{id}/editar', [ContenidosController::class, 'editar'])->name('contenidos.editar');
+    Route::put('/contenidos/{id}/actualizar', [ContenidosController::class, 'actualizar'])->name('contenidos.actualizar');
+    Route::get('/contenidos/{id}/mostrar', [ContenidosController::class, 'mostrar'])->name('contenidos.mostrar');
+    Route::delete('/contenidos/{id}/borrar', [ContenidosController::class, 'borrar'])->name('contenidos.borrar');
 
+    // Archivos relacionados con contenidos
     Route::get('/contenidos/{contenido_id}/archivos', [ArchivoController::class, 'listar'])->name('archivos.listar');
     Route::get('/contenidos/{contenido_id}/archivos/crear', [ArchivoController::class, 'crear'])->name('archivos.crear');
     Route::post('/contenidos/{contenido_id}/archivos/guardar', [ArchivoController::class, 'guardar'])->name('archivos.guardar');
     Route::delete('/archivos/{id}/borrar', [ArchivoController::class, 'borrar'])->name('archivos.borrar');
     Route::get('/archivos/{id}/descargar', [ArchivoController::class, 'descargar'])->name('archivos.descargar');
 
-
-    // Rutas de Administradores
-    Route::prefix('administradores')->group(function () {
-        Route::get('/crear', [AdministradorController::class, 'crear'])->name('administradores.crear');
-        Route::post('/guardar', [AdministradorController::class, 'guardar'])->name('administradores.guardar');
-        Route::get('/listar', [AdministradorController::class, 'listar'])->name('administradores.listar');
-        Route::get('/{id}/editar', [AdministradorController::class, 'editar'])->name('administradores.editar');
-        Route::post('/{id}/actualizar', [AdministradorController::class, 'actualizar'])->name('administradores.actualizar');
-        Route::post('/{id}/borrar', [AdministradorController::class, 'borrar'])->name('administradores.borrar');
-    });
-
-
-
+    // Videoteca
     Route::get('/videoteca', [VideoController::class, 'index'])->name('videoteca.index');
     Route::get('/videoteca/crear', [VideoController::class, 'create'])->name('videoteca.create');
     Route::post('/videoteca', [VideoController::class, 'store'])->name('videoteca.store');
@@ -98,17 +63,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/videoteca/{id}', [VideoController::class, 'update'])->name('videoteca.update');
     Route::delete('/videoteca/{id}', [VideoController::class, 'destroy'])->name('videoteca.destroy');
 
+    // Panel principal
+    Route::get('/inicio', [InicioController::class, 'index'])->name('dashboard');
 
-    Route::resource('inicio', inicioController::class);
-
-    // Rutas para crear usuarios por defecto
-    Route::get('/user-default-reyna', function () {
-        $user = new User();
-        $user->name = "reyna";
-        $user->email = "reyna@email.com";
-        $user->password = Hash::make("reyna@email.com");
-        $user->rol = "master";
-        $user->save();
-        return "USUARIO REGISTRADO";
+    // Ruta de prueba middleware
+    Route::get('/prueba', function () {
+        return "¡Middleware funcionando!";
     });
 });

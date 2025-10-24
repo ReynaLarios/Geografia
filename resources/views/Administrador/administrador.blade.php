@@ -173,23 +173,19 @@
         <label for="tab-2" class="tab">Registrate</label>
      <section class="bg-gray-50 dark:bg-gray-900 py-3 sm:py-5">
             <div class="sign-up-htm">
-                <form action="/in" method="POST">
-                    <div class="group">
-                        <label for="user" class="label">Usuario</label>
-                        <input id="user" name="usuario" type="text" class="input" required>
+              <form action="{{ route('administrador.registrar') }}" method="POST">
+    @csrf
+
+                     <div class="group">
+                        <label for="email" class="label">Correo electrónico</label>
+                        <input id="email" name="email" type="email" class="input" required>
                     </div>
                     <div class="group">
                         <label for="pass" class="label">Contraseña</label>
                         <input id="pass" name="contraseña" type="password" class="input" data-type="password" required>
                     </div>
-                    <div class="group">
-                        <label for="pass2" class="label">Repite tu contraseña</label>
-                        <input id="pass2" name="contraseña2" type="password" class="input" data-type="password" required>
-                    </div>
-                    <div class="group">
-                        <label for="email" class="label">Correo electrónico</label>
-                        <input id="email" name="email" type="email" class="input" required>
-                    </div>
+                    <input id="pass2" name="contraseña_confirmation" type="password" class="input" data-type="password" required>
+
                     <div class="group">
                         <input type="submit" class="button" value="Registrate">
                     </div>
