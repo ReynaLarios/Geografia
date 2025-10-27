@@ -14,13 +14,12 @@ class InicioController extends Controller
         return view('Inicio.inicio', compact('inicio'));
     }
 
-    public function create()
-    {
-        return view('Inicio.crear');
-    }
+    public function create() {
+    return view('Inicio.crear'); // tu formulario
+}
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
+
         $request->validate([
             'titulo' => 'required|string|max:255',
             'descripcion' => 'required|string',

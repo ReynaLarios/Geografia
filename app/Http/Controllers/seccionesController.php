@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class SeccionesController extends Controller
 {
     // Mostrar todas las secciones
-     public function listar()
+     public function listado()
 {
     $secciones = Secciones::all(); // todas las secciones
     return view('secciones.listado', compact('secciones'));
@@ -29,7 +29,7 @@ class SeccionesController extends Controller
         ]);
 
         Secciones::create($request->all());
-        return redirect('/secciones/listar')->with('success', 'Sección creada correctamente.');
+        return redirect('/secciones/listado')->with('success', 'Sección creada correctamente.');
     }
 
     // Mostrar formulario para editar
@@ -53,7 +53,7 @@ class SeccionesController extends Controller
             'descripcion' => $request->descripcion,
         ]);
 
-        return redirect()->route('secciones.listar')->with('success', 'Sección actualizada correctamente');
+        return redirect()->route('secciones.listado')->with('success', 'Sección actualizada correctamente');
     }
 
     // Borrar
@@ -61,7 +61,7 @@ class SeccionesController extends Controller
     {
         $seccion = Secciones::findOrFail($id);
         $seccion->delete();
-        return redirect()->route('secciones.listar')->with('success', 'Sección eliminada correctamente');
+        return redirect()->route('secciones.listado')->with('success', 'Sección eliminada correctamente');
     }
 
     // Mostrar sección con su descripción

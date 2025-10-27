@@ -34,7 +34,7 @@
                             <td class="p-2">{{ $seccion->descripcion }}</td>
                             <td class="p-2 text-center flex gap-2 justify-center">
                                 <a href="{{ url('/secciones/'.$seccion->id.'/editar') }}" class="text-blue-600 hover:underline">Editar</a>
-                                <form action="{{ route('secciones.{id}.borrar', $seccion->id) }}" method="POST" onsubmit="return confirm('¿Eliminar esta sección?')">
+                                <form action="{{ route('secciones.borrar', $seccion->id) }}" method="POST" onsubmit="return confirm('¿Eliminar esta sección?')">
                                     @csrf
                                     <button type="submit" class="text-red-600 hover:underline">Eliminar</button>
                                 </form>

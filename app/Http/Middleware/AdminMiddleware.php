@@ -7,14 +7,11 @@ use Illuminate\Http\Request;
 
 class AdminMiddleware
 {
-    public function handle(Request $request, Closure $next)
-    {
-        Auth::check();
-        $user = Auth::user()->id;
-
-        if (!$request->session()->has('administrador_id')) {
-            return redirect()->route('administrador.login');
-        }
-
+   public function handle(Request $request, Closure $next)
+{
+    if (!$request->session()->has('administrador_id')) {
+        return redirect()->route('login.form');
     }
+    return $next($request);
+}
 }

@@ -9,53 +9,56 @@ use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
+    // Mostrar formulario de login
     public function showLoginForm()
     {
         return view('administrador.login');
     }
 
+    // Procesar inicio de sesión
     public function login(Request $request)
     {
-        $administrador = Administrador::where('email', $request->email)->first();
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-        if ($administrador && Hash::check($request->contraseña, $administrador->password)) {
-           // Auth::login();
-            $request->session()->put('administrador_id', $administrador->id);
-            return redirect()->route('administrador.listado');
+        $admin = Administrador::where('email', $request->email)->first();
+
+        if ($admin && Hash::check($request->password, $admin->password)) {
+            $request->session()->put('administrador_id', $admin->id);
+            return redirect()->route('dashboard'); // asegúrate de tener esta ruta
         }
 
-        return back()->withErrors(['email' => 'Credenciales incorrectas']);
+        return back()->withErrors(['email' => 'Credenciales incorrectas'])->withInput();
     }
 
+    // Mostrar formulario de registro
     public function showRegisterForm()
     {
-        return view('administrador.login'); 
+        return view('administrador.register');
     }
 
+    // Procesar registro
     public function register(Request $request)
     {
-      
         $request->validate([
             'email' => 'required|email|unique:administradores,email',
             'password' => 'required|min:6|confirmed',
-        ], [
-            'password.confirmed' => 'Las contraseñas no coinciden'
         ]);
 
-       $administrador = Administrador::create([
+        Administrador::create([
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-      
-        $request->session()->put('administrador_id',$administrador->id);
-
-        return redirect()->route('administrador.listado');
+        return redirect()->route('login.form')->with('success', 'Registro exitoso, ahora ingresa.');
     }
 
+    // Cerrar sesión
     public function logout(Request $request)
     {
         $request->session()->forget('administrador_id');
-        return redirect()->route('administrador.login');
+        return redirect()->route('login.form');
     }
 }

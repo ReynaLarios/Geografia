@@ -2,27 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
 
-class Administrador extends Model
+class Administrador extends Authenticatable implements CanResetPassword
 {
-    use HasFactory;
+    use Notifiable, CanResetPasswordTrait;
 
+    // Especificar la tabla correcta
     protected $table = 'administradores';
 
     protected $fillable = [
-
         'email',
         'password',
-        'activo',
     ];
 
-    // Si quieres usar Hash automáticamente al crear un administrador
-    // protected static function booted()
-    // {
-    //     static::creating(function ($admin) {
-    //         $admin->contraseña = bcrypt($admin->contraseña);
-    //     });
-    // }
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 }

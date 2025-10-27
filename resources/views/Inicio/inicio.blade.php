@@ -18,7 +18,7 @@
 
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Noticias</h2>
-    <a href="{{ route('inicio.create') }}" class="btn btn-success">➕ Nueva Noticia</a>
+    <a href="{{ route('dashboard') }}" class="btn btn-success">➕ Nueva Noticia</a>
   </div>
 
   @if(session('success'))
@@ -38,9 +38,9 @@
           </div>
         </div>
         <div>
-          <a href="{{ route('inicio.show', $in->id) }}" class="btn btn-sm btn-info">Ver</a>
-          <a href="{{ route('inicio.edit', $in->id) }}" class="btn btn-sm btn-warning">Editar</a>
-          <form action="{{ route('inicio.destroy', $in->id) }}" method="POST" style="display:inline;">
+          <a href="{{ route('dashboard', $in->id) }}" class="btn btn-sm btn-info">Ver</a>
+          <a href="{{ route('dashboard', $in->id) }}" class="btn btn-sm btn-warning">Editar</a>
+          <form action="{{ route('dashboard', $in->id) }}" method="POST" style="display:inline;">
             @csrf
             @method('DELETE')
             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar noticia?')">Borrar</button>

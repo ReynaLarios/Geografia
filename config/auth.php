@@ -60,10 +60,15 @@ return [
     */
 
     'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\administrador::class,
-        ],
+    'users' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Administrador::class,
+    ],
+
+    'administradores' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Administrador::class,
+    ],
 
         // 'users' => [
         //     'driver' => 'database',
@@ -89,15 +94,24 @@ return [
     | quickly generating a very large amount of password reset tokens.
     |
     */
-
-    'passwords' => [
-        'users' => [
-            'provider' => 'users',
-            'table' => 'password_reset_tokens',
-            'expire' => 60,
-            'throttle' => 60,
-        ],
+'passwords' => [
+    // Broker por defecto para usuarios normales
+    'users' => [
+        'provider' => 'users',
+        'table' => 'password_resets',
+        'expire' => 60,
+        'throttle' => 60,
     ],
+
+    // Broker para administradores
+    'administradores' => [
+        'provider' => 'administradores',
+        'table' => 'password_resets',
+        'expire' => 60,
+        'throttle' => 60,
+    ],
+],
+
 
     /*
     |--------------------------------------------------------------------------

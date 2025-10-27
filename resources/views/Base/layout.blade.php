@@ -260,68 +260,94 @@
     <img src="geo.jpg" alt="Imagen geografía" class="banner">
 
     <nav class="navbar navbar-expand-lg" style="background-color:#815638; border-bottom:1px solid #815638;">
-        <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="menuPrincipal">
-                <ul class="navbar-nav me-auto">
-                    <div class="paste-button">
-                        <a href="inicio">
-                            <button class="button">INICIO</button>
-                        </a>
-                    </div>
+    <div class="container-fluid">
+        <!-- Menú colapsable (para móvil) -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-                    <div class="paste-button">
-                        <button class="button">ACERCA DE ▼</button>
-                        <div class="dropdown-content">
-                            <a href="/mision">Misión</a>
-                            <a href="/vision">Visión</a>
-                            <a href="/objetivos">Objetivos</a>
-                            <a href="#">Órgano de gobierno del departamento</a>
-                        </div>
-                    </div>
+        <!-- Menú principal -->
+        <div class="collapse navbar-collapse" id="menuPrincipal">
+            <ul class="navbar-nav me-auto">
+                <!-- INICIO -->
+                <div class="paste-button">
+                    <a href="inicio">
+                        <button class="button">INICIO</button>
+                    </a>
+                </div>
 
-                    <div class="paste-button">
-                        <button class="button">ACADEMIA ▼</button>
-                        <div class="dropdown-content">
-                            <a href="#">Metodología y Didáctica</a>
-                            <a href="#">Geografía física</a>
-                            <a href="#">Territorio y Gestión</a>
-                            <a href="#">Tecnologias de la Información Geográfica</a>
-                        </div>
+                <!-- ACERCA DE -->
+                <div class="paste-button">
+                    <button class="button">ACERCA DE ▼</button>
+                    <div class="dropdown-content">
+                        <a href="/mision">Misión</a>
+                        <a href="/vision">Visión</a>
+                        <a href="/objetivos">Objetivos</a>
+                        <a href="#">Órgano de gobierno del departamento</a>
                     </div>
+                </div>
 
-                    <div class="paste-button">
-                        <button class="button">COORDINACIÓN ▼</button>
-                        <div class="dropdown-content">
-                            <a href="#">De Posgrado</a>
-                            <a href="#">De Investigación</a>
-                            <a href="#">De Extensión</a>
-                        </div>
+                <!-- ACADEMIA -->
+                <div class="paste-button">
+                    <button class="button">ACADEMIA ▼</button>
+                    <div class="dropdown-content">
+                        <a href="#">Metodología y Didáctica</a>
+                        <a href="#">Geografía física</a>
+                        <a href="#">Territorio y Gestión</a>
+                        <a href="#">Tecnologías de la Información Geográfica</a>
                     </div>
+                </div>
 
-                    <div class="paste-button">
-                        <button class="button">LABORATORIO \ CENTRO DE INVESTIGACION ▼</button>
-                        <div class="dropdown-content">
-                            <a href="#">Nuevas Tecnologías</a>
-                            <a href="#">Tecnologías en geografía </a>
-                            <a href="#">Geografía física </a>
-                        </div>
+                <!-- COORDINACIÓN -->
+                <div class="paste-button">
+                    <button class="button">COORDINACIÓN ▼</button>
+                    <div class="dropdown-content">
+                        <a href="#">De Posgrado</a>
+                        <a href="#">De Investigación</a>
+                        <a href="#">De Extensión</a>
                     </div>
+                </div>
 
-                    <div class="paste-button">
-                        <button class="button">DIRECTORIO ▼</button>
-                        <div class="dropdown-content">
-                            <a href="#">Administración</a>
-                            <a href="#">Personal administrativo</a>
-                            <a href="#">Académicos</a>
-                        </div>
+                <!-- LABORATORIO / CENTRO DE INVESTIGACIÓN -->
+                <div class="paste-button">
+                    <button class="button">LABORATORIO / CENTRO DE INVESTIGACIÓN ▼</button>
+                    <div class="dropdown-content">
+                        <a href="#">Nuevas Tecnologías</a>
+                        <a href="#">Tecnologías en geografía</a>
+                        <a href="#">Geografía física</a>
                     </div>
-                </ul>
+                </div>
+
+                <!-- DIRECTORIO -->
+                <div class="paste-button">
+                    <button class="button">DIRECTORIO ▼</button>
+                    <div class="dropdown-content">
+                        <a href="#">Administración</a>
+                        <a href="#">Personal administrativo</a>
+                        <a href="#">Académicos</a>
+                    </div>
+                </div>
+            </ul>
+
+            <!-- PERFIL Y CERRAR SESIÓN -->
+            <div class="paste-button ms-auto" style="position: relative;">
+                <button class="button">Perfil ▼</button>
+                <div class="dropdown-content" style="right: 0; left: auto;">
+                    <!-- Ver Perfil (temporal) -->
+                    <a href="#">Ver Perfil</a>
+
+                    <!-- Cerrar sesión (form POST) -->
+                    <form action="{{ route('logout') }}" method="POST" style="margin:0;">
+                        @csrf
+                        <button type="submit" style="background:none; border:none; color:white; padding:8px 10px; width:100%; text-align:left; cursor:pointer;">
+                            Cerrar Sesión
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <!-- Layout -->
     </head>
@@ -350,14 +376,14 @@
         <ul class="nav flex-column">
             @foreach($seccion->contenidos as $contenidoItem)
                 <li class="mb-2 d-flex justify-content-between align-items-center">
-                    <a href="{{ route('contenidos.{id}.mostrar', $contenidoItem->id) }}" class="fancy flex-grow-1">
+                    <a href="{{ route('contenidos.mostrar', $contenidoItem->id) }}" class="fancy flex-grow-1">
                         {{ $contenidoItem->titulo }}
                     </a>
                     <div class="d-flex gap-1">
                         <!-- Editar -->
-                        <a href="{{ route('contenidos.edit', $contenidoItem->id) }}" class="fancy btn-editar">✎</a>
+                        <a href="{{ route('contenidos.editar', $contenidoItem->id) }}" class="fancy btn-editar">✎</a>
                         <!-- Borrar -->
-                        <form action="{{ route('contenidos.{id}.borrar', $contenidoItem->id) }}" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar este contenido?')">
+                        <form action="{{ route('contenidos.borrar', $contenidoItem->id) }}" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar este contenido?')">
                             @csrf
                             @method('DELETE')
                             <button class="fancy btn-borrar" type="submit">🗑</button>
@@ -378,14 +404,14 @@
         <ul class="nav flex-column">
             @foreach($secciones ?? [] as $sec)
                 <li class="mb-2 d-flex justify-content-between align-items-center">
-                    <a href="{{ route('secciones.{id}.mostrar', $sec->id) }}" class="fancy flex-grow-1">
+                    <a href="{{ route('secciones.mostrar', $sec->id) }}" class="fancy flex-grow-1">
                         {{ $sec->nombre }}
                     </a>
                     <div class="d-flex gap-1">
                         <!-- Editar sección -->
-                        <a href="{{ route('secciones.{id}.editar', $sec->id) }}" class="fancy btn-editar">✎</a>
+                        <a href="{{ route('secciones.editar', $sec->id) }}" class="fancy btn-editar">✎</a>
                         <!-- Borrar sección -->
-                        <form action="{{ route('secciones.{id}.borrar', $sec->id) }}" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar esta sección?')">
+                        <form action="{{ route('secciones.borrar', $sec->id) }}" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar esta sección?')">
                             @csrf
                             @method('DELETE')
                             <button class="fancy btn-borrar" type="submit">🗑</button>
