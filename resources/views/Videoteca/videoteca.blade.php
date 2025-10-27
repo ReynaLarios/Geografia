@@ -7,11 +7,10 @@
 
   <div class="row justify-content-center">
 
-    <!-- Sección Recientes -->
     <div class="col-md-5 mb-4">
       <a href="{{ url('/videoteca/recientes') }}" class="text-decoration-none">
         <div class="card shadow-lg border-0">
-          <!-- Fondo de la tarjeta -->
+
           <div class="card-img-top bg-dark"
                style="background: url('https://www.youtube.com/embed/6tyoh1321PU') center/cover;
                       height: 200px; border-top-left-radius: .5rem; border-top-right-radius: .5rem;">
@@ -24,11 +23,10 @@
       </a>
     </div>
 
-    <!-- Sección Populares -->
     <div class="col-md-5 mb-4">
       <a href="{{ url('/videoteca/populares') }}" class="text-decoration-none">
         <div class="card shadow-lg border-0">
-          <!-- Fondo de la tarjeta -->
+   
           <div class="card-img-top bg-dark"
                style="background: url('https://www.youtube.com/embed/6tyoh1321PU') center/cover;
                       height: 200px; border-top-left-radius: .5rem; border-top-right-radius: .5rem;">

@@ -22,14 +22,14 @@
             @foreach($contenidos as $contenido)
             <tr>
                 <td>
-                    <a href="{{ route('contenidos.{id}.mostrar', $contenido->id) }}">
+                    <a href="{{ route('contenidos.mostrar', $contenido->id) }}">
                         {{ $contenido->titulo }}
                     </a>
                 </td>
                 <td>{{ $contenido->seccion->nombre ?? 'Sin sección' }}</td>
                 <td class="d-flex gap-1">
-                    <a href="{{ route('contenidos.edit', $contenido->id) }}" class="btn btn-sm btn-warning">✎</a>
-                    <form action="{{ route('contenidos.{id}.borrar', $contenido->id) }}" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar este contenido?')">
+                    <a href="{{ route('contenidos.editar', $contenido->id) }}" class="btn btn-sm btn-warning">✎</a>
+                    <form action="{{ route('contenidos.borrar', $contenido->id) }}" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar este contenido?')">
                         @csrf
                         @method('DELETE')
                         <button class="btn btn-sm btn-danger">🗑</button>

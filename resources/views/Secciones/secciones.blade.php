@@ -11,22 +11,21 @@
         </div>
         <div class="mb-3">
             <label class="form-label"><strong>Descripción:</strong></label>
-            <!-- CKEditor va aquí -->
+  
             <textarea name="descripcion" id="descripcion" class="form-control" rows="6" required></textarea>
         </div>
         <button type="submit" class="btn btn-success">Guardar</button>
-        <a href="{{ route('secciones.listar') }}" class="btn btn-secondary">Cancelar</a>
+        <a href="{{ route('secciones.listado') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
 @endsection
-
 @section('scripts')
 <!-- CKEditor -->
 <script src="https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js"></script>
 <script>
     CKEDITOR.replace('descripcion', {
         height: 250,
-        removeButtons: '', // aquí puedes quitar botones si quieres
+        removeButtons: '', 
         toolbar: [
             { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike' ] },
             { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent' ] },

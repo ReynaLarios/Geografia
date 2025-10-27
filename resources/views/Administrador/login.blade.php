@@ -75,22 +75,11 @@ body {
             <input id="password" name="password" type="password" class="input" data-type="password" required>
         </div>
         <div class="group">
-            <input id="check" type="checkbox" class="check" checked>
-            <label for="check"><span class="icon"></span> Mantener sesión iniciada</label>
-        </div>
-        <div class="group">
             <input type="submit" class="button" value="Iniciar Sesión">
         </div>
 
         <!-- Línea divisoria -->
         <div class="hr"></div>
-
-        <!-- Enlace de recuperación de contraseña -->
-        <div class="foot-lnk text-center mt-2">
-            <a href="{{ route('password.request') }}" class="text-decoration-none">
-                ¿Olvidaste tu contraseña?
-            </a>
-        </div>
     </form>
 </div>
 <!-- Mensajes de éxito -->

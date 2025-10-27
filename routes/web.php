@@ -47,10 +47,6 @@ Route::middleware(['admin'])->prefix('administrador')->group(function () {
     // Logout
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
-    // Aquí puedes agregar más rutas protegidas
-
-
-
     // Administradores
     Route::get('/listado', [AdministradorController::class, 'listado'])->name('administrador.listado');
     Route::post('/guardar', [AdministradorController::class, 'guardar'])->name('administrador.guardar');
@@ -58,25 +54,16 @@ Route::middleware(['admin'])->prefix('administrador')->group(function () {
     Route::put('/actualizar/{id}', [AdministradorController::class, 'actualizar'])->name('administrador.actualizar');
     Route::get('/mostrar/{id}', [AdministradorController::class, 'mostrar'])->name('administrador.mostrar');
     Route::delete('/eliminar/{id}', [AdministradorController::class, 'eliminar'])->name('administrador.eliminar');
-Route::prefix('administrador')->group(function () {
-    // Listar secciones
-    Route::get('secciones', [SeccionesController::class, 'listado'])->name('secciones.listado');
-//mostrar
-Route::get('secciones/{id}', [SeccionesController::class, 'mostrar'])->name('secciones.mostrar');
-    // Crear
+
+    //Secciones
+    Route::get('/secciones', [SeccionesController::class, 'listado'])->name('secciones.listado');
     Route::get('secciones/crear', [SeccionesController::class, 'crear'])->name('secciones.crear');
-    Route::post('secciones', [SeccionesController::class, 'store'])->name('secciones.guardar');
-
-    // Editar
+    Route::post('/secciones/guardar', [SeccionesController::class, 'guardar'])->name('secciones.guardar');
     Route::get('secciones/{id}/editar', [SeccionesController::class, 'editar'])->name('secciones.editar');
-
-    //borrar
+    Route::put('/secciones/{id}/actualizar', [SeccionesController::class, 'actualizar'])->name('secciones.actualizar');
+    Route::get('secciones/{id}', [SeccionesController::class, 'mostrar'])->name('secciones.mostrar');
     Route::get('secciones/{id}/borrar', [SeccionesController::class, 'borrar'])->name('secciones.borrar');
-
-    // Actualizar
-    Route::put('secciones/{id}', [SeccionesController::class, 'update'])->name('secciones.update');
-});
-
+   
     // Contenidos
     Route::get('/contenidos', [ContenidosController::class, 'listar'])->name('contenidos.listar');
     Route::get('/contenidos/crear', [ContenidosController::class, 'crear'])->name('contenidos.crear');
@@ -93,4 +80,14 @@ Route::get('secciones/{id}', [SeccionesController::class, 'mostrar'])->name('sec
     Route::delete('/archivos/{id}/borrar', [ArchivoController::class, 'borrar'])->name('archivos.borrar');
     Route::get('/archivos/{id}/descargar', [ArchivoController::class, 'descargar'])->name('archivos.descargar');
 
+    //Videoteca 
+Route::get('/videoteca', [VideotecaController::class, 'index'])->name('videoteca.index');
+    Route::get('/videoteca/crear', [VideotecaController::class, 'create'])->name('videoteca.create');
+    Route::post('/videoteca', [VideotecaController::class, 'store'])->name('videoteca.store');
+    Route::get('/videoteca/{id}', [VideotecaController::class, 'show'])->name('videoteca.show');
+    Route::get('/videoteca/{id}/editar', [VideotecaController::class, 'edit'])->name('videoteca.edit');
+    Route::put('/videoteca/{id}', [VideotecaController::class, 'update'])->name('videoteca.update');
+    Route::delete('/videoteca/{id}', [VideotecaController::class, 'destroy'])->name('videoteca.destroy');
+
 });
+

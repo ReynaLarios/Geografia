@@ -3,7 +3,7 @@
 @section('contenido')
 <div class="container mt-4">
     <h2 class="mb-3">Editar Sección</h2>
-    <form action="{{ route('secciones.update', $seccion->id) }}" method="POST">
+    <form action="{{ route('secciones.listado', $seccion->id) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -14,7 +14,7 @@
 
         <div class="mb-3">
             <label class="form-label"><strong>Descripción:</strong></label>
-            <!-- CKEditor va aquí -->
+      
             <textarea name="descripcion" id="descripcion" class="form-control" rows="6" required>{{ $seccion->descripcion }}</textarea>
         </div>
 
@@ -25,12 +25,11 @@
 @endsection
 
 @section('scripts')
-<!-- CKEditor -->
 <script src="https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js"></script>
 <script>
     CKEDITOR.replace('descripcion', {
         height: 250,
-        removeButtons: '', // quitar botones si quieres
+        removeButtons: '',
         toolbar: [
             { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike' ] },
             { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent' ] },

@@ -7,12 +7,9 @@
     <div class="card mb-3">
         <div class="card-body">
             <h5 class="mb-2"><strong>Descripción:</strong></h5>
-            <!-- Aquí se muestra el contenido con formato HTML -->
             <div>{!! $seccion->descripcion !!}</div>
         </div>
     </div>
-
-    <!-- Si quieres mostrar otros contenidos relacionados -->
     @if($seccion->contenidos->count() > 0)
         <div class="card">
             <div class="card-body">
