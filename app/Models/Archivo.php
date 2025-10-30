@@ -9,11 +9,17 @@ class Archivo extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nombre', 'ruta', 'tipo', 'contenido_id'];
+    protected $fillable = [
+        'nombre',
+        'ruta',
+        'tipo',
+        'contenido_id',
+    ];
 
-    // Relación con Contenido
     public function contenido()
     {
         return $this->belongsTo(Contenidos::class);
     }
+
+    
 }

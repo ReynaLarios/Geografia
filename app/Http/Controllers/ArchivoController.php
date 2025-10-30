@@ -2,68 +2,86 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Archivo;
 use App\Models\Contenido;
+use App\Models\Contenidos;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ArchivoController extends Controller
 {
-    // Listar archivos de un contenido
-    public function listar($contenido_id)
+    // Mostrar listado de archivos (panel admin)
+    public function index()
     {
-        $contenido = Contenido::findOrFail($contenido_id);
-        $archivos = $contenido->archivos;
-        return view('archivos.listado', compact('contenido', 'archivos'));
+        $archivos = Archivo::with('contenido')->latest()->get();
+        $contenidos = Contenidos::all();
+        return view('archivos.index', compact('archivos', 'contenidos'));
     }
 
-    // Formulario para subir archivo
-    public function crear($contenido_id)
+    // Subir archivo
+    public function store(Request $request)
     {
-        $contenido = Contenido::findOrFail($contenido_id);
-        return view('archivos.formulario', compact('contenido'));
-    }
-
-    // Guardar archivo
-    public function guardar(Request $request, $contenido_id)
-    {$request->validate([
-    'archivo' => 'required|mimes:jpg,jpeg,png,gif,mp4,avi,mov,pdf,doc,docx,txt|max:10240',
-]);
-
-
-        $contenido = Contenido::findOrFail($contenido_id);
-        $file = $request->file('archivo');
-        $ruta = $file->store('archivos', 'public');
-
-        Archivo::create([
-            'nombre' => $file->getClientOriginalName(),
-            'ruta' => $ruta,
-            'tipo' => $file->getClientOriginalExtension(),
-            'contenido_id' => $contenido->id,
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'archivo' => 'required|file|max:10240',
+            'contenido_id' => 'nullable|exists:contenidos,id',
         ]);
 
-        return redirect()
-            ->route('archivos.listar', $contenido_id)
-            ->with('success', 'Archivo subido correctamente');
+        $file = $request->file('archivo');
+       $ruta = $file->move(public_path('archivos'), $file->getClientOriginalName());
+
+        Archivo::create([
+            'nombre' => $request->nombre,
+            'ruta' => $ruta,
+            'tipo' => $file->getClientOriginalExtension(),
+            'contenido_id' => $request->contenido_id,
+        ]);
+
+        return back()->with('success', 'Archivo subido correctamente.');
     }
 
     // Eliminar archivo
-    public function borrar($id)
-    {
-        $archivo = Archivo::findOrFail($id);
-        Storage::disk('public')->delete($archivo->ruta);
-        $contenido_id = $archivo->contenido_id;
-        $archivo->delete();
+   public function borrar($id)
+{
+    $archivo = Archivo::findOrFail($id);
 
-        return redirect()
-            ->route('archivos.listar', $contenido_id)
-            ->with('success', 'Archivo eliminado');
+    if (Storage::exists($archivo->ruta)) {
+        Storage::delete($archivo->ruta);
     }
 
-    // Descargar archivo
-    public function descargar($id)
-    {
-        $archivo = Archivo::findOrFail($id);
-        return Storage::disk('public')->download($archivo->ruta, $archivo->nombre);
+    $archivo->delete();
+
+    return back()->with('success', 'Archivo eliminado correctamente.');
+}
+
+
+public function guardarBannerAdmin(Request $request)
+{
+    $request->validate([
+        'archivo' => 'required|image|max:10240', // máximo 10MB
+    ]);
+
+    // Si ya hay un banner, borrarlo
+    $bannerExistente = Archivo::where('ubicacion', 'banner_admin')->latest()->first();
+    if($bannerExistente){
+        if (Storage::disk('public')->exists($bannerExistente->ruta)) {
+            Storage::disk('public')->delete($bannerExistente->ruta);
+        }
+        $bannerExistente->delete();
     }
+
+    // Subir nueva imagen
+    $file = $request->file('archivo');
+    $ruta = $file->store('banners', 'public');
+
+    // Guardar en BD
+    $banner = Archivo::create([
+        'nombre' => $file->getClientOriginalName(),
+        'ruta' => $ruta,
+        'ubicacion' => 'banner_admin',
+    ]);
+
+    return back()->with('success', 'Banner subido correctamente.');
+}
+
 }

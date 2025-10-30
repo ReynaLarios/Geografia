@@ -2,441 +2,327 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Licenciatura en Geografía</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Licenciatura en Geografía</title>
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
-    <style>
-        body {
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+  <style>
+    :root {
+      --color-fondo: #f5e9d3;       /* beige claro */
+      --color-principal: #fbbf88;    /* naranja pastel */
+      --color-secundario: #ffe8a1;   /* amarillo pastel */
+      --color-acento: #a3c4f3;       /* azul pastel */
+      --color-texto: #5a4d41;        /* marrón grisáceo suave */
+      --color-blanco: #ffffff;
+    }
 
-        /* Banner */
-        .banner {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            display: block;
-        }
+    body {
+      margin: 0;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      background: var(--color-fondo);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-        /* Layout */
-        .layout {
-            display: flex;
-            flex: 1;
-        }
+    /* Navbar superior */
+    .navbar-top {
+      background: var(--color-blanco);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      padding: 10px 30px;
+      border-radius: 0 0 20px 20px;
+    }
 
-        .sidebar {
-            width: 250px;
-            background-color: #fff2e9;
-            border-right: 1px solid #815638;
-            padding: 20px;
-        }
+    .navbar-top .btn {
+      border-radius: 50px;
+      padding: 8px 20px;
+      font-weight: 500;
+      transition: 0.3s;
+    }
 
-        .content {
-            flex: 1;
-            padding: 20px;
-        }
+    .btn-primario {
+      background: var(--color-principal);
+      color: var(--color-blanco);
+    }
 
-        /* Fancy buttons en sidebar (ovalados y sin borde) */
-        .fancy {
-            background-color: #fff2e9;
-            border: none;
-            border-radius: 30px;
-            color: #6b422d;
-            cursor: pointer;
-            display: block;
-            margin: 8px 0;
-            padding: 0.8em;
-            position: relative;
-            font-weight: 600;
-            text-transform: uppercase;
-            transition: all 0.3s ease-in-out;
-            width: 100%;
-            text-align: center;
-            text-decoration: none;
-        }
+    .btn-primario:hover {
+      background: var(--color-acento);
+      color: var(--color-blanco);
+    }
 
-        .fancy:hover {
-            background: #a66c47;
-            color: #fff;
-        }
+    /* Hero/banner */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 350px;
+      background: url('banner.jpg') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-blanco);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      border-radius: 20px;
+      margin: 20px;
+      overflow: hidden;
+    }
 
-        .fancy:active {
-            transform: scale(0.95);
-            background: #6b422d;
-        }
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.2); /* overlay suave */
+      z-index: 1;
+    }
 
-        /* Navbar buttons (ovalados también) */
-        .paste-button {
-            position: relative;
-            display: inline-block;
-            margin: 0 5px;
-        }
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
 
-        .button {
-            background-color: #815638;
-            color: #fff;
-            padding: 10px 20px;
-            font-size: 15px;
-            font-weight: bold;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.1s;
-        }
+    /* Navbar inferior / menú principal */
+    .navbar-main {
+      background: var(--color-secundario);
+      border-bottom: 3px solid var(--color-principal);
+      border-radius: 15px;
+      margin: 0 20px 20px 20px;
+      padding: 10px 20px;
+    }
 
-        .button:hover {
-            background-color: #a66c47;
-        }
+    .navbar-main .nav-link {
+      color: var(--color-texto);
+      font-weight: 600;
+      transition: 0.3s;
+    }
 
-        .button:active {
-            transform: scale(0.95);
-            background-color: #6b422d;
-        }
+    .navbar-main .nav-link:hover {
+      color: var(--color-principal);
+    }
 
-        /* Dropdown */
-        .dropdown-content {
-            display: none;
-            font-size: 13px;
-            position: absolute;
-            z-index: 1;
-            min-width: 200px;
-            background-color: #cca182;
-            border-radius: 0px 15px 15px 15px;
-            box-shadow: 0px 8px 16px rgba(15, 9, 34, 0.2);
-        }
+    /* Layout */
+    .layout {
+      display: flex;
+      flex: 1;
+      gap: 20px;
+      padding: 0 20px 20px 20px;
+    }
 
-        .dropdown-content a {
-            color: #ffffff;
-            padding: 8px 10px;
-            text-decoration: none;
-            display: block;
-            transition: 0.2s;
-        }
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--color-blanco);
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      height: fit-content;
+      position: sticky;
+      top: 20px;
+    }
 
-        .dropdown-content a:hover {
-            background-color: #5a412f;
-            color: #ffffff;
-        }
+    .sidebar h4 {
+      color: var(--color-principal);
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
 
-        .paste-button:hover .dropdown-content {
-            display: block;
-        }
+    .sidebar a {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 15px;
+      margin-bottom: 8px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--color-texto);
+      transition: all 0.2s;
+      background: var(--color-fondo);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
 
-        /* Input */
-        .input-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-            background: #fff;
-            border-radius: 25px;
-            padding: 5px 15px;
-            border: 2px solid #595045;
-            transition: 0.3s;
-        }
+    .sidebar a:hover {
+      background: var(--color-secundario);
+      color: var(--color-principal);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
 
-        .input-container .input {
-            border: none;
-            outline: none;
-            background: transparent;
-            padding: 6px 10px;
-            font-size: 15px;
-            width: 200px;
-            color: #432f1b;
-        }
+    .sidebar .btn-agregar {
+      width: 100%;
+      margin-bottom: 15px;
+      border-radius: 25px;
+      font-weight: 600;
+      background: var(--color-principal);
+      color: var(--color-blanco);
+    }
 
-        .input-container .input::placeholder {
-            color: #342114;
-            font-style: italic;
-        }
+    .sidebar .btn-agregar:hover {
+      background: var(--color-acento);
+      color: var(--color-blanco);
+    }
 
-        .input-container:focus-within {
-            border-color: #815638;
-            box-shadow: 0 0 6px #53321480;
-        }
+    /* Contenido principal */
+    .content {
+      flex: 1;
+      padding: 30px;
+      border-radius: 15px;
+      background: var(--color-blanco);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
 
-        .input-container .icon {
-            position: absolute;
-            right: 10px;
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-        }
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 20px 0;
+      background: var(--color-principal);
+      color: var(--color-blanco);
+      font-size: 14px;
+      border-radius: 15px 15px 0 0;
+      margin: 20px;
+    }
 
-        /* Footer */
-        footer {
-            position: relative;
-            background: linear-gradient(135deg, #ad8466, #815638);
-            color: white;
-            padding: 40px 10px 20px 10px;
-            overflow: hidden;
-            text-align: center;
-        }
+    /* Responsive */
+    @media (max-width: 992px) {
+      .layout {
+        flex-direction: column;
+      }
 
-        footer p {
-            margin: 5px 0;
-        }
+      .sidebar {
+        width: 100%;
+        margin-bottom: 20px;
+      }
 
-        .wave {
-            position: absolute;
-            top: -30px;
-            left: 0;
-            width: 100%;
-            overflow: hidden;
-            line-height: 0;
-        }
+      .hero h1 {
+        font-size: 2rem;
+        padding: 0 10px;
+      }
 
-        .wave svg {
-            width: 100%;
-            height: 80px;
-        }
-
-        @media (max-width: 768px) {
-            .layout {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid #ddd;
-            }
-
-            .navbar .container-fluid {
-                flex-direction: column;
-                height: auto;
-                padding: 10px;
-            }
-
-            .navbar-brand img {
-                max-height: 90px;
-                margin: 0 auto;
-            }
-
-            .input-container {
-                margin-top: 10px;
-                width: 100%;
-            }
-
-            .input-container .input {
-                width: 100%;
-            }
-        }
-    </style>
+      .navbar-main {
+        margin: 0 10px 10px 10px;
+      }
+    }
+  </style>
 </head>
-<link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
 <body>
 
-    <nav class="navbar" style="background-color: #fff2e9; height: 60px; padding: 0;">
-        <div class="container-fluid d-flex justify-content-between align-items-center" style="height: 80%; padding: 0;">
-            <a class="navbar-brand d-flex align-items-center" href="https://www.udg.mx/"
-                style="height: 100%; padding: 0;">
-                <img src="Logo.png" style="max-height: 120px; margin-top: -10px;" alt="Logo">
-            </a>
+  <!-- Navbar superior -->
+  <nav class="navbar navbar-top d-flex justify-content-between align-items-center">
+    <a class="navbar-brand d-flex align-items-center" href="https://www.udg.mx/">
+      <img src="Logo.png" alt="Logo" style="max-height:70px;">
+    </a>
 
-            <div class="input-container">
-                <input type="text" name="text" class="input" placeholder="Buscar...">
-                <span class="icon">
-                    <svg width="19px" height="19px" viewBox="0 0 24 24" fill="none">
-                        <path d="M14 5H20" stroke="#2d6a4f" stroke-width="1.5" stroke-linecap="round"></path>
-                        <path d="M14 8H17" stroke="#2d6a4f" stroke-width="1.5" stroke-linecap="round"></path>
-                        <path d="M21 11.5C21 16.75 16.75 21 11.5 21C6.25 21 2 16.75 2 11.5C2 6.25 6.25 2 11.5 2"
-                            stroke="#2d6a4f" stroke-width="2.5" stroke-linecap="round"></path>
-                        <path d="M22 22L20 20" stroke="#2d6a4f" stroke-width="3.5" stroke-linecap="round"></path>
-                    </svg>
-                </span>
-            </div>
-        </div>
-    </nav>
+    <div class="d-flex align-items-center gap-3">
+      <input type="text" class="form-control rounded-pill" placeholder="Buscar..." style="width:200px;">
+      <form action="{{ route('logout') }}" method="POST">
+        @csrf
+        <button type="submit" class="btn btn-primario">Cerrar sesión</button>
+      </form>
+    </div>
+  </nav>
 
-    <img src="geo.jpg" alt="Imagen geografía" class="banner">
+  <!-- Hero / Banner -->
+  <div class="hero">
+    <h1>Licenciatura en Geografía</h1>
+  </div>
 
-    <nav class="navbar navbar-expand-lg" style="background-color:#815638; border-bottom:1px solid #815638;">
+  <!-- Navbar inferior / Menú principal -->
+  <nav class="navbar navbar-main navbar-expand-lg">
     <div class="container-fluid">
-        <!-- Menú colapsable (para móvil) -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <!-- Menú principal -->
-        <div class="collapse navbar-collapse" id="menuPrincipal">
-            <ul class="navbar-nav me-auto">
-                <!-- INICIO -->
-                <div class="paste-button">
-                    <a href="inicio">
-                        <button class="button">INICIO</button>
-                    </a>
-                </div>
-
-                <!-- ACERCA DE -->
-                <div class="paste-button">
-                    <button class="button">ACERCA DE ▼</button>
-                    <div class="dropdown-content">
-                        <a href="/mision">Misión</a>
-                        <a href="/vision">Visión</a>
-                        <a href="/objetivos">Objetivos</a>
-                        <a href="#">Órgano de gobierno del departamento</a>
-                    </div>
-                </div>
-
-                <!-- ACADEMIA -->
-                <div class="paste-button">
-                    <button class="button">ACADEMIA ▼</button>
-                    <div class="dropdown-content">
-                        <a href="#">Metodología y Didáctica</a>
-                        <a href="#">Geografía física</a>
-                        <a href="#">Territorio y Gestión</a>
-                        <a href="#">Tecnologías de la Información Geográfica</a>
-                    </div>
-                </div>
-
-                <!-- COORDINACIÓN -->
-                <div class="paste-button">
-                    <button class="button">COORDINACIÓN ▼</button>
-                    <div class="dropdown-content">
-                        <a href="#">De Posgrado</a>
-                        <a href="#">De Investigación</a>
-                        <a href="#">De Extensión</a>
-                    </div>
-                </div>
-
-                <!-- LABORATORIO / CENTRO DE INVESTIGACIÓN -->
-                <div class="paste-button">
-                    <button class="button">LABORATORIO / CENTRO DE INVESTIGACIÓN ▼</button>
-                    <div class="dropdown-content">
-                        <a href="#">Nuevas Tecnologías</a>
-                        <a href="#">Tecnologías en geografía</a>
-                        <a href="#">Geografía física</a>
-                    </div>
-                </div>
-
-                <!-- DIRECTORIO -->
-                <div class="paste-button">
-                    <button class="button">DIRECTORIO ▼</button>
-                    <div class="dropdown-content">
-                        <a href="#">Administración</a>
-                        <a href="#">Personal administrativo</a>
-                        <a href="#">Académicos</a>
-                    </div>
-                </div>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="menuPrincipal">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="{{ url('/administrador/dashboard') }}">Inicio</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Acerca de</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/mision">Misión</a></li>
+              <li><a class="dropdown-item" href="/vision">Visión</a></li>
+              <li><a class="dropdown-item" href="/objetivos">Objetivos</a></li>
             </ul>
-
-            <!-- PERFIL Y CERRAR SESIÓN -->
-            <div class="paste-button ms-auto" style="position: relative;">
-                <button class="button">Perfil ▼</button>
-                <div class="dropdown-content" style="right: 0; left: auto;">
-                    <!-- Ver Perfil (temporal) -->
-                    <a href="#">Ver Perfil</a>
-
-                    <!-- Cerrar sesión (form POST) -->
-                    <form action="{{ route('logout') }}" method="POST" style="margin:0;">
-                        @csrf
-                        <button type="submit" style="background:none; border:none; color:white; padding:8px 10px; width:100%; text-align:left; cursor:pointer;">
-                            Cerrar Sesión
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
+          </li>
+        </ul>
+      </div>
     </div>
-</nav>
+  </nav>
 
-    <!-- Layout -->
-    </head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg" style="background-color:#815638;">
-        <div class="container-fluid">
-            <a class="navbar-brand text-white" href="{{ url('/') }}">Inicio</a>
-            <!-- Puedes agregar dropdowns aquí si quieres -->
-        </div>
-    </nav>
-
-    <!-- Layout -->
-    <div class="layout">
-        <!-- Sidebar -->
+  <!-- Layout -->
+  <div class="layout">
+    <!-- Sidebar -->
     <aside class="sidebar">
+      @isset($seccion)
+      <h4>{{ $seccion->nombre }}</h4>
+      <button class="btn btn-agregar"
+        onclick="window.location='{{ route('contenidos.crear') }}?seccion_id={{ $seccion->id }}'">
+        + Agregar Contenido
+      </button>
 
-    @isset($seccion)
-        <h4>{{ $seccion->nombre }}</h4>
+      <ul class="list-unstyled">
+        @foreach($seccion->contenidos as $contenidoItem)
+        <li>
+          <a href="{{ route('contenidos.mostrar', $contenidoItem->id) }}">
+            {{ $contenidoItem->titulo }}
+            <span>
+              <i class="bi bi-pencil-square text-warning me-2"></i>
+              <form action="{{ route('contenidos.borrar', $contenidoItem->id) }}" method="POST"
+                style="display:inline;" onsubmit="return confirm('¿Seguro?')">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-link p-0 m-0 text-danger"><i class="bi bi-trash"></i></button>
+              </form>
+            </span>
+          </a>
+        </li>
+        @endforeach
+      </ul>
+      @else
+      <h4>Secciones</h4>
+      <button class="btn btn-agregar" onclick="window.location='{{ route('secciones.crear') }}'">
+        + Agregar Sección
+      </button>
 
-        <!-- Botón agregar contenido -->
-        <button class="fancy btn-agregar mb-3" onclick="window.location='{{ route('contenidos.crear') }}?seccion_id={{ $seccion->id }}'">
-            + Agregar Contenido
-        </button>
+      <ul class="list-unstyled">
+        @foreach($secciones ?? [] as $sec)
+        <li>
+          <a href="{{ route('secciones.mostrar', $sec->id) }}">
+            {{ $sec->nombre }}
+            <span>
+              <i class="bi bi-pencil-square text-warning me-2"></i>
+              <form action="{{ route('secciones.borrar', $sec->id) }}" method="POST" style="display:inline;"
+                onsubmit="return confirm('¿Seguro?')">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-link p-0 m-0 text-danger"><i class="bi bi-trash"></i></button>
+              </form>
+            </span>
+          </a>
+        </li>
+        @endforeach
+      </ul>
+      @endisset
+    </aside>
 
-        <ul class="nav flex-column">
-            @foreach($seccion->contenidos as $contenidoItem)
-                <li class="mb-2 d-flex justify-content-between align-items-center">
-                    <a href="{{ route('contenidos.mostrar', $contenidoItem->id) }}" class="fancy flex-grow-1">
-                        {{ $contenidoItem->titulo }}
-                    </a>
-                    <div class="d-flex gap-1">
-                        <!-- Editar -->
-                        <a href="{{ route('contenidos.editar', $contenidoItem->id) }}" class="fancy btn-editar">✎</a>
-                        <!-- Borrar -->
-                        <form action="{{ route('contenidos.borrar', $contenidoItem->id) }}" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar este contenido?')">
-                            @csrf
-                            @method('DELETE')
-                            <button class="fancy btn-borrar" type="submit">🗑</button>
-                        </form>
-                    </div>
-                </li>
-            @endforeach
-        </ul>
+    <!-- Contenido principal -->
+    <main class="content">
+      @yield('contenido')
+    </main>
+  </div>
 
-    @else
-        <h4>Secciones</h4>
+  <!-- Footer -->
+  <footer>
+    © 1997 - 2025 Universidad de Guadalajara
+  </footer>
 
-        <!-- Botón agregar sección -->
-        <button class="fancy btn-agregar mb-3" onclick="window.location='{{ route('secciones.crear') }}'">
-            + Agregar Sección
-        </button>
-
-        <ul class="nav flex-column">
-            @foreach($secciones ?? [] as $sec)
-                <li class="mb-2 d-flex justify-content-between align-items-center">
-                    <a href="{{ route('secciones.mostrar', $sec->id) }}" class="fancy flex-grow-1">
-                        {{ $sec->nombre }}
-                    </a>
-                    <div class="d-flex gap-1">
-                        <!-- Editar sección -->
-                        <a href="{{ route('secciones.editar', $sec->id) }}" class="fancy btn-editar">✎</a>
-                        <!-- Borrar sección -->
-                        <form action="{{ route('secciones.borrar', $sec->id) }}" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar esta sección?')">
-                            @csrf
-                            @method('DELETE')
-                            <button class="fancy btn-borrar" type="submit">🗑</button>
-                        </form>
-                    </div>
-                </li>
-            @endforeach
-        </ul>
-    @endisset
-
-</aside>
-
-
-
-        <!-- Main content -->
-        <main class="content">
-            @yield('contenido')
-        </main>
-    </div>
-
-    <!-- Footer -->
-    <footer class="text-center p-4" style="background:#815638; color:white;">
-        © 1997 - 2025 Universidad de Guadalajara
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

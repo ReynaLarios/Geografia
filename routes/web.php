@@ -34,6 +34,8 @@ Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEm
 Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
+
+
 /*
 |--------------------------------------------------------------------------
 | Rutas protegidas del administrador
@@ -73,12 +75,12 @@ Route::middleware(['admin'])->prefix('administrador')->group(function () {
     Route::get('/contenidos/{id}/mostrar', [ContenidosController::class, 'mostrar'])->name('contenidos.mostrar');
     Route::delete('/contenidos/{id}/borrar', [ContenidosController::class, 'borrar'])->name('contenidos.borrar');
 
-    // Archivos asociados a Contenido
-    Route::get('/contenidos/{contenido_id}/archivos', [ArchivoController::class, 'listar'])->name('archivos.listar');
-    Route::get('/contenidos/{contenido_id}/archivos/crear', [ArchivoController::class, 'crear'])->name('archivos.crear');
-    Route::post('/contenidos/{contenido_id}/archivos/guardar', [ArchivoController::class, 'guardar'])->name('archivos.guardar');
-    Route::delete('/archivos/{id}/borrar', [ArchivoController::class, 'borrar'])->name('archivos.borrar');
-    Route::get('/archivos/{id}/descargar', [ArchivoController::class, 'descargar'])->name('archivos.descargar');
+// Archivos asociados a contenido (admin)
+Route::get('/contenidos/{contenido_id}/archivos', [ArchivoController::class, 'listar'])->name('archivos.listar');
+Route::get('/contenidos/{contenido_id}/archivos/crear', [ArchivoController::class, 'crear'])->name('archivos.crear');
+Route::post('/contenidos/{contenido_id}/archivos/guardar', [ArchivoController::class, 'guardar'])->name('archivos.guardar');
+Route::delete('/archivos/{id}/borrar', [ArchivoController::class, 'borrar'])->name('archivos.borrar');
+Route::get('/archivos/{id}/descargar', [ArchivoController::class, 'descargar'])->name('archivos.descargar');
 
     //Videoteca 
 Route::get('/videoteca', [VideotecaController::class, 'index'])->name('videoteca.index');
@@ -89,5 +91,39 @@ Route::get('/videoteca', [VideotecaController::class, 'index'])->name('videoteca
     Route::put('/videoteca/{id}', [VideotecaController::class, 'update'])->name('videoteca.update');
     Route::delete('/videoteca/{id}', [VideotecaController::class, 'destroy'])->name('videoteca.destroy');
 
+
+//Banner
+Route::post('/administrador/banner/guardar', [ArchivoController::class, 'guardarBannerAdmin'])->name('archivos.guardarBannerAdmin');
+
+
+
+
+
+
+
+
+
+// Página principal del módulo de noticias (listado + carrusel)
+Route::get('/inicio', [InicioController::class, 'index'])->name('inicio.index');
+
+// Crear noticia
+Route::get('/inicio/crear', [InicioController::class, 'create'])->name('inicio.create');
+Route::post('/inicio', [InicioController::class, 'store'])->name('inicio.store');
+
+// Mostrar noticia
+Route::get('/inicio/{inicio}', [InicioController::class, 'show'])->name('inicio.show');
+
+// Editar noticia
+Route::get('/inicio/{inicio}/editar', [InicioController::class, 'edit'])->name('inicio.edit');
+Route::put('/inicio/{inicio}', [InicioController::class, 'update'])->name('inicio.update');
+
+// Eliminar noticia
+Route::delete('/inicio/{inicio}', [InicioController::class, 'destroy'])->name('inicio.destroy');
+
+
+
 });
+
+
+
 

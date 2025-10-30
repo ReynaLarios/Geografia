@@ -4,20 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Contenidos;
 use App\Models\Secciones;
+use App\Models\Archivo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ContenidosController extends Controller
 {
     // Mostrar todos los contenidos
     public function listar()
     {
-        $contenidos = Contenidos::with('seccion')->get();
+        $contenidos = Contenidos::with('seccion','archivos')->get();
         $secciones = Secciones::all();
         return view('contenidos.listado', compact('contenidos', 'secciones'));
     }
 
     // Mostrar formulario para crear contenido
-    public function crear(Request $request)
+    public function crear()
     {
         $secciones = Secciones::all();
         return view('contenidos.contenidos', compact('secciones'));
@@ -30,27 +32,41 @@ class ContenidosController extends Controller
             'seccion_id' => 'required|exists:secciones,id',
             'titulo' => 'required|string|max:255',
             'descripcion' => 'required|string',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'archivos.*' => 'nullable|file|max:10240'
         ]);
 
-        $datos = $request->only(['seccion_id', 'titulo', 'descripcion']);
+        $datos = $request->only(['seccion_id','titulo','descripcion']);
 
         // Subida de imagen si existe
-        if ($request->hasFile('imagen')) {
-            $datos['imagen'] = $request->file('imagen')->store('contenidos', 'public');
+        if($request->hasFile('imagen')){
+            $datos['imagen'] = $request->file('imagen')->store('contenidos','public');
         }
 
-        Contenidos::create($datos);
+        $contenido = Contenidos::create($datos);
 
-        return redirect()->route('contenidos.listar')->with('success', 'Contenido creado correctamente');
+        // Subida de archivos si existen
+        if($request->hasFile('archivos')){
+            foreach($request->file('archivos') as $file){
+                $ruta = $file->store('archivos','public');
+                $contenido->archivos()->create([
+                    'nombre' => $file->getClientOriginalName(),
+                    'ruta' => $ruta,
+                    'tipo' => $file->getClientOriginalExtension()
+                ]);
+            }
+        }
+
+        return redirect()->route('contenidos.listar')->with('success','Contenido creado correctamente');
     }
 
     // Mostrar formulario para editar contenido
     public function editar($id)
     {
-        $contenido = Contenidos::findOrFail($id);
+        $contenido = Contenidos::with('archivos')->findOrFail($id);
         $secciones = Secciones::all();
-        return view('contenidos.contenidos', compact('contenido', 'secciones'));
+        $archivos = $contenido->archivos;
+        return view('contenidos.contenidos', compact('contenido','secciones','archivos'));
     }
 
     // Actualizar contenido
@@ -62,38 +78,67 @@ class ContenidosController extends Controller
             'seccion_id' => 'required|exists:secciones,id',
             'titulo' => 'required|string|max:255',
             'descripcion' => 'required|string',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'archivos.*' => 'nullable|file|max:10240'
         ]);
 
-        $datos = $request->only(['seccion_id', 'titulo', 'descripcion']);
+        $datos = $request->only(['seccion_id','titulo','descripcion']);
 
         // Subida de imagen si existe
-        if ($request->hasFile('imagen')) {
-            $datos['imagen'] = $request->file('imagen')->store('contenidos', 'public');
+        if($request->hasFile('imagen')){
+            // Borrar imagen anterior
+            if($contenido->imagen && Storage::disk('public')->exists($contenido->imagen)){
+                Storage::disk('public')->delete($contenido->imagen);
+            }
+            $datos['imagen'] = $request->file('imagen')->store('contenidos','public');
         }
 
         $contenido->update($datos);
 
-        return redirect()->route('contenidos.listar')->with('success', 'Contenido actualizado correctamente');
+        // Subida de archivos si existen
+        if($request->hasFile('archivos')){
+            foreach($request->file('archivos') as $file){
+                $ruta = $file->store('archivos','public');
+                $contenido->archivos()->create([
+                    'nombre' => $file->getClientOriginalName(),
+                    'ruta' => $ruta,
+                    'tipo' => $file->getClientOriginalExtension()
+                ]);
+            }
+        }
+
+        return redirect()->route('contenidos.listar')->with('success','Contenido actualizado correctamente');
     }
 
     // Mostrar un contenido específico
-   public function mostrar($id) {
-    $contenido = Contenidos::with('seccion')->findOrFail($id);
-    $seccion = $contenido->seccion; // para sidebar
-    return view('contenidos.mostrar', compact('contenido', 'seccion'));
-}
-
+    public function mostrar($id)
+    {
+        $contenido = Contenidos::with('seccion','archivos')->findOrFail($id);
+        $seccion = $contenido->seccion; // para sidebar
+        $archivos = $contenido->archivos;
+        return view('contenidos.mostrar', compact('contenido','seccion','archivos'));
+    }
 
     // Borrar contenido
     public function borrar($id)
-{
-    $contenido = Contenidos::findOrFail($id); // Encontrar el contenido
-    $contenido->delete(); // Borrar el contenido
+    {
+        $contenido = Contenidos::findOrFail($id);
 
-    // Redirigir a la página de la sección a la que pertenecía
-    return redirect()->route('secciones.{id}.mostrar', $contenido->seccion_id)
-                     ->with('success', 'Contenido eliminado correctamente');
-}
+        // Borrar imagen principal
+        if($contenido->imagen && Storage::disk('public')->exists($contenido->imagen)){
+            Storage::disk('public')->delete($contenido->imagen);
+        }
 
+        // Borrar archivos asociados
+        foreach($contenido->archivos as $archivo){
+            if(Storage::disk('public')->exists($archivo->ruta)){
+                Storage::disk('public')->delete($archivo->ruta);
+            }
+            $archivo->delete();
+        }
+
+        $contenido->delete();
+
+        return redirect()->route('contenidos.listar')->with('success','Contenido eliminado correctamente');
+    }
 }

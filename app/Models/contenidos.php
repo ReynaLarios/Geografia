@@ -20,6 +20,6 @@ class Contenidos extends Model
     // Relación con Archivos
     public function archivos()
     {
-        return $this->hasMany(Archivo::class);
+        return $this->hasMany(Archivo::class, 'contenido_id'); 
     }
 }

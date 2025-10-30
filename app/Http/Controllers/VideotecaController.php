@@ -18,7 +18,7 @@ public function store(Request $request)
     $data = $request->all();
     $data['url'] = $this->convertToEmbed($request->url);
 
-    Video::create($data);
+    Videoteca::create($data);
     return redirect()->route('videoteca.index')->with('success', 'Video agregado correctamente.');
 }
 
@@ -29,7 +29,7 @@ public function update(Request $request, $id)
         'url' => 'required|url',
     ]);
 
-    $video = Video::findOrFail($id);
+    $video = Videoteca::findOrFail($id);
     $data = $request->all();
     $data['url'] = $this->convertToEmbed($request->url);
 

@@ -14,12 +14,13 @@ class InicioController extends Controller
         return view('Inicio.inicio', compact('inicio'));
     }
 
-    public function create() {
-    return view('Inicio.crear'); // tu formulario
-}
+    public function create()
+    {
+        return view('Inicio.crear');
+    }
 
-    public function store(Request $request) {
-
+    public function store(Request $request)
+    {
         $request->validate([
             'titulo' => 'required|string|max:255',
             'descripcion' => 'required|string',
@@ -27,7 +28,6 @@ class InicioController extends Controller
         ]);
 
         $rutaImagen = null;
-
         if ($request->hasFile('imagen')) {
             $rutaImagen = $request->file('imagen')->store('imagenes', 'public');
         }
@@ -47,10 +47,11 @@ class InicioController extends Controller
         return view('Inicio.mostrar', compact('inicio'));
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         $inicio = inicio::findOrFail($id);
-        return view('Inicio.editar', compact('inicio'));
+        $soloImagen = $request->get('soloImagen', false); // Para edición desde carrusel
+        return view('Inicio.editar', compact('inicio', 'soloImagen'));
     }
 
     public function update(Request $request, $id)
@@ -67,12 +68,15 @@ class InicioController extends Controller
             if ($inicio->imagen && Storage::disk('public')->exists($inicio->imagen)) {
                 Storage::disk('public')->delete($inicio->imagen);
             }
-
             $inicio->imagen = $request->file('imagen')->store('imagenes', 'public');
         }
 
-        $inicio->titulo = $request->titulo;
-        $inicio->descripcion = $request->descripcion;
+        // Solo actualizar título y descripción si no viene del carrusel
+        if (!$request->has('soloImagen')) {
+            $inicio->titulo = $request->titulo;
+            $inicio->descripcion = $request->descripcion;
+        }
+
         $inicio->save();
 
         return redirect()->route('inicio.index')->with('success', 'Noticia actualizada correctamente.');
@@ -91,5 +95,6 @@ class InicioController extends Controller
         return redirect()->route('inicio.index')->with('success', 'Noticia eliminada correctamente.');
     }
 }
+
 
 
