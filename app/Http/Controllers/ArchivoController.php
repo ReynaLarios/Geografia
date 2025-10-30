@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 class ArchivoController extends Controller
 {
-    // Mostrar listado de archivos (panel admin)
+
     public function index()
     {
         $archivos = Archivo::with('contenido')->latest()->get();
@@ -18,7 +18,7 @@ class ArchivoController extends Controller
         return view('archivos.index', compact('archivos', 'contenidos'));
     }
 
-    // Subir archivo
+   
     public function store(Request $request)
     {
         $request->validate([
@@ -40,7 +40,6 @@ class ArchivoController extends Controller
         return back()->with('success', 'Archivo subido correctamente.');
     }
 
-    // Eliminar archivo
    public function borrar($id)
 {
     $archivo = Archivo::findOrFail($id);
@@ -58,10 +57,9 @@ class ArchivoController extends Controller
 public function guardarBannerAdmin(Request $request)
 {
     $request->validate([
-        'archivo' => 'required|image|max:10240', // máximo 10MB
+        'archivo' => 'required|image|max:10240', 
     ]);
 
-    // Si ya hay un banner, borrarlo
     $bannerExistente = Archivo::where('ubicacion', 'banner_admin')->latest()->first();
     if($bannerExistente){
         if (Storage::disk('public')->exists($bannerExistente->ruta)) {
@@ -70,11 +68,9 @@ public function guardarBannerAdmin(Request $request)
         $bannerExistente->delete();
     }
 
-    // Subir nueva imagen
     $file = $request->file('archivo');
     $ruta = $file->store('banners', 'public');
 
-    // Guardar en BD
     $banner = Archivo::create([
         'nombre' => $file->getClientOriginalName(),
         'ruta' => $ruta,

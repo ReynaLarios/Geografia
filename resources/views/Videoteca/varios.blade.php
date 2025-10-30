@@ -5,7 +5,6 @@
   <h2 class="mb-4 text-center text-primary">Varios</h2>
 
   <div class="row">
-    <!-- Video de YouTube -->
     <div class="col-md-6 mb-4">
       <div class="ratio ratio-16x9">
         <iframe 

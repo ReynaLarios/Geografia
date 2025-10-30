@@ -7,20 +7,15 @@ use Illuminate\Http\Request;
 
 class SeccionesController extends Controller
 {
-    // Mostrar todas las secciones
      public function listado()
 {
-    $secciones = Secciones::all(); // todas las secciones
+    $secciones = Secciones::all(); 
     return view('secciones.listado', compact('secciones'));
 }
-
-    // Mostrar formulario para crear
     public function crear()
     {
         return view('secciones.secciones');
     }
-
-    // Guardar una nueva sección
     public function guardar(Request $request)
     {
         $request->validate([
@@ -31,15 +26,12 @@ class SeccionesController extends Controller
         Secciones::create($request->all());
         return redirect('/secciones/listado')->with('success', 'Sección creada correctamente.');
     }
-
-    // Mostrar formulario para editar
     public function editar($id)
     {
         $seccion = Secciones::findOrFail($id);
         return view('secciones.editar', compact('seccion'));
     }
 
-    // Actualizar
     public function actualizar(Request $request, $id)
     {
         $request->validate([
@@ -56,7 +48,6 @@ class SeccionesController extends Controller
         return redirect()->route('secciones.listado')->with('success', 'Sección actualizada correctamente');
     }
 
-    // Borrar
     public function borrar($id)
     {
         $seccion = Secciones::findOrFail($id);
@@ -64,12 +55,10 @@ class SeccionesController extends Controller
         return redirect()->route('secciones.listado')->with('success', 'Sección eliminada correctamente');
     }
 
-    // Mostrar sección con su descripción
-
 public function mostrar($id)
 {
     $seccion = Secciones::with('contenidos')->findOrFail($id);
-    $secciones = Secciones::all(); // para sidebar si quieres mostrar todas también
+    $secciones = Secciones::all();
     return view('secciones.mostrar', compact('seccion', 'secciones'));
 }
 

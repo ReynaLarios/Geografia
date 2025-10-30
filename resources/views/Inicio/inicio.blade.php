@@ -73,37 +73,32 @@
         width: 100%;
     }
 
-    /* Botones pastel según tu paleta */
+
     .btn-success {
-        /* Naranja pastel */
         background-color: #FFB77D;
         border-color: #FFB77D;
         color: #663300;
     }
 
     .btn-info {
-        /* Azul pastel */
         background-color: #A0C4FF;
         border-color: #A0C4FF;
         color: #03045e;
     }
 
     .btn-warning {
-        /* Amarillo pastel */
         background-color: #FFF3B0;
         border-color: #FFF3B0;
         color: #664d03;
     }
 
     .btn-danger {
-        /* Café pastel */
         background-color: #DDB892;
         border-color: #DDB892;
         color: #5C4033;
     }
 
     .carousel-caption .btn-primary {
-        /* Azul pastel más intenso para el carrusel */
         background-color: #79A7D3;
         border-color: #79A7D3;
         color: #fff;

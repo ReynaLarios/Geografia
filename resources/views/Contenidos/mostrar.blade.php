@@ -4,7 +4,6 @@
 <main class="p-4" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
     <h2 class="mb-3">{{ $contenido->titulo }}</h2>
 
-    <!-- Imagen principal -->
     @if($contenido->imagen)
         <div class="mb-3">
             <img src="{{ asset('storage/'.$contenido->imagen) }}" alt="{{ $contenido->titulo }}" 
@@ -12,12 +11,10 @@
         </div>
     @endif
 
-    <!-- Descripción -->
     <div class="mb-3">
         <p>{{ $contenido->descripcion }}</p>
     </div>
 
-    <!-- Recuadro de Archivos -->
     @if(isset($archivos) && count($archivos) > 0)
         <div class="card mt-3 shadow-sm mx-auto" style="width: 100%; max-width: 800px; border-radius: 6px;">
             <div class="card-header bg-primary text-white p-2">

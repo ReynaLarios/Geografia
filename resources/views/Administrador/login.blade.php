@@ -50,22 +50,20 @@ body {
 <div class="login-wrap">
     <div class="login-html">
 
-        <!-- Tabs -->
         <input id="tab-1" type="radio" name="tab" class="sign-in" checked>
         <label for="tab-1" class="tab">Iniciar Sesión</label>
         <input id="tab-2" type="radio" name="tab" class="sign-up">
         <label for="tab-2" class="tab">Registrarse</label>
 
         <div class="login-form">
-            <!-- LOGIN -->
-            <!-- LOGIN -->
+            
 <div class="sign-in-htm">
     <form action="{{ route('login.post') }}" method="POST">
         @csrf
         <div class="group">
             <label for="email" class="label">Correo electrónico</label>
             <input id="email" name="email" type="email" class="input" required value="{{ old('email') }}">
-            <!-- Mensaje informativo debajo del input -->
+         
             <small style="display:block; margin-top:5px; color: rgba(255,255,255,0.7); font-size: 12px;">
                 Ingresa el correo con el que estás registrado
             </small>
@@ -78,16 +76,15 @@ body {
             <input type="submit" class="button" value="Iniciar Sesión">
         </div>
 
-        <!-- Línea divisoria -->
         <div class="hr"></div>
     </form>
 </div>
-<!-- Mensajes de éxito -->
+
             @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
-            <!-- Mensajes de error -->
+      
             @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul class="mb-0">
@@ -98,7 +95,7 @@ body {
                 </div>
             @endif
 
-            <!-- REGISTRO -->
+       
             <div class="sign-up-htm">
                 <form action="{{ route('register.post') }}" method="POST">
                     @csrf

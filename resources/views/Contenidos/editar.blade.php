@@ -42,13 +42,12 @@
             @endif
         </div>
 
-        <!-- Checkbox para activar/desactivar tabla de archivos -->
         <div class="form-check mb-3">
             <input type="checkbox" class="form-check-input" id="activarArchivos" checked>
             <label class="form-check-label" for="activarArchivos">Agregar archivos</label>
         </div>
 
-        <!-- Tabla de archivos -->
+      
         <div id="tablaArchivosContainer">
             <div class="page-container mt-3">
                 <table class="table-cebra" id="tabla-archivos">

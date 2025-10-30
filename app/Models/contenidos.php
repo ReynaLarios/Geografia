@@ -11,13 +11,11 @@ class Contenidos extends Model
 
     protected $fillable = ['seccion_id', 'titulo', 'descripcion'];
 
-    // Relación con Sección
     public function seccion()
     {
         return $this->belongsTo(Secciones::class, 'seccion_id');
     }
 
-    // Relación con Archivos
     public function archivos()
     {
         return $this->hasMany(Archivo::class, 'contenido_id'); 

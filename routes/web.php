@@ -11,11 +11,10 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
 /*
-|--------------------------------------------------------------------------
-| RUTAS PÚBLICAS (Login / Registro / Recuperación de contraseña)
-|--------------------------------------------------------------------------
+
+| RUTAS PÚBLICAS
+
 */
-// Redirigir la raíz al login
 Route::get('/', function () {
     return redirect()->route('login.form');
 });
@@ -37,9 +36,8 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 
 
 /*
-|--------------------------------------------------------------------------
-| Rutas protegidas del administrador
-|--------------------------------------------------------------------------
+
+Rutas protegidas del administrador
 */
 Route::middleware(['admin'])->prefix('administrador')->group(function () {
 
@@ -58,7 +56,7 @@ Route::middleware(['admin'])->prefix('administrador')->group(function () {
     Route::delete('/eliminar/{id}', [AdministradorController::class, 'eliminar'])->name('administrador.eliminar');
 
     //Secciones
-    Route::get('/secciones', [SeccionesController::class, 'listado'])->name('secciones.listado');
+    Route::get('/secciones/listado', [SeccionesController::class, 'listado'])->name('secciones.listado');
     Route::get('secciones/crear', [SeccionesController::class, 'crear'])->name('secciones.crear');
     Route::post('/secciones/guardar', [SeccionesController::class, 'guardar'])->name('secciones.guardar');
     Route::get('secciones/{id}/editar', [SeccionesController::class, 'editar'])->name('secciones.editar');
@@ -75,7 +73,7 @@ Route::middleware(['admin'])->prefix('administrador')->group(function () {
     Route::get('/contenidos/{id}/mostrar', [ContenidosController::class, 'mostrar'])->name('contenidos.mostrar');
     Route::delete('/contenidos/{id}/borrar', [ContenidosController::class, 'borrar'])->name('contenidos.borrar');
 
-// Archivos asociados a contenido (admin)
+// Archivos asociados a contenido
 Route::get('/contenidos/{contenido_id}/archivos', [ArchivoController::class, 'listar'])->name('archivos.listar');
 Route::get('/contenidos/{contenido_id}/archivos/crear', [ArchivoController::class, 'crear'])->name('archivos.crear');
 Route::post('/contenidos/{contenido_id}/archivos/guardar', [ArchivoController::class, 'guardar'])->name('archivos.guardar');
@@ -96,14 +94,7 @@ Route::get('/videoteca', [VideotecaController::class, 'index'])->name('videoteca
 Route::post('/administrador/banner/guardar', [ArchivoController::class, 'guardarBannerAdmin'])->name('archivos.guardarBannerAdmin');
 
 
-
-
-
-
-
-
-
-// Página principal del módulo de noticias (listado + carrusel)
+// Página principal 
 Route::get('/inicio', [InicioController::class, 'index'])->name('inicio.index');
 
 // Crear noticia

@@ -7,7 +7,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('archivos', function (Blueprint $table) {
-            // Agregamos la llave foránea
+       
             $table->foreign('contenido_id')->references('id')->on('contenidos')->onDelete('cascade');
         });
     }
@@ -15,7 +15,7 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('archivos', function (Blueprint $table) {
-            $table->dropForeign(['contenido_id']); // elimina la relación si se hace rollback
+            $table->dropForeign(['contenido_id']); 
         });
     }
 };

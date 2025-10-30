@@ -11,7 +11,6 @@ class Administrador extends Authenticatable implements CanResetPassword
 {
     use Notifiable, CanResetPasswordTrait;
 
-    // Especificar la tabla correcta
     protected $table = 'administradores';
 
     protected $fillable = [

@@ -9,13 +9,12 @@ use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
-    // Mostrar formulario de login
+
     public function showLoginForm()
     {
         return view('administrador.login');
     }
 
-    // Procesar inicio de sesión
     public function login(Request $request)
     {
         $request->validate([
@@ -27,19 +26,19 @@ class LoginController extends Controller
 
         if ($admin && Hash::check($request->password, $admin->password)) {
             $request->session()->put('administrador_id', $admin->id);
-            return redirect()->route('dashboard'); // asegúrate de tener esta ruta
+            return redirect()->route('dashboard'); 
         }
 
         return back()->withErrors(['email' => 'Credenciales incorrectas'])->withInput();
     }
 
-    // Mostrar formulario de registro
+  
     public function showRegisterForm()
     {
         return view('administrador.register');
     }
 
-    // Procesar registro
+   
     public function register(Request $request)
     {
         $request->validate([
@@ -54,8 +53,6 @@ class LoginController extends Controller
 
         return redirect()->route('login.form')->with('success', 'Registro exitoso, ahora ingresa.');
     }
-
-    // Cerrar sesión
     public function logout(Request $request)
     {
         $request->session()->forget('administrador_id');

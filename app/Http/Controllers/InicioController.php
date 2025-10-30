@@ -50,7 +50,7 @@ class InicioController extends Controller
     public function edit(Request $request, $id)
     {
         $inicio = inicio::findOrFail($id);
-        $soloImagen = $request->get('soloImagen', false); // Para edición desde carrusel
+        $soloImagen = $request->get('soloImagen', false); 
         return view('Inicio.editar', compact('inicio', 'soloImagen'));
     }
 
@@ -71,7 +71,7 @@ class InicioController extends Controller
             $inicio->imagen = $request->file('imagen')->store('imagenes', 'public');
         }
 
-        // Solo actualizar título y descripción si no viene del carrusel
+      
         if (!$request->has('soloImagen')) {
             $inicio->titulo = $request->titulo;
             $inicio->descripcion = $request->descripcion;

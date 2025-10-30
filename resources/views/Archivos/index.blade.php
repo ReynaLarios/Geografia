@@ -1,4 +1,4 @@
-@extends('layouts.app') {{-- Ajusta al layout que uses en tu panel --}}
+@extends('layouts.app') 
 
 @section('contenido')
 <div class="container mt-4">

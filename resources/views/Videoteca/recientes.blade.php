@@ -6,7 +6,6 @@
 
   <p>2021</p>
   <div class="row">
-    <!-- Video de YouTube -->
     <div class="col-md-6 mb-4">
       <div class="ratio ratio-16x9">
         <iframe 

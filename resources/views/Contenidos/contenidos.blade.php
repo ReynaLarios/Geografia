@@ -9,14 +9,14 @@
         @csrf
         @if(isset($contenido)) @method('PUT') @endif
 
-        <!-- Título -->
+
         <div class="mb-3">
             <label for="titulo" class="form-label">Título</label>
             <input type="text" name="titulo" id="titulo" class="form-control" 
                    value="{{ $contenido->titulo ?? old('titulo') }}" required>
         </div>
 
-        <!-- Descripción -->
+       
         <div class="mb-3">
             <label for="descripcion" class="form-label">Descripción</label>
             <textarea name="descripcion" id="descripcion" class="form-control" rows="3" required>
@@ -24,7 +24,7 @@
             </textarea>
         </div>
 
-        <!-- Sección -->
+       
         <div class="mb-3">
             <label for="seccion_id" class="form-label">Sección</label>
             <select name="seccion_id" id="seccion_id" class="form-control" required>
@@ -38,7 +38,7 @@
             </select>
         </div>
 
-        <!-- Imagen principal -->
+       
         <div class="mb-3">
             <label for="imagen" class="form-label">Imagen principal (opcional)</label>
             <input type="file" name="imagen" id="imagen" class="form-control">
@@ -50,11 +50,10 @@
             @endif
         </div>
 
-        <!-- Archivos -->
         <div id="archivos-container" class="mt-4">
             <h5>Archivos asociados</h5>
 
-            <!-- Mostrar archivos existentes -->
+          
             @if(isset($archivos) && count($archivos) > 0)
                 <table class="table table-bordered mt-3">
                     <thead class="table-light">
@@ -90,14 +89,12 @@
                 <p class="text-muted">No hay archivos asociados a este contenido aún.</p>
             @endif
 
-            <!-- Subir nuevos archivos -->
             <div class="mt-3">
                 <label for="archivos" class="form-label">Subir nuevos archivos</label>
                 <input type="file" name="archivos[]" id="archivos" class="form-control" multiple>
             </div>
         </div>
-
-        <!-- Botón de enviar -->
+        
         <button type="submit" class="btn btn-primary mt-4">
             {{ isset($contenido) ? 'Actualizar' : 'Crear' }}
         </button>

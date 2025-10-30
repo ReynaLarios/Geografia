@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('tipo')->nullable();
             $table->timestamps();
 
-            // Llave foránea
+           
             $table->foreign('contenido_id')->references('id')->on('contenidos')->onDelete('cascade');
         });
     }
