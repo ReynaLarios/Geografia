@@ -8,7 +8,7 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <form action="{{ route('contenidos.update', $contenido->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('contenidos.actualizar', $contenido->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
@@ -17,10 +17,12 @@
             <input type="text" name="titulo" class="form-control" value="{{ old('titulo', $contenido->titulo) }}" required>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Descripción</label>
-            <textarea name="descripcion" class="form-control" rows="5" required>{{ old('descripcion', $contenido->descripcion) }}</textarea>
-        </div>
+        <div class="form-group">
+    <label for="descripcion">Descripción</label>
+    <textarea name="descripcion" id="descripcion" class="form-control" rows="10">{{ old('descripcion', $contenido->descripcion ?? '') }}</textarea>
+</div>
+
+
 
         <div class="mb-3">
             <label class="form-label">Sección</label>
@@ -71,7 +73,6 @@
     </form>
 </main>
 
-<!-- Scripts -->
 <script>
     document.querySelectorAll('.archivo-input').forEach(function(input) {
         input.addEventListener('change', function() {
@@ -85,4 +86,15 @@
         document.getElementById('tablaArchivosContainer').style.display = this.checked ? 'block' : 'none';
     });
 </script>
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+<script>
+ClassicEditor
+    .create(document.querySelector('#descripcion'), {
+        toolbar: [ 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ]
+    })
+    .catch(error => {
+        console.error(error);
+    });
+</script>
+
 @endsection

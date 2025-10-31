@@ -12,7 +12,9 @@
     @endif
 
     <div class="mb-3">
-        <p>{{ $contenido->descripcion }}</p>
+        <p><div class="contenido-descripcion">
+    {!! $contenido->descripcion !!}
+</div></p>
     </div>
 
     @if(isset($archivos) && count($archivos) > 0)

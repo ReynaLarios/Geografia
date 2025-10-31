@@ -10,11 +10,7 @@ use App\Http\Controllers\Administrador\LoginController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
-/*
 
-| RUTAS PÚBLICAS
-
-*/
 Route::get('/', function () {
     return redirect()->route('login.form');
 });
@@ -34,11 +30,6 @@ Route::get('password/reset/{token}', [ResetPasswordController::class, 'showReset
 Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 
-
-/*
-
-Rutas protegidas del administrador
-*/
 Route::middleware(['admin'])->prefix('administrador')->group(function () {
 
     // Dashboard
@@ -61,8 +52,9 @@ Route::middleware(['admin'])->prefix('administrador')->group(function () {
     Route::post('/secciones/guardar', [SeccionesController::class, 'guardar'])->name('secciones.guardar');
     Route::get('secciones/{id}/editar', [SeccionesController::class, 'editar'])->name('secciones.editar');
     Route::put('/secciones/{id}/actualizar', [SeccionesController::class, 'actualizar'])->name('secciones.actualizar');
+
     Route::get('secciones/{id}', [SeccionesController::class, 'mostrar'])->name('secciones.mostrar');
-    Route::get('secciones/{id}/borrar', [SeccionesController::class, 'borrar'])->name('secciones.borrar');
+    Route::delete('secciones/{id}/borrar', [SeccionesController::class, 'borrar'])->name('secciones.borrar');
    
     // Contenidos
     Route::get('/contenidos', [ContenidosController::class, 'listar'])->name('contenidos.listar');
@@ -110,8 +102,6 @@ Route::put('/inicio/{inicio}', [InicioController::class, 'update'])->name('inici
 
 // Eliminar noticia
 Route::delete('/inicio/{inicio}', [InicioController::class, 'destroy'])->name('inicio.destroy');
-
-
 
 });
 

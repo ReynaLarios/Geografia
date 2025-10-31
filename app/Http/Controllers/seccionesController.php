@@ -7,25 +7,35 @@ use Illuminate\Http\Request;
 
 class SeccionesController extends Controller
 {
-     public function listado()
-{
-    $secciones = Secciones::all(); 
-    return view('secciones.listado', compact('secciones'));
-}
+    public function listado()
+    {
+        $secciones = Secciones::all(); 
+        return view('secciones.listado', compact('secciones'));
+    }
+
+   
     public function crear()
     {
-        return view('secciones.secciones');
+        return view('secciones.secciones'); 
     }
+
+   
     public function guardar(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'required|string|max:255',
+      $request->validate([
+    'nombre' => 'required|string|max:255',
+    'descripcion' => 'required',
+]);
+
+
+        Secciones::create([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion, 
         ]);
 
-        Secciones::create($request->all());
-        return redirect('/secciones/listado')->with('success', 'Sección creada correctamente.');
+        return redirect()->route('secciones.listado')->with('success', 'Sección creada correctamente.');
     }
+
     public function editar($id)
     {
         $seccion = Secciones::findOrFail($id);
@@ -33,34 +43,36 @@ class SeccionesController extends Controller
     }
 
     public function actualizar(Request $request, $id)
-    {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'required|string|max:255',
-        ]);
+{
+   $request->validate([
+    'nombre' => 'required|string|max:255',
+    'descripcion' => 'required',
+]);
 
-        $seccion = Secciones::findOrFail($id);
-        $seccion->update([
-            'nombre' => $request->nombre,
-            'descripcion' => $request->descripcion,
-        ]);
 
-        return redirect()->route('secciones.listado')->with('success', 'Sección actualizada correctamente');
-    }
+    $seccion = Secciones::findOrFail($id);
+    $seccion->update([
+        'nombre' => $request->nombre,
+        'descripcion' => $request->descripcion,
+    ]);
 
+    return redirect()->route('secciones.listado')->with('success', 'Sección actualizada correctamente');
+}
+
+    
     public function borrar($id)
     {
         $seccion = Secciones::findOrFail($id);
         $seccion->delete();
-        return redirect()->route('secciones.listado')->with('success', 'Sección eliminada correctamente');
+
+        return redirect()->route('secciones.listado')->with('success', 'Sección eliminada correctamente.');
     }
 
-public function mostrar($id)
-{
-    $seccion = Secciones::with('contenidos')->findOrFail($id);
-    $secciones = Secciones::all();
-    return view('secciones.mostrar', compact('seccion', 'secciones'));
-}
-
-
+  
+    public function mostrar($id)
+    {
+        $seccion = Secciones::with('contenidos')->findOrFail($id);
+        $secciones = Secciones::all(); 
+        return view('secciones.mostrar', compact('seccion', 'secciones'));
+    }
 }
