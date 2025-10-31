@@ -63,6 +63,19 @@
                             <th>Acciones</th>
                         </tr>
                     </thead>
+                    
+            <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+<script>
+ClassicEditor
+    .create( document.querySelector( '#descripcion' ), {
+        toolbar: [ 'bold', 'italic', 'link', 'bulletedList', 'numberedList' ]
+    })
+    .catch( error => {
+        console.error( error );
+    } );
+
+</script>
+
                     <tbody>
                         @foreach($archivos as $archivo)
                             <tr>

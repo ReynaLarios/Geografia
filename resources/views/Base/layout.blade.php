@@ -1,1 +1,375 @@
-<!DOCTYPE html> <html lang="es"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Licenciatura en Geografía</title> <!-- Bootstrap --> <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"> <style> body { margin: 0; display: flex; flex-direction: column; min-height: 100vh; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; } /* Banner */ .banner { width: 100%; height: 400px; object-fit: cover; display: block; } /* Layout */ .layout { display: flex; flex: 1; } .sidebar { width: 250px; background-color: #fff2e9; border-right: 1px solid #815638; padding: 20px; } .content { flex: 1; padding: 20px; } /* Fancy buttons en sidebar (ovalados y sin borde) */ .fancy { background-color: #fff2e9; border: none; border-radius: 30px; color: #6b422d; cursor: pointer; display: block; margin: 8px 0; padding: 0.8em; position: relative; font-weight: 600; text-transform: uppercase; transition: all 0.3s ease-in-out; width: 100%; text-align: center; text-decoration: none; } .fancy:hover { background: #a66c47; color: #fff; } .fancy:active { transform: scale(0.95); background: #6b422d; } /* Navbar buttons (ovalados también) */ .paste-button { position: relative; display: inline-block; margin: 0 5px; } .button { background-color: #815638; color: #fff; padding: 10px 20px; font-size: 15px; font-weight: bold; border: none; border-radius: 30px; cursor: pointer; transition: background 0.3s, transform 0.1s; } .button:hover { background-color: #a66c47; } .button:active { transform: scale(0.95); background-color: #6b422d; } /* Dropdown */ .dropdown-content { display: none; font-size: 13px; position: absolute; z-index: 1; min-width: 200px; background-color: #cca182; border-radius: 0px 15px 15px 15px; box-shadow: 0px 8px 16px rgba(15, 9, 34, 0.2); } .dropdown-content a { color: #ffffff; padding: 8px 10px; text-decoration: none; display: block; transition: 0.2s; } .dropdown-content a:hover { background-color: #5a412f; color: #ffffff; } .paste-button:hover .dropdown-content { display: block; } /* Input */ .input-container { position: relative; display: flex; align-items: center; background: #fff; border-radius: 25px; padding: 5px 15px; border: 2px solid #595045; transition: 0.3s; } .input-container .input { border: none; outline: none; background: transparent; padding: 6px 10px; font-size: 15px; width: 200px; color: #432f1b; } .input-container .input::placeholder { color: #342114; font-style: italic; } .input-container:focus-within { border-color: #815638; box-shadow: 0 0 6px #53321480; } .input-container .icon { position: absolute; right: 10px; pointer-events: none; display: flex; align-items: center; } /* Footer */ footer { position: relative; background: linear-gradient(135deg, #ad8466, #815638); color: white; padding: 40px 10px 20px 10px; overflow: hidden; text-align: center; } footer p { margin: 5px 0; } .wave { position: absolute; top: -30px; left: 0; width: 100%; overflow: hidden; line-height: 0; } .wave svg { width: 100%; height: 80px; } @media (max-width: 768px) { .layout { flex-direction: column; } .sidebar { width: 100%; border-right: none; border-bottom: 1px solid #ddd; } .navbar .container-fluid { flex-direction: column; height: auto; padding: 10px; } .navbar-brand img { max-height: 90px; margin: 0 auto; } .input-container { margin-top: 10px; width: 100%; } .input-container .input { width: 100%; } } </style> </head> <link rel="stylesheet" href="{{ asset('css/app.css') }}"> <body> <nav class="navbar" style="background-color: #fff2e9; height: 60px; padding: 0;"> <div class="container-fluid d-flex justify-content-between align-items-center" style="height: 80%; padding: 0;"> <a class="navbar-brand d-flex align-items-center" href="https://www.udg.mx/" style="height: 100%; padding: 0;"> <img src="Logo.png" style="max-height: 120px; margin-top: -10px;" alt="Logo"> </a> <div class="paste-button ms-auto" style="position: relative;"> <button class="button">Cerrar sesión </button> <div class="dropdown-content" style="right: 0; left: auto;"> <!-- Cerrar sesión (form POST) --> <form action="{{ route('logout') }}" method="POST" style="margin:0;"> @csrf <button type="submit" style="background:none; border:none; color:white; padding:8px 10px; width:100%; text-align:left; cursor:pointer;"> Cerrar Sesión </button> </form> </div> </div> <div class="input-container"> <input type="text" name="text" class="input" placeholder="Buscar..."> <span class="icon"> <svg width="19px" height="19px" viewBox="0 0 24 24" fill="none"> <path d="M14 5H20" stroke="#2d6a4f" stroke-width="1.5" stroke-linecap="round"></path> <path d="M14 8H17" stroke="#2d6a4f" stroke-width="1.5" stroke-linecap="round"></path> <path d="M21 11.5C21 16.75 16.75 21 11.5 21C6.25 21 2 16.75 2 11.5C2 6.25 6.25 2 11.5 2" stroke="#2d6a4f" stroke-width="2.5" stroke-linecap="round"></path> <path d="M22 22L20 20" stroke="#2d6a4f" stroke-width="3.5" stroke-linecap="round"></path> </svg> </span> </div> </div> </nav> <main class="content"> @yield('admin') </main> <nav class="navbar navbar-expand-lg" style="background-color:#815638; border-bottom:1px solid #815638;"> <div class="container-fluid"> <!-- Menú colapsable (para móvil) --> <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal"> <span class="navbar-toggler-icon"></span> </button> <!-- Menú principal --> <div class="collapse navbar-collapse" id="menuPrincipal"> <ul class="navbar-nav me-auto"> <!-- INICIO --> <nav class="navbar navbar-expand-lg" style="background-color:#815638;"> <div class="container-fluid"> <a class="navbar-brand text-white" href="{{ url('/administrador/dashboard') }}">Inicio</a> <!-- Puedes agregar dropdowns aquí si quieres --> </div> </nav> <!-- ACERCA DE --> <div class="paste-button"> <button class="button">ACERCA DE ▼</button> <div class="dropdown-content"> <a href="/mision">Misión</a> <a href="/vision">Visión</a> <a href="/objetivos">Objetivos</a> <a href="#">Órgano de gobierno del departamento</a> </div> </div> <!-- ACADEMIA --> <div class="paste-button"> <button class="button">ACADEMIA ▼</button> <div class="dropdown-content"> <a href="#">Metodología y Didáctica</a> <a href="#">Geografía física</a> <a href="#">Territorio y Gestión</a> <a href="#">Tecnologías de la Información Geográfica</a> </div> </div> <!-- COORDINACIÓN --> <div class="paste-button"> <button class="button">COORDINACIÓN ▼</button> <div class="dropdown-content"> <a href="#">De Posgrado</a> <a href="#">De Investigación</a> <a href="#">De Extensión</a> </div> </div> <!-- LABORATORIO / CENTRO DE INVESTIGACIÓN --> <div class="paste-button"> <button class="button">LABORATORIO / CENTRO DE INVESTIGACIÓN ▼</button> <div class="dropdown-content"> <a href="#">Nuevas Tecnologías</a> <a href="#">Tecnologías en geografía</a> <a href="#">Geografía física</a> </div> </div> <!-- DIRECTORIO --> <div class="paste-button"> <button class="button">DIRECTORIO ▼</button> <div class="dropdown-content"> <a href="#">Administración</a> <a href="#">Personal administrativo</a> <a href="#">Académicos</a> </div> </div> </ul> </div> </div> </div> </div> </nav> <!-- Layout --> </head> <body> <!-- Navbar --> <!-- Layout --> <div class="layout"> <!-- Sidebar --> <aside class="sidebar"> @isset($seccion) <h4>{{ $seccion->nombre }}</h4> <!-- Botón agregar contenido --> <button class="fancy btn-agregar mb-3" onclick="window.location='{{ route('contenidos.crear') }}?seccion_id={{ $seccion->id }}'"> + Agregar Contenido </button> <ul class="nav flex-column"> @foreach($seccion->contenidos as $contenidoItem) <li class="mb-2 d-flex justify-content-between align-items-center"> <a href="{{ route('contenidos.mostrar', $contenidoItem->id) }}" class="fancy flex-grow-1"> {{ $contenidoItem->titulo }} </a> <div class="d-flex gap-1"> <!-- Editar --> <a href="{{ route('contenidos.editar', $contenidoItem->id) }}" class="fancy btn-editar">✎</a> <!-- Borrar --> <form action="{{ route('contenidos.borrar', $contenidoItem->id) }}" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar este contenido?')"> @csrf @method('DELETE') <button class="fancy btn-borrar" type="submit">🗑</button> </form> </div> </li> @endforeach </ul> @else <h4>Secciones</h4> <!-- Botón agregar sección --> <button class="fancy btn-agregar mb-3" onclick="window.location='{{ route('secciones.crear') }}'"> + Agregar Sección </button> <ul class="nav flex-column"> @foreach($secciones ?? [] as $sec) <li class="mb-2 d-flex justify-content-between align-items-center"> <a href="{{ route('secciones.mostrar', $sec->id) }}" class="fancy flex-grow-1"> {{ $sec->nombre }} </a> <div class="d-flex gap-1"> <!-- Editar sección --> <a href="{{ route('secciones.editar', $sec->id) }}" class="fancy btn-editar">✎</a> <!-- Borrar sección --> <form action="{{ route('secciones.borrar', $sec->id) }}" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar esta sección?')"> @csrf @method('DELETE') <button class="fancy btn-borrar" type="submit">🗑</button> </form> </div> </li> @endforeach </ul> @endisset </aside> <!-- Main content --> <main class="content"> @yield('contenido') </main> </div> <!-- Footer --> <footer class="text-center p-4" style="background:#815638; color:white;"> © 1997 - 2025 Universidad de Guadalajara </footer> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> </body> </html>  
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Licenciatura en Geografía</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- TinyMCE -->
+  <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+  <script>
+    tinymce.init({
+      selector: '.editor', // Todos los textarea con clase "editor"
+      height: 300,
+      menubar: true,
+      plugins: [
+        'advlist autolink lists link charmap preview anchor',
+        'searchreplace visualblocks code fullscreen',
+        'insertdatetime media table paste code help wordcount'
+      ],
+      toolbar:
+        'undo redo | formatselect | bold italic underline | \
+        alignleft aligncenter alignright alignjustify | \
+        bullist numlist outdent indent | removeformat | help'
+    });
+  </script>
+
+  <style>
+    :root {
+      --azul-suave: #dbeafe;
+      --azul-medio: #60a5fa;
+      --azul-oscuro: #1e3a8a;
+      --gris-claro: #f5f6fa;
+      --gris-medio: #d1d5db;
+      --blanco: #ffffff;
+      --sombra: rgba(0, 0, 0, 0.05);
+    }
+
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--gris-claro);
+      color: #1e293b;
+    }
+
+    /* Navbar superior */
+    .navbar-top {
+      background-color: var(--blanco);
+      box-shadow: 0 2px 4px var(--sombra);
+      padding: 0.5rem 1rem;
+    }
+
+    .navbar-top img {
+      max-height: 90px;
+    }
+
+    .navbar-top .button {
+      background: var(--azul-medio);
+      color: var(--blanco);
+      border: none;
+      border-radius: 25px;
+      padding: 8px 20px;
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.2s;
+    }
+
+    .navbar-top .button:hover {
+      background: var(--azul-oscuro);
+      transform: scale(1.05);
+    }
+
+    /* Navbar inferior */
+    .navbar-bottom {
+      background-color: var(--azul-oscuro);
+      border-bottom: 3px solid var(--azul-medio);
+      font-size: 15px;
+    }
+
+    .navbar-bottom .button {
+      background: transparent;
+      color: var(--blanco);
+      border: none;
+      font-weight: 500;
+      text-transform: uppercase;
+      padding: 8px 14px;
+      transition: color 0.3s ease;
+    }
+
+    .navbar-bottom .button:hover {
+      color: var(--azul-medio);
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      z-index: 10;
+      min-width: 220px;
+      background-color: var(--azul-medio);
+      border-radius: 10px;
+      box-shadow: 0 4px 10px var(--sombra);
+    }
+
+    .dropdown-content a {
+      color: var(--blanco);
+      padding: 10px 15px;
+      display: block;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .dropdown-content a:hover {
+      background-color: var(--azul-oscuro);
+    }
+
+    .paste-button:hover .dropdown-content {
+      display: block;
+    }
+
+    /* Buscador */
+    .input-container {
+      display: flex;
+      align-items: center;
+      background: var(--gris-claro);
+      border-radius: 25px;
+      padding: 5px 15px;
+      border: 1px solid var(--azul-medio);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .input-container input {
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 6px 10px;
+      width: 180px;
+      color: #1e293b;
+    }
+
+    .input-container input::placeholder {
+      color: #9ca3af;
+    }
+
+    .input-container:focus-within {
+      box-shadow: 0 0 6px var(--azul-medio);
+    }
+
+    /* Layout */
+    .layout {
+      display: flex;
+      flex: 1;
+      background: var(--blanco);
+    }
+
+    .sidebar {
+      width: 260px;
+      background-color: var(--blanco);
+      border-right: 1px solid var(--gris-medio);
+      padding: 20px;
+    }
+
+    .sidebar h4 {
+      color: var(--azul-oscuro);
+      font-weight: 600;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--azul-medio);
+      padding-bottom: 5px;
+    }
+
+    .fancy {
+      background-color: var(--azul-suave);
+      border: none;
+      border-radius: 25px;
+      color: var(--azul-oscuro);
+      font-weight: 500;
+      text-transform: uppercase;
+      padding: 10px 15px;
+      margin: 8px 0;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .fancy:hover {
+      background-color: var(--azul-medio);
+      color: var(--blanco);
+      transform: translateY(-2px);
+    }
+
+    .fancy.btn-borrar {
+      background-color: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .fancy.btn-borrar:hover {
+      background-color: #ef4444;
+      color: var(--blanco);
+    }
+
+    .content {
+      flex: 1;
+      padding: 30px;
+      background: var(--gris-claro);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--azul-oscuro);
+      color: var(--blanco);
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+      border-top: 3px solid var(--azul-medio);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--gris-medio);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR SUPERIOR -->
+  <nav class="navbar navbar-top d-flex justify-content-between align-items-center">
+    <a href="https://www.udg.mx/" class="navbar-brand d-flex align-items-center">
+      <img src="Logo.png" alt="Logo">
+    </a>
+
+    <div class="d-flex align-items-center gap-3">
+      <div class="input-container">
+        <input type="text" placeholder="Buscar...">
+        <svg width="18" height="18" fill="none" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </div>
+
+      <div class="paste-button position-relative">
+        <button class="button">Cerrar sesión</button>
+        <div class="dropdown-content" style="right: 0;">
+          <form action="{{ route('logout') }}" method="POST" style="margin:0;">
+            @csrf
+            <button type="submit"
+              style="background:none; border:none; color:white; padding:8px 10px; width:100%; text-align:left; cursor:pointer;">
+              Cerrar Sesión
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BANNER -->
+  <div style="width:100%; background-color:var(--azul-suave); text-align:center; padding:15px 0; font-weight:600; font-size:1.2rem;">
+    Bienvenidos a la Licenciatura en Geografía
+  </div>
+
+  <!-- NAVBAR INFERIOR -->
+  <nav class="navbar navbar-bottom navbar-expand-lg">
+    <div class="container-fluid">
+      <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="menuPrincipal">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="button nav-link text-white" href="{{ url('/administrador/dashboard') }}">Inicio</a>
+          </li>
+
+          <div class="paste-button">
+            <button class="button">Acerca de ▼</button>
+            <div class="dropdown-content">
+              <a href="/mision">Misión</a>
+              <a href="/vision">Visión</a>
+              <a href="/objetivos">Objetivos</a>
+              <a href="#">Órgano de gobierno</a>
+            </div>
+          </div>
+
+          <div class="paste-button">
+            <button class="button">Academia ▼</button>
+            <div class="dropdown-content">
+              <a href="#">Metodología y Didáctica</a>
+              <a href="#">Geografía física</a>
+              <a href="#">Territorio y Gestión</a>
+              <a href="#">Tecnologías de la Información Geográfica</a>
+            </div>
+          </div>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="layout">
+    <aside class="sidebar">
+      @isset($seccion)
+      <h4>{{ $seccion->nombre }}</h4>
+      <button class="fancy mb-3"
+        onclick="window.location='{{ route('contenidos.crear') }}?seccion_id={{ $seccion->id }}'">
+        + Agregar Contenido
+      </button>
+      <ul class="nav flex-column">
+        @foreach ($seccion->contenidos as $contenidoItem)
+        <li class="mb-2 d-flex justify-content-between align-items-center">
+          <a href="{{ route('contenidos.mostrar', $contenidoItem->id) }}" class="fancy flex-grow-1">
+            {{ $contenidoItem->titulo }}
+          </a>
+          <div class="d-flex gap-1">
+            <a href="{{ route('contenidos.editar', $contenidoItem->id) }}" class="fancy">✎</a>
+            <form action="{{ route('contenidos.borrar', $contenidoItem->id) }}" method="POST"
+              onsubmit="return confirm('¿Seguro que quieres borrar este contenido?')">
+              @csrf
+              @method('DELETE')
+              <button class="fancy btn-borrar" type="submit">🗑</button>
+            </form>
+          </div>
+        </li>
+        @endforeach
+      </ul>
+      @else
+      <h4>Secciones</h4>
+      <button class="fancy mb-3" onclick="window.location='{{ route('secciones.crear') }}'">+ Agregar Sección</button>
+      <ul class="nav flex-column">
+        @foreach ($secciones ?? [] as $sec)
+        <li class="mb-2 d-flex justify-content-between align-items-center">
+          <a href="{{ route('secciones.mostrar', $sec->id) }}" class="fancy flex-grow-1">{{ $sec->nombre }}</a>
+          <div class="d-flex gap-1">
+            <a href="{{ route('secciones.editar', $sec->id) }}" class="fancy">✎</a>
+            <form action="{{ route('secciones.borrar', $sec->id) }}" method="POST"
+              onsubmit="return confirm('¿Seguro que quieres borrar esta sección?')">
+              @csrf
+              @method('DELETE')
+              <button class="fancy btn-borrar" type="submit">🗑</button>
+            </form>
+          </div>
+        </li>
+        @endforeach
+      </ul>
+      @endisset
+    </aside>
+
+    <main class="content">
+      @yield('contenido')
+    </main>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    © 1997 - 2025 Universidad de Guadalajara
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
