@@ -10,7 +10,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
-    /* ================== Variables y estilos base ================== */
     :root {
       --azul-suave: #dbeafe;
       --azul-medio: #60a5fa;
@@ -31,7 +30,7 @@
       color: #1e293b;
     }
 
-    /* ================== Navbar superior ================== */
+    /* Navbar superior */
     .navbar-top {
       background-color: var(--blanco);
       box-shadow: 0 2px 4px var(--sombra);
@@ -57,7 +56,7 @@
       transform: scale(1.05);
     }
 
-    /* ================== Banner ================== */
+    /* Banner */
     .banner {
       width: 100%;
       height: 350px;
@@ -65,7 +64,7 @@
       display: block;
     }
 
-    /* ================== Navbar inferior moderno ================== */
+    /* Navbar inferior */
     .navbar-bottom {
       background-color: var(--azul-oscuro);
       padding: 1rem 1rem;
@@ -80,11 +79,12 @@
 
     .navbar-bottom .paste-button {
       position: relative;
+      display: inline-block;
       margin: 5px;
     }
 
     .navbar-bottom .button {
-      background-color: var(--azul-medio);
+      background-color: var(--azul-medio) !important;
       color: var(--blanco);
       border: none;
       border-radius: 25px;
@@ -92,12 +92,12 @@
       font-weight: 500;
       text-transform: uppercase;
       cursor: pointer;
-      transition: background 0.3s ease, transform 0.2s;
       display: inline-block;
       min-height: 45px;
       line-height: 1.5;
       text-align: center;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      transition: background 0.3s ease, transform 0.2s;
     }
 
     .navbar-bottom .button:hover {
@@ -136,7 +136,7 @@
       display: block;
     }
 
-    /* ================== Buscador ================== */
+    /* Buscador */
     .input-container {
       display: flex;
       align-items: center;
@@ -164,7 +164,7 @@
       box-shadow: 0 0 6px var(--azul-medio);
     }
 
-    /* ================== Layout ================== */
+    /* Layout */
     .layout {
       display: flex;
       flex: 1;
@@ -224,7 +224,7 @@
       background: var(--gris-claro);
     }
 
-    /* ================== Footer con onda SVG ================== */
+    /* Footer con onda SVG */
     footer {
       position: relative;
       background: linear-gradient(135deg, #60a5fa, #1e3a8a);
@@ -232,10 +232,6 @@
       padding: 40px 10px 20px 10px;
       text-align: center;
       overflow: hidden;
-    }
-
-    footer p {
-      margin: 5px 0;
     }
 
     .wave {
@@ -252,7 +248,10 @@
       height: 80px;
     }
 
-    /* ================== Responsive ================== */
+    footer p {
+      margin: 5px 0;
+    }
+
     @media (max-width: 768px) {
       .layout {
         flex-direction: column;
@@ -282,7 +281,7 @@
 
 <body>
 
-  <!-- NAVBAR SUPERIOR -->
+
   <nav class="navbar navbar-top d-flex justify-content-between align-items-center">
     <a href="https://www.udg.mx/" class="navbar-brand d-flex align-items-center">
       <img src="Logo.png" alt="Logo">
@@ -313,11 +312,15 @@
     </div>
   </nav>
 
-  <!-- BANNER -->
-  <img src="geo.jpg" alt="Imagen geografía" class="banner">
+  <img src="geo.jpg" alt="geo.jpg" class="banner">
 
-  <!-- NAVBAR INFERIOR DINÁMICA -->
+
   <nav class="navbar-bottom">
+    <div class="paste-button">
+      <button class="button" onclick="window.location='{{ route('navbar.secciones.crear') }}'">
+        + Agregar Sección Navbar
+      </button>
+    </div>
     @foreach($navbarSecciones ?? [] as $seccion)
     <div class="paste-button">
       <button class="button">
@@ -335,7 +338,6 @@
     @endforeach
   </nav>
 
-  <!-- CONTENIDO PRINCIPAL -->
   <div class="layout">
     <aside class="sidebar">
       @isset($seccion)
@@ -389,7 +391,6 @@
     </main>
   </div>
 
-  <!-- FOOTER -->
   <footer>
     <div class="wave">
       <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
@@ -414,4 +415,3 @@
 </body>
 
 </html>
-

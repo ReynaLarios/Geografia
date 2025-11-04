@@ -11,21 +11,19 @@ use Illuminate\Support\Facades\Storage;
 
 class ContenidosController extends Controller
 {
-    // Listar contenidos
     public function listar()
     {
         $contenidos = Contenidos::with(['seccion','archivos','cuadros'])->get();
         return view('Contenidos.contenidos', compact('contenidos'));
     }
 
-    // Mostrar formulario de creación
     public function crear()
     {
         $secciones = Secciones::all();
-        return view('Contenidos.crear', compact('secciones'));
+        return view('Contenidos.contenidos', compact('secciones'));
     }
 
-    // Guardar contenido
+   
     public function guardar(Request $request)
     {
         $request->validate([
@@ -47,7 +45,7 @@ class ContenidosController extends Controller
 
         $contenido = Contenidos::create($datos);
 
-        // Archivos
+       
         if($request->hasFile('archivos')) {
             foreach($request->file('archivos') as $file) {
                 $contenido->archivos()->create([
@@ -58,7 +56,7 @@ class ContenidosController extends Controller
             }
         }
 
-        // Cuadros (tabla)
+       
         if($request->filled('cuadros')) {
             foreach($request->cuadros as $item) {
                 if($item['titulo'] || $item['autor'] || isset($item['archivo'])) {
@@ -74,10 +72,10 @@ class ContenidosController extends Controller
             }
         }
 
-        return redirect()->route('contenidos.listar')->with('success','Contenido creado correctamente.');
+        return redirect()->route('contenidos.listado')->with('success','Contenido creado correctamente.');
     }
 
-    // Editar
+ 
     public function editar($id)
     {
         $contenido = Contenidos::with(['archivos','cuadros'])->findOrFail($id);
@@ -85,7 +83,7 @@ class ContenidosController extends Controller
         return view('Contenidos.editar', compact('contenido','secciones'));
     }
 
-    // Actualizar
+    
     public function actualizar(Request $request, $id)
     {
         $contenido = Contenidos::with(['cuadros'])->findOrFail($id);
@@ -123,7 +121,7 @@ class ContenidosController extends Controller
             }
         }
 
-        // Actualizar cuadros
+        
         if($request->filled('cuadros')) {
             foreach($request->cuadros as $idCuadro => $item) {
                 if(isset($item['id'])) {
@@ -152,13 +150,20 @@ class ContenidosController extends Controller
             }
         }
 
-        return redirect()->route('contenidos.listar')->with('success','Contenido actualizado correctamente.');
+        return redirect()->route('contenidos.listado')->with('success','Contenido actualizado correctamente.');
     }
 
-    // Mostrar
     public function mostrar($id)
     {
         $contenido = Contenidos::with(['archivos','cuadros'])->findOrFail($id);
         return view('Contenidos.mostrar', compact('contenido'));
+    }
+
+    public function borrar($id)
+    {
+        $contenido= Secciones::findOrFail($id);
+        $contenido->delete();
+
+        return redirect()->route('contenidos.listado')->with('success', 'Sección eliminada correctamente.');
     }
 }

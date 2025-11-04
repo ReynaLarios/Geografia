@@ -11,12 +11,12 @@ class InicioController extends Controller
     public function index()
     {
         $inicio = inicio::all();
-        return view('Inicio.inicio', compact('inicio'));
+        return view('Inicio.index', compact('inicio'));
     }
 
     public function create()
     {
-        return view('Inicio.crear');
+        return view('Inicio.create');
     }
 
     public function store(Request $request)
@@ -44,14 +44,14 @@ class InicioController extends Controller
     public function show($id)
     {
         $inicio = inicio::findOrFail($id);
-        return view('Inicio.mostrar', compact('inicio'));
+        return view('Inicio.show', compact('inicio'));
     }
 
     public function edit(Request $request, $id)
     {
         $inicio = inicio::findOrFail($id);
         $soloImagen = $request->get('soloImagen', false); 
-        return view('Inicio.editar', compact('inicio', 'soloImagen'));
+        return view('Inicio.edit', compact('inicio', 'soloImagen'));
     }
 
     public function update(Request $request, $id)

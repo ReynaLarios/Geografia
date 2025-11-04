@@ -64,7 +64,7 @@ class SeccionesController extends Controller
         return redirect()->route('secciones.listado')->with('success', 'Sección actualizada correctamente');
     }
 
-    // Borrar sección
+  
     public function borrar($id)
     {
         $seccion = Secciones::findOrFail($id);

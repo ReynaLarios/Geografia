@@ -2,7 +2,7 @@
 
 @section('contenido')
 <h2>Secciones de Navbar Horizontal</h2>
-<a href="{{ route('navbar-secciones.crear') }}" class="btn btn-success mb-2">+ Agregar Sección</a>
+<a href="{{ route('navbar.secciones.crear') }}" class="btn btn-success mb-2">+ Agregar Sección</a>
 
 <table class="table table-striped">
     <thead>

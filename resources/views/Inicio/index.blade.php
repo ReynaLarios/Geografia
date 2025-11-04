@@ -3,7 +3,7 @@
 @section('contenido')
     <div class="container mt-4">
 
-        {{-- Carrusel de Noticias --}}
+      
         <div id="carouselNoticias" class="carousel slide mb-4" data-bs-ride="carousel">
             <div class="carousel-inner text-center">
                 @foreach ($inicio as $index => $in)
@@ -34,9 +34,9 @@
             </button>
         </div>
 
-        {{-- Noticias --}}
+ 
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>Noticias</h2> <a href="{{ route('dashboard') }}" class="btn btn-success">➕ Nueva Noticia</a>
+            <h2>Noticias</h2> <a href="{{ route('inicio.create') }}" class="btn btn-success">➕ Nueva Noticia</a>
         </div>
         @if (session('success'))
             <div class="alert alert-success text-center">{{ session('success') }}</div>
@@ -51,8 +51,8 @@
                             <div> <strong>{{ $in->titulo }}</strong><br>
                                 <small>{{ \Illuminate\Support\Str::limit($in->descripcion, 80) }}</small> </div>
                         </div>
-                        <div> <a href="{{ route('dashboard', $in->id) }}" class="btn btn-sm btn-info">Ver</a> <a
-                                href="{{ route('dashboard', $in->id) }}" class="btn btn-sm btn-warning">Editar</a>
+                        <div> <a href="{{ route('inicio.show', $in->id) }}" class="btn btn-sm btn-info">Ver</a> <a
+                                href="{{ route('inicio.edit', $in->id) }}" class="btn btn-sm btn-warning">Editar</a>
                             <form action="{{ route('dashboard', $in->id) }}" method="POST" style="display:inline;"> @csrf
                                 @method('DELETE') <button type="submit" class="btn btn-sm btn-danger"
                                     onclick="return confirm('¿Eliminar noticia?')">Borrar</button> </form>
@@ -65,7 +65,7 @@
 
 </div>
 
-{{-- Estilos para carrusel y botones --}}
+
 <style>
     .carousel-img {
         max-height: 400px;
