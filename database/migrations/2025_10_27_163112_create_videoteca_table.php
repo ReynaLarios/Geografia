@@ -6,17 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
-    {
-        Schema::create('videoteca', function (Blueprint $table) {
-            $table->id();
-            $table->string('titulo');
-            $table->string('url');
-            $table->string('categoria')->nullable();
-            $table->text('descripcion')->nullable();
-            $table->timestamps();
-        });
-    }
+   public function up(): void
+{
+    Schema::create('videotecas', function (Blueprint $table) {
+        $table->id();
+        $table->string('titulo');
+        $table->string('categoria');
+        $table->string('url'); // URL de YouTube
+        $table->string('miniatura'); // URL de miniatura
+        $table->timestamps();
+    });
+}
 
     public function down(): void
     {

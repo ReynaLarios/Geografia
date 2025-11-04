@@ -9,13 +9,12 @@ class Videoteca extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'titulo',
-        'url',
-        'categoria',
-        'anio',
-        'descripcion',
-    ];
+    // Columnas que se pueden llenar masivamente
+    protected $fillable = ['titulo', 'url', 'categoria_id'];
+
+    // Relación con categoría
+    public function categoria()
+    {
+        return $this->belongsTo(Categoria::class);
+    }
 }
-
-

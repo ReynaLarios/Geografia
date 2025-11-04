@@ -9,26 +9,8 @@
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- TinyMCE -->
-  <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-  <script>
-    tinymce.init({
-      selector: '.editor', // Todos los textarea con clase "editor"
-      height: 300,
-      menubar: true,
-      plugins: [
-        'advlist autolink lists link charmap preview anchor',
-        'searchreplace visualblocks code fullscreen',
-        'insertdatetime media table paste code help wordcount'
-      ],
-      toolbar:
-        'undo redo | formatselect | bold italic underline | \
-        alignleft aligncenter alignright alignjustify | \
-        bullist numlist outdent indent | removeformat | help'
-    });
-  </script>
-
   <style>
+    /* ================== Variables y estilos base ================== */
     :root {
       --azul-suave: #dbeafe;
       --azul-medio: #60a5fa;
@@ -49,7 +31,7 @@
       color: #1e293b;
     }
 
-    /* Navbar superior */
+    /* ================== Navbar superior ================== */
     .navbar-top {
       background-color: var(--blanco);
       box-shadow: 0 2px 4px var(--sombra);
@@ -75,35 +57,67 @@
       transform: scale(1.05);
     }
 
-    /* Navbar inferior */
+    /* ================== Banner ================== */
+    .banner {
+      width: 100%;
+      height: 350px;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ================== Navbar inferior moderno ================== */
     .navbar-bottom {
       background-color: var(--azul-oscuro);
-      border-bottom: 3px solid var(--azul-medio);
-      font-size: 15px;
+      padding: 1rem 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 5;
+    }
+
+    .navbar-bottom .paste-button {
+      position: relative;
+      margin: 5px;
     }
 
     .navbar-bottom .button {
-      background: transparent;
+      background-color: var(--azul-medio);
       color: var(--blanco);
       border: none;
+      border-radius: 25px;
+      padding: 12px 25px;
       font-weight: 500;
       text-transform: uppercase;
-      padding: 8px 14px;
-      transition: color 0.3s ease;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s;
+      display: inline-block;
+      min-height: 45px;
+      line-height: 1.5;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
 
     .navbar-bottom .button:hover {
-      color: var(--azul-medio);
+      background-color: var(--azul-suave);
+      color: var(--azul-oscuro);
+      transform: translateY(-3px);
     }
 
+    /* Dropdown */
     .dropdown-content {
       display: none;
       position: absolute;
       z-index: 10;
-      min-width: 220px;
+      min-width: 200px;
       background-color: var(--azul-medio);
       border-radius: 10px;
-      box-shadow: 0 4px 10px var(--sombra);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      top: 55px;
+      left: 50%;
+      transform: translateX(-50%);
     }
 
     .dropdown-content a {
@@ -111,7 +125,7 @@
       padding: 10px 15px;
       display: block;
       text-decoration: none;
-      transition: background 0.3s;
+      transition: background 0.3s ease;
     }
 
     .dropdown-content a:hover {
@@ -122,7 +136,7 @@
       display: block;
     }
 
-    /* Buscador */
+    /* ================== Buscador ================== */
     .input-container {
       display: flex;
       align-items: center;
@@ -150,7 +164,7 @@
       box-shadow: 0 0 6px var(--azul-medio);
     }
 
-    /* Layout */
+    /* ================== Layout ================== */
     .layout {
       display: flex;
       flex: 1;
@@ -210,17 +224,35 @@
       background: var(--gris-claro);
     }
 
-    /* Footer */
+    /* ================== Footer con onda SVG ================== */
     footer {
-      background: var(--azul-oscuro);
-      color: var(--blanco);
+      position: relative;
+      background: linear-gradient(135deg, #60a5fa, #1e3a8a);
+      color: white;
+      padding: 40px 10px 20px 10px;
       text-align: center;
-      padding: 20px;
-      font-size: 0.9rem;
-      border-top: 3px solid var(--azul-medio);
+      overflow: hidden;
     }
 
-    /* Responsive */
+    footer p {
+      margin: 5px 0;
+    }
+
+    .wave {
+      position: absolute;
+      top: -30px;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+    }
+
+    .wave svg {
+      width: 100%;
+      height: 80px;
+    }
+
+    /* ================== Responsive ================== */
     @media (max-width: 768px) {
       .layout {
         flex-direction: column;
@@ -230,6 +262,19 @@
         width: 100%;
         border-right: none;
         border-bottom: 1px solid var(--gris-medio);
+      }
+
+      .input-container {
+        width: 100%;
+      }
+
+      .input-container input {
+        width: 100%;
+      }
+
+      .navbar-bottom {
+        flex-direction: column;
+        gap: 8px;
       }
     }
   </style>
@@ -246,7 +291,7 @@
     <div class="d-flex align-items-center gap-3">
       <div class="input-container">
         <input type="text" placeholder="Buscar...">
-        <svg width="18" height="18" fill="none" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round"
+        <svg width="18" height="18" fill="none" stroke="#1e293b" stroke-width="2" stroke-linecap="round"
           stroke-linejoin="round" viewBox="0 0 24 24">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -269,45 +314,25 @@
   </nav>
 
   <!-- BANNER -->
-  <div style="width:100%; background-color:var(--azul-suave); text-align:center; padding:15px 0; font-weight:600; font-size:1.2rem;">
-    Bienvenidos a la Licenciatura en Geografía
-  </div>
+  <img src="geo.jpg" alt="Imagen geografía" class="banner">
 
-  <!-- NAVBAR INFERIOR -->
-  <nav class="navbar navbar-bottom navbar-expand-lg">
-    <div class="container-fluid">
-      <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
-        <span class="navbar-toggler-icon"></span>
+  <!-- NAVBAR INFERIOR DINÁMICA -->
+  <nav class="navbar-bottom">
+    @foreach($navbarSecciones ?? [] as $seccion)
+    <div class="paste-button">
+      <button class="button">
+        {{ $seccion->nombre }} @if($seccion->hijos->count() > 0) ▼ @endif
       </button>
 
-      <div class="collapse navbar-collapse" id="menuPrincipal">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="button nav-link text-white" href="{{ url('/administrador/dashboard') }}">Inicio</a>
-          </li>
-
-          <div class="paste-button">
-            <button class="button">Acerca de ▼</button>
-            <div class="dropdown-content">
-              <a href="/mision">Misión</a>
-              <a href="/vision">Visión</a>
-              <a href="/objetivos">Objetivos</a>
-              <a href="#">Órgano de gobierno</a>
-            </div>
-          </div>
-
-          <div class="paste-button">
-            <button class="button">Academia ▼</button>
-            <div class="dropdown-content">
-              <a href="#">Metodología y Didáctica</a>
-              <a href="#">Geografía física</a>
-              <a href="#">Territorio y Gestión</a>
-              <a href="#">Tecnologías de la Información Geográfica</a>
-            </div>
-          </div>
-        </ul>
+      @if($seccion->hijos->count() > 0)
+      <div class="dropdown-content">
+        @foreach($seccion->hijos as $hijo)
+        <a href="{{ $hijo->ruta ?? '#' }}">{{ $hijo->nombre }}</a>
+        @endforeach
       </div>
+      @endif
     </div>
+    @endforeach
   </nav>
 
   <!-- CONTENIDO PRINCIPAL -->
@@ -366,10 +391,27 @@
 
   <!-- FOOTER -->
   <footer>
-    © 1997 - 2025 Universidad de Guadalajara
+    <div class="wave">
+      <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path
+          d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
+          fill="#ffffff" opacity="0.25"></path>
+        <path
+          d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z"
+          fill="#ffffff" opacity="0.5"></path>
+        <path
+          d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"
+          fill="#ffffff"></path>
+      </svg>
+    </div>
+    <p class="fw-bold">CENTRO UNIVERSITARIO DE CIENCIAS SOCIALES Y HUMANIDADES</p>
+    <p>Los Belenes. Av. José Parres Arias #150, San José del Bajío, Zapopan, Jalisco, México.</p>
+    <p>© 1997 - 2025 Universidad de Guadalajara</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  @yield('scripts')
 </body>
 
 </html>
+

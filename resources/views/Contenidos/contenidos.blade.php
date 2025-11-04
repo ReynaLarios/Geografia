@@ -1,116 +1,99 @@
 @extends('base.layout')
 
 @section('contenido')
-<main>
-    <h2>{{ isset($contenido) ? 'Editar Contenido' : 'Crear Contenido' }}</h2>
+<main class="p-4" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+    <h2>Crear Contenido</h2>
 
-    <form action="{{ isset($contenido) ? route('contenidos.actualizar', $contenido->id) : route('contenidos.guardar') }}" 
-          method="POST" enctype="multipart/form-data">
+    <form action="{{ route('contenidos.guardar') }}" method="POST" enctype="multipart/form-data">
         @csrf
-        @if(isset($contenido)) @method('PUT') @endif
-
 
         <div class="mb-3">
-            <label for="titulo" class="form-label">Título</label>
-            <input type="text" name="titulo" id="titulo" class="form-control" 
-                   value="{{ $contenido->titulo ?? old('titulo') }}" required>
+            <label class="form-label">Título</label>
+            <input type="text" name="titulo" class="form-control" value="{{ old('titulo') }}" required>
         </div>
 
-       
         <div class="mb-3">
-            <label for="descripcion" class="form-label">Descripción</label>
-            <textarea name="descripcion" id="descripcion" class="form-control" rows="3" required>
-                {{ $contenido->descripcion ?? old('descripcion') }}
-            </textarea>
-        </div>
-
-       
-        <div class="mb-3">
-            <label for="seccion_id" class="form-label">Sección</label>
-            <select name="seccion_id" id="seccion_id" class="form-control" required>
-                <option value="">Selecciona una sección</option>
+            <label class="form-label">Sección</label>
+            <select name="seccion_id" class="form-select" required>
                 @foreach($secciones as $sec)
-                    <option value="{{ $sec->id }}" 
-                        {{ isset($contenido) && $contenido->seccion_id == $sec->id ? 'selected' : '' }}>
+                    <option value="{{ $sec->id }}" {{ old('seccion_id') == $sec->id ? 'selected' : '' }}>
                         {{ $sec->nombre }}
                     </option>
                 @endforeach
             </select>
         </div>
 
-       
         <div class="mb-3">
-            <label for="imagen" class="form-label">Imagen principal (opcional)</label>
-            <input type="file" name="imagen" id="imagen" class="form-control">
-            @if(isset($contenido) && $contenido->imagen)
-                <div class="mt-2">
-                    <img src="{{ asset('storage/'.$contenido->imagen) }}" alt="Imagen actual" 
-                         style="max-width: 150px; border-radius: 8px;">
-                </div>
-            @endif
+            <label class="form-label">Descripción</label>
+            <textarea name="descripcion" class="form-control">{{ old('descripcion') }}</textarea>
         </div>
 
-        <div id="archivos-container" class="mt-4">
-            <h5>Archivos asociados</h5>
-
-          
-            @if(isset($archivos) && count($archivos) > 0)
-                <table class="table table-bordered mt-3">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Tamaño</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    
-            <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
-<script>
-ClassicEditor
-    .create( document.querySelector( '#descripcion' ), {
-        toolbar: [ 'bold', 'italic', 'link', 'bulletedList', 'numberedList' ]
-    })
-    .catch( error => {
-        console.error( error );
-    } );
-
-</script>
-
-                    <tbody>
-                        @foreach($archivos as $archivo)
-                            <tr>
-                                <td>
-                                    <a href="{{ asset('storage/'.$archivo->ruta) }}" target="_blank">
-                                        📎 {{ $archivo->nombre }}
-                                    </a>
-                                </td>
-                                <td>
-                                    {{ round(Storage::disk('public')->size($archivo->ruta)/1024/1024, 2) }} MB
-                                </td>
-                                <td>
-                                    <form action="{{ route('archivos.borrar', $archivo->id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">Borrar</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @else
-                <p class="text-muted">No hay archivos asociados a este contenido aún.</p>
-            @endif
-
-            <div class="mt-3">
-                <label for="archivos" class="form-label">Subir nuevos archivos</label>
-                <input type="file" name="archivos[]" id="archivos" class="form-control" multiple>
-            </div>
+        <div class="mb-3">
+            <label class="form-label">Imagen principal (opcional)</label>
+            <input type="file" name="imagen" class="form-control">
         </div>
-        
-        <button type="submit" class="btn btn-primary mt-4">
-            {{ isset($contenido) ? 'Actualizar' : 'Crear' }}
-        </button>
+
+        <div class="mb-3">
+            <label class="form-label">Archivos adicionales</label>
+            <input type="file" name="archivos[]" multiple class="form-control">
+        </div>
+
+        {{-- Cuadro tipo tabla --}}
+        <h5 class="mt-4">Cuadro tipo tabla</h5>
+        <table class="table table-bordered" id="tabla-cuadro">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Archivo</th>
+                    <th>Mostrar</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" name="cuadro_titulo[]" class="form-control"></td>
+                    <td><input type="text" name="cuadro_autor[]" class="form-control"></td>
+                    <td><input type="file" name="cuadro_archivo[]" class="form-control"></td>
+                    <td class="text-center"><input type="checkbox" name="mostrar_cuadro[]" value="1"></td>
+                    <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button type="button" id="agregar-fila" class="btn btn-secondary mb-3">+ Agregar fila</button>
+        <br>
+        <button type="submit" class="btn btn-primary mt-1">Guardar</button>
     </form>
 </main>
+
+{{-- Script para agregar filas dinámicamente --}}
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
+        const btnAgregar = document.getElementById('agregar-fila');
+
+        btnAgregar.addEventListener('click', function() {
+            const nuevaFila = document.createElement('tr');
+            nuevaFila.innerHTML = `
+                <td><input type="text" name="cuadro_titulo[]" class="form-control"></td>
+                <td><input type="text" name="cuadro_autor[]" class="form-control"></td>
+                <td><input type="file" name="cuadro_archivo[]" class="form-control"></td>
+                <td class="text-center"><input type="checkbox" name="mostrar_cuadro[]" value="1"></td>
+                <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
+            `;
+            tabla.appendChild(nuevaFila);
+        });
+
+        // Delegar eliminación de fila
+        tabla.addEventListener('click', function(e) {
+            if(e.target && e.target.classList.contains('eliminar-fila')) {
+                e.target.closest('tr').remove();
+            }
+        });
+    });
+</script>
+@endsection
+
 @endsection

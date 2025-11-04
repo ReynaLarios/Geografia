@@ -9,15 +9,25 @@ class Contenidos extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['seccion_id', 'titulo', 'descripcion'];
+    protected $fillable = ['titulo','descripcion','seccion_id','imagen'];
+
+    public function archivos()
+    {
+        return $this->hasMany(Archivo::class, 'contenido_id');
+    }
+
+    public function cuadros()
+    {
+        return $this->hasMany(Cuadro::class, 'contenido_id');
+    }
 
     public function seccion()
     {
         return $this->belongsTo(Secciones::class, 'seccion_id');
     }
-
-    public function archivos()
-    {
-        return $this->hasMany(Archivo::class, 'contenido_id'); 
-    }
 }
+
+
+
+
+

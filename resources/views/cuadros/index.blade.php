@@ -1,0 +1,59 @@
+@extends('base.layout')
+
+@section('contenido')
+<div class="container mt-4">
+
+    <h2 class="mb-3"><strong>Cuadros</strong></h2>
+
+    {{-- Mensaje de éxito --}}
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    {{-- Formulario para agregar cuadro --}}
+    <form action="{{ route('cuadros.guardar') }}" method="POST" class="mb-4">
+        @csrf
+        <div class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="titulo" class="form-control" placeholder="Título" required>
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="autor" class="form-control" placeholder="Autor" required>
+            </div>
+            <div class="col-md-3">
+                <input type="url" name="enlace" class="form-control" placeholder="Enlace (URL)" required>
+            </div>
+            <div class="col-md-1 d-flex align-items-center">
+                <button type="submit" class="btn btn-primary w-100">Agregar</button>
+            </div>
+        </div>
+    </form>
+
+    {{-- Lista de cuadros --}}
+    @if($cuadros->count() > 0)
+        <div class="row">
+            @foreach($cuadros as $cuadro)
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $cuadro->titulo }}</h5>
+                            <p class="card-text"><strong>Autor:</strong> {{ $cuadro->autor }}</p>
+                            <a href="{{ $cuadro->enlace }}" target="_blank" class="btn btn-outline-primary mb-2 w-100">Abrir enlace</a>
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ route('cuadros.editar', $cuadro->id) }}" class="btn btn-warning w-50 me-1">Editar</a>
+                                <form action="{{ route('cuadros.eliminar', $cuadro->id) }}" method="POST" class="w-50 ms-1">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger w-100" type="submit" onclick="return confirm('¿Seguro que deseas eliminar este cuadro?')">Eliminar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @else
+        <p>No hay cuadros agregados.</p>
+    @endif
+</div>
+@endsection

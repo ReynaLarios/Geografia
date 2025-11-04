@@ -6,47 +6,56 @@ use Illuminate\Http\Request;
 use App\Models\Videoteca;
 
 class VideotecaController extends Controller
-
 {
-public function store(Request $request)
-{
-    $request->validate([
-        'titulo' => 'required|string|max:255',
-        'url' => 'required|url',
-    ]);
+    public function index()
+    {
+        // Ya no filtramos por seccion_id
+        $videos = Videoteca::all();
 
-    $data = $request->all();
-    $data['url'] = $this->convertToEmbed($request->url);
-
-    Videoteca::create($data);
-    return redirect()->route('videoteca.index')->with('success', 'Video agregado correctamente.');
-}
-
-public function update(Request $request, $id)
-{
-    $request->validate([
-        'titulo' => 'required|string|max:255',
-        'url' => 'required|url',
-    ]);
-
-    $video = Videoteca::findOrFail($id);
-    $data = $request->all();
-    $data['url'] = $this->convertToEmbed($request->url);
-
-    $video->update($data);
-    return redirect()->route('videoteca.index')->with('success', 'Video actualizado correctamente.');
-}
-private function convertToEmbed($url)
-{
-    if (preg_match('/youtu\.be\/([^\?]+)/', $url, $matches)) {
-        return 'https://www.youtube.com/embed/' . $matches[1];
+        return view('Secciones.videoteca', compact('videos'));
     }
 
-    if (preg_match('/v=([^\&]+)/', $url, $matches)) {
-        return 'https://www.youtube.com/embed/' . $matches[1];
+    public function guardar(Request $request)
+    {
+        $request->validate([
+            'titulo' => 'required|string|max:255',
+            'url' => 'required|url',
+        ]);
+
+        $video = new Videoteca();
+        $video->titulo = $request->titulo;
+        $video->url = $request->url;
+        $video->save();
+
+        return redirect()->route('videoteca.index')->with('exito', 'Video guardado correctamente.');
     }
 
-    return $url;
-}
+    public function editar($id)
+    {
+        $video = Videoteca::findOrFail($id);
+        return view('Secciones.editar_video', compact('video'));
+    }
 
+    public function actualizar(Request $request, $id)
+    {
+        $request->validate([
+            'titulo' => 'required|string|max:255',
+            'url' => 'required|url',
+        ]);
+
+        $video = Videoteca::findOrFail($id);
+        $video->titulo = $request->titulo;
+        $video->url = $request->url;
+        $video->save();
+
+        return redirect()->route('videoteca.index')->with('exito', 'Video actualizado correctamente.');
+    }
+
+    public function eliminar($id)
+    {
+        $video = Videoteca::findOrFail($id);
+        $video->delete();
+
+        return redirect()->route('videoteca.index')->with('exito', 'Video eliminado correctamente.');
+    }
 }

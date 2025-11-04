@@ -1,49 +1,97 @@
 @extends('base.layout')
 
 @section('contenido')
-<section class="bg-gray-50 dark:bg-gray-900 py-3 sm:py-5">
-    <div class="px-4 mx-auto max-w-screen-lg lg:px-12">
-        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
-            @extends('base.layout')
+<main class="p-4">
+    <h2 class="mb-4">Secciones</h2>
 
-<h2>Secciones disponibles</h2>
-<p>Haz clic en una sección para ver su contenido.</p>
-
-
-
-            @if(session('success'))
-                <div class="bg-green-100 text-green-700 p-2 rounded mb-3 text-center">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            <a href="{{ url('/secciones/crear') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Agregar nueva sección</a>
-
-            <table class="w-full text-left border border-gray-300 mt-4">
-                <thead class="bg-gray-200">
-                    <tr>
-                        <th class="p-2">Nombre</th>
-                        <th class="p-2">Descripción</th>
-                        <th class="p-2 text-center">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($secciones as $seccion)
-                        <tr class="border-t">
-                            <td class="p-2">{{ $seccion->nombre }}</td>
-                            <td class="p-2">{{ $seccion->descripcion }}</td>
-                            <td class="p-2 text-center flex gap-2 justify-center">
-                                <a href="{{ url('/secciones/'.$seccion->id.'/editar') }}" class="text-blue-600 hover:underline">Editar</a>
-                                <form action="{{ route('secciones.borrar', $seccion->id) }}" method="POST" onsubmit="return confirm('¿Eliminar esta sección?')">
-                                    @csrf
-                                    <button type="submit" class="text-red-600 hover:underline">Eliminar</button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+   
+    @foreach($secciones as $seccion)
+        <div class="mb-4">
+            <h4>{{ $seccion->nombre }}</h4>
+            <p>{{ $seccion->descripcion }}</p>
         </div>
+    @endforeach
+
+
+    <div class="text-center mt-5">
+        <button class="btn btn-primary" id="mostrarVideotecaBtn">Mostrar Videoteca</button>
     </div>
-</section>
+
+    <div id="videotecaContainer" class="mt-4" style="display:none;">
+        <h3>Videoteca</h3>
+        @if(isset($videos) && $videos->count() > 0)
+            <div class="row">
+                @foreach($videos as $video)
+                    @php
+                        preg_match("/v=([^\&\?\/]+)/", $video->url, $matches);
+                        $youtube_id = $matches[1] ?? null;
+                    @endphp
+
+                    @if($youtube_id)
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <img src="https://img.youtube.com/vi/{{ $youtube_id }}/hqdefault.jpg"
+                                     class="card-img-top"
+                                     style="cursor:pointer;"
+                                     data-bs-toggle="modal"
+                                     data-bs-target="#videoModal"
+                                     data-video="{{ $youtube_id }}">
+                                <div class="card-body">
+                                    <h5>{{ $video->titulo }}</h5>
+                                    <p>{{ $video->descripcion }}</p>
+                                    <p><strong>Categoria:</strong> {{ $video->categoria->nombre }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+        @else
+            <p>No hay videos disponibles.</p>
+        @endif
+    </div>
+</main>
+
+
+<div class="modal fade" id="videoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Reproduciendo Video</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="ratio ratio-16x9">
+            <iframe id="iframeVideo" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+document.getElementById('mostrarVideotecaBtn').addEventListener('click', function() {
+    var container = document.getElementById('videotecaContainer');
+    if(container.style.display === 'none') {
+        container.style.display = 'block';
+        this.textContent = 'Ocultar Videoteca';
+    } else {
+        container.style.display = 'none';
+        this.textContent = 'Mostrar Videoteca';
+    }
+});
+
+var videoModal = document.getElementById('videoModal');
+videoModal.addEventListener('show.bs.modal', function (event) {
+    var trigger = event.relatedTarget;
+    var videoId = trigger.getAttribute('data-video');
+    document.getElementById('iframeVideo').src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1";
+});
+
+videoModal.addEventListener('hidden.bs.modal', function () {
+    document.getElementById('iframeVideo').src = "";
+});
+</script>
 @endsection

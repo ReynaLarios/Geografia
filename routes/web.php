@@ -9,12 +9,14 @@ use App\Http\Controllers\Administrador\AdministradorController;
 use App\Http\Controllers\Administrador\LoginController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\CuadroController;
+use App\Http\Controllers\VideotecaController;
 
-/*
+use App\Http\Controllers\NavbarSeccionesController;
+use App\Http\Controllers\NavbarContenidosController;
 
-| RUTAS PÚBLICAS
 
-*/
+
 Route::get('/', function () {
     return redirect()->route('login.form');
 });
@@ -27,18 +29,7 @@ Route::post('login', [LoginController::class, 'login'])->name('login.post');
 Route::get('register', [LoginController::class, 'showRegisterForm'])->name('register.form');
 Route::post('register', [LoginController::class, 'register'])->name('register.post');
 
-// Recuperación de contraseña
-Route::get('password/forgot', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
-
-
-/*
-
-Rutas protegidas del administrador
-*/
 Route::middleware(['admin'])->prefix('administrador')->group(function () {
 
     // Dashboard
@@ -62,10 +53,23 @@ Route::middleware(['admin'])->prefix('administrador')->group(function () {
     Route::get('secciones/{id}/editar', [SeccionesController::class, 'editar'])->name('secciones.editar');
     Route::put('/secciones/{id}/actualizar', [SeccionesController::class, 'actualizar'])->name('secciones.actualizar');
     Route::get('secciones/{id}', [SeccionesController::class, 'mostrar'])->name('secciones.mostrar');
-    Route::get('secciones/{id}/borrar', [SeccionesController::class, 'borrar'])->name('secciones.borrar');
-   
+    Route::delete('secciones/{id}/borrar', [SeccionesController::class, 'borrar'])->name('secciones.borrar');
+    Route::get('/secciones-videoteca', [SeccionesController::class, 'listadoConVideoteca'])->name('secciones.videoteca');
+    Route::get('/secciones/24/videoteca', [SeccionesController::class, 'videoteca'])->name('secciones.videoteca');
+
+
+    //Videoteca 
+
+Route::get('/videoteca', [VideotecaController::class, 'index'])->name('videoteca.index');
+Route::post('/videoteca/guardar', [VideotecaController::class, 'guardar'])->name('videoteca.guardar');
+Route::get('/videoteca/editar/{id}', [VideotecaController::class, 'editar'])->name('videoteca.editar');
+Route::put('/videoteca/actualizar/{id}', [VideotecaController::class, 'actualizar'])->name('videoteca.actualizar');
+Route::delete('/videoteca/eliminar/{id}', [VideotecaController::class, 'eliminar'])->name('videoteca.eliminar');
+
+
     // Contenidos
     Route::get('/contenidos', [ContenidosController::class, 'listar'])->name('contenidos.listar');
+
     Route::get('/contenidos/crear', [ContenidosController::class, 'crear'])->name('contenidos.crear');
     Route::post('/contenidos/guardar', [ContenidosController::class, 'guardar'])->name('contenidos.guardar');
     Route::get('/contenidos/{id}/editar', [ContenidosController::class, 'editar'])->name('contenidos.editar');
@@ -79,16 +83,6 @@ Route::get('/contenidos/{contenido_id}/archivos/crear', [ArchivoController::clas
 Route::post('/contenidos/{contenido_id}/archivos/guardar', [ArchivoController::class, 'guardar'])->name('archivos.guardar');
 Route::delete('/archivos/{id}/borrar', [ArchivoController::class, 'borrar'])->name('archivos.borrar');
 Route::get('/archivos/{id}/descargar', [ArchivoController::class, 'descargar'])->name('archivos.descargar');
-
-    //Videoteca 
-Route::get('/videoteca', [VideotecaController::class, 'index'])->name('videoteca.index');
-    Route::get('/videoteca/crear', [VideotecaController::class, 'create'])->name('videoteca.create');
-    Route::post('/videoteca', [VideotecaController::class, 'store'])->name('videoteca.store');
-    Route::get('/videoteca/{id}', [VideotecaController::class, 'show'])->name('videoteca.show');
-    Route::get('/videoteca/{id}/editar', [VideotecaController::class, 'edit'])->name('videoteca.edit');
-    Route::put('/videoteca/{id}', [VideotecaController::class, 'update'])->name('videoteca.update');
-    Route::delete('/videoteca/{id}', [VideotecaController::class, 'destroy'])->name('videoteca.destroy');
-
 
 //Banner
 Route::post('/administrador/banner/guardar', [ArchivoController::class, 'guardarBannerAdmin'])->name('archivos.guardarBannerAdmin');
@@ -110,6 +104,30 @@ Route::put('/inicio/{inicio}', [InicioController::class, 'update'])->name('inici
 
 // Eliminar noticia
 Route::delete('/inicio/{inicio}', [InicioController::class, 'destroy'])->name('inicio.destroy');
+
+Route::prefix('cuadros')->group(function () {
+    Route::get('/', [CuadroController::class, 'index'])->name('cuadros.index');
+    Route::get('/crear', [CuadroController::class, 'crear'])->name('cuadros.crear');
+    Route::post('/guardar', [CuadroController::class, 'guardar'])->name('cuadros.guardar');
+    Route::get('/editar/{cuadro}', [CuadroController::class, 'editar'])->name('cuadros.editar');
+    Route::put('/actualizar/{cuadro}', [CuadroController::class, 'actualizar'])->name('cuadros.actualizar');
+    Route::delete('/borrar/{cuadro}', [CuadroController::class, 'borrar'])->name('cuadros.borrar');
+});
+
+Route::prefix('navbar')->group(function() {
+    Route::get('secciones', [NavbarSeccionesController::class, 'index'])->name('navbar-secciones.index');
+    Route::get('secciones/crear', [NavbarSeccionesController::class, 'crear'])->name('navbar-secciones.crear');
+    Route::post('secciones', [NavbarSeccionesController::class, 'guardar'])->name('navbar-secciones.guardar');
+    Route::get('secciones/{navbar_seccion}/editar', [NavbarSeccionesController::class, 'editar'])->name('navbar-secciones.editar');
+    Route::put('secciones/{navbar_seccion}', [NavbarSeccionesController::class, 'actualizar'])->name('navbar-secciones.actualizar');
+    Route::delete('secciones/{navbar_seccion}', [NavbarSeccionesController::class, 'borrar'])->name('navbar-secciones.borrar');
+
+    Route::get('contenidos/crear/{seccion_id}', [NavbarContenidosController::class, 'crear'])->name('navbar-contenidos.crear');
+    Route::post('contenidos', [NavbarContenidosController::class, 'guardar'])->name('navbar-contenidos.guardar');
+    Route::get('contenidos/{contenido}/editar', [NavbarContenidosController::class, 'editar'])->name('navbar-contenidos.editar');
+    Route::put('contenidos/{contenido}', [NavbarContenidosController::class, 'actualizar'])->name('navbar-contenidos.actualizar');
+    Route::delete('contenidos/{contenido}', [NavbarContenidosController::class, 'borrar'])->name('navbar-contenidos.borrar');
+});
 
 
 
