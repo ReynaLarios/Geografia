@@ -27,7 +27,7 @@
             color: #1e293b;
         }
 
-        /* Navbar superior */
+       
         .navbar-top {
             background-color: var(--blanco);
             box-shadow: 0 2px 4px var(--sombra);
@@ -44,10 +44,10 @@
         }
         .navbar-top .button:hover { background: var(--azul-oscuro); transform: scale(1.05); }
 
-        /* Banner */
+ 
         .banner { width: 100%; height: 350px; object-fit: cover; display: block; }
 
-        /* Navbar horizontal */
+     
         .navbar-bottom {
             background-color: var(--azul-oscuro);
             padding: 1rem;
@@ -89,7 +89,6 @@
         }
         .paste-button:hover .dropdown-content { display: block; }
 
-       /* Layout */
     .layout {
       display: flex;
       flex: 1;
@@ -149,7 +148,7 @@
       background: var(--gris-claro);
     }
 
-        /* Footer con ondas */
+
         footer { position: relative; background: linear-gradient(135deg, #60a5fa, #1e3a8a); color: white; padding: 40px 10px 20px 10px; text-align: center; overflow:hidden; }
         .wave { position: absolute; top: -30px; left: 0; width:100%; overflow:hidden; line-height:0; }
         .wave svg { width: 100%; height: 80px; }
@@ -164,16 +163,14 @@
 </head>
 </head>
 <body>
-<!-- Navbar superior -->
+
 <nav class="navbar navbar-top d-flex justify-content-between align-items-center" style="padding:0.25rem 1rem; height:70px;">
-    <!-- Logo grande -->
-    <a href="/" class="navbar-brand d-flex align-items-center">
-        <img src="{{ asset('storage/Logo.png') }}" alt="Logo" style="height:70px;">
+    <a href="https://www.udg.mx/es" class="navbar-brand d-flex align-items-center">
+        <img src="{{ asset('/logo.png') }}" alt="Logo" style="height:70px;">
     </a>
 
-    <!-- Buscador y botón cerrar sesión -->
+  
     <div class="d-flex gap-3 align-items-center">
-        <!-- Buscador -->
         <div class="input-container" style="background: #f5f6fa; border-radius:25px; padding:3px 10px; border:1px solid #60a5fa;">
             <input type="text" placeholder="Buscar..." style="border:none; outline:none; background:transparent; padding:5px 10px;">
             <svg width="18" height="18" fill="none" stroke="#1e293b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -181,8 +178,6 @@
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
         </div>
-
-        <!-- Botón cerrar sesión -->
         <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button type="submit" class="button" style="padding:6px 15px; font-size:0.9rem;">Cerrar sesión</button>
@@ -190,37 +185,27 @@
     </div>
 </nav>
 
-
-    <!-- Banner dinámico -->
 @php 
     $banner = \App\Models\Banner::latest()->first(); 
 @endphp
 
 <div class="banner-container position-relative">
-    <!-- Imagen del banner (solo si hay una subida) -->
     @if ($banner && file_exists(storage_path('app/public/' . $banner->imagen)))
         <img src="{{ asset('storage/'.$banner->imagen) }}" class="banner" alt="Banner">
     @endif
 
-    <!-- Botones sobre la imagen -->
     <div class="position-absolute top-0 end-0 m-2 d-flex gap-2">
-        <!-- Botón para abrir modal de edición -->
         <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editarBannerModal">
             ✎ Editar
         </button>
-
-        <!-- Botón para borrar banner -->
         @if($banner)
-            <form action="{{ route('banner.borrar') }}" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar este banner?')">
-                @csrf
+            
                 @method('DELETE')
                 <button type="submit" class="btn btn-sm btn-danger">🗑</button>
             </form>
         @endif
     </div>
 </div>
-
-<!-- Modal para editar banner -->
 <div class="modal fade" id="editarBannerModal" tabindex="-1" aria-labelledby="editarBannerLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -249,32 +234,22 @@
     </div>
 </div>
 
-   
-    <!-- Navbar horizontal -->
+
 <nav class="navbar-bottom">
-    <!-- Botón para agregar nueva sección a la barra -->
     <div class="paste-button">
         <button class="button" onclick="window.location='{{ route('navbar.secciones.crear') }}'">
             + Agregar Sección Navbar
         </button>
     </div>
-
-    <!-- Secciones existentes -->
     @foreach($navbarSecciones ?? [] as $sec)
         <div class="paste-button">
-            <!-- Botón principal de la sección -->
             <button class="button">
                 {{ $sec->nombre }} @if($sec->hijos->count()) ▼ @endif
             </button>
-
-            <!-- Dropdown con submenús y botón para agregar nuevos -->
             <div class="dropdown-content">
-                <!-- Botón para agregar submenú/contenido -->
                 <a href="{{ route('contenidos.crear') }}?seccion_id={{ $sec->id }}">
                     + Agregar Submenú / Contenido
                 </a>
-
-                <!-- Lista de submenús existentes -->
                 @foreach($sec->hijos as $hijo)
                     <a href="{{ $hijo->ruta ?? '#' }}">
                         {{ $hijo->nombre }}
@@ -285,8 +260,6 @@
     @endforeach
 </nav>
 
-
-     <!-- CONTENIDO PRINCIPAL -->
   <div class="layout">
     <aside class="sidebar">
       @isset($seccion)
@@ -339,7 +312,6 @@
       @yield('contenido')
     </main>
   </div>
-    <!-- Footer con ondas -->
     <footer>
         <div class="wave">
             <svg viewBox="0 0 1200 120" preserveAspectRatio="none">

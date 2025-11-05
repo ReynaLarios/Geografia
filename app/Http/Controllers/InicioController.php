@@ -62,6 +62,7 @@ class InicioController extends Controller
             'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
+        
         $inicio = inicio::findOrFail($id);
 
         if ($request->hasFile('imagen')) {

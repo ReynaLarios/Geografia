@@ -17,7 +17,7 @@ class BannerController extends Controller
         $banner = Banner::latest()->first();
 
         if($banner){
-            // Borrar imagen antigua si existe
+       
             if(Storage::exists('public/'.$banner->imagen)){
                 Storage::delete('public/'.$banner->imagen);
             }
@@ -25,11 +25,18 @@ class BannerController extends Controller
             $banner = new Banner();
         }
 
-        // Guardar nueva imagen
         $ruta = $request->file('imagen')->store('banners', 'public');
         $banner->imagen = $ruta;
         $banner->save();
 
         return back()->with('success', 'Banner actualizado correctamente.');
     }
+
+    // Eliminar banner
+    public function borrar(Banner $banner)
+    {
+        $banner->delete();
+        return redirect()->route('banner.index')->with('success', 'banner eliminado correctamente.');
+    }
 }
+

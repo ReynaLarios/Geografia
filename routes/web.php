@@ -116,19 +116,14 @@ Route::prefix('navbar')->group(function() {
     // 🔹 SECCIONES PRINCIPALES DEL NAVBAR
     Route::get('secciones', [NavbarSeccionesController::class, 'index'])
         ->name('navbar.secciones.index');
-
     Route::get('secciones/crear', [NavbarSeccionesController::class, 'crear'])
         ->name('navbar.secciones.crear');
-
     Route::post('secciones', [NavbarSeccionesController::class, 'guardarSeccion'])
         ->name('navbar.secciones.guardar');
-
     Route::get('secciones/{seccion}/editar', [NavbarSeccionesController::class, 'editarSeccion'])
         ->name('navbar.secciones.editar');
-
     Route::put('secciones/{seccion}', [NavbarSeccionesController::class, 'actualizarSeccion'])
         ->name('navbar.secciones.actualizar');
-
     Route::delete('secciones/{seccion}', [NavbarSeccionesController::class, 'borrarSeccion'])
         ->name('navbar.secciones.borrar');
 
@@ -136,16 +131,12 @@ Route::prefix('navbar')->group(function() {
     // 🔹 SUBMENÚS (CONTENIDOS) DE CADA SECCIÓN
     Route::get('secciones/{seccion}/contenidos/crear', [NavbarSeccionesController::class, 'crearContenido'])
         ->name('navbar.contenidos.crear');
-
     Route::post('secciones/{seccion}/contenidos', [NavbarSeccionesController::class, 'guardarContenido'])
         ->name('navbar.contenidos.guardar');
-
     Route::get('contenidos/{contenido}/editar', [NavbarSeccionesController::class, 'editarContenido'])
         ->name('navbar.contenidos.editar');
-
     Route::put('contenidos/{contenido}', [NavbarSeccionesController::class, 'actualizarContenido'])
         ->name('navbar.contenidos.actualizar');
-
     Route::delete('contenidos/{contenido}', [NavbarSeccionesController::class, 'borrarContenido'])
         ->name('navbar.contenidos.borrar');
 
@@ -155,11 +146,9 @@ Route::prefix('banner')->group(function() {
     Route::get('/', [BannerController::class, 'mostrar'])->name('banner.mostrar');
     Route::get('/editar', [BannerController::class, 'editar'])->name('banner.editar');
     Route::post('/actualizar', [BannerController::class, 'actualizar'])->name('banner.actualizar');
-    Route::delete('/borrar', [BannerController::class, 'borrar'])->name('banner.borrar');
+    Route::delete('/delete', [BannerController::class, 'delete'])->name('banner.delete');
     Route::post('/guardar', [BannerController::class, 'guardar'])->name('banner.guardar');
 });
-
-
 
 });
 
