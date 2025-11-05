@@ -8,80 +8,124 @@ use Illuminate\Http\Request;
 
 class NavbarSeccionesController extends Controller
 {
-  
+    /** Mostrar todas las secciones del navbar **/
     public function index()
     {
         $navbarSecciones = NavbarSeccion::with('hijos')->get();
-        return view('navbar.index', compact('navbarSecciones'));
+        return view('navbar.secciones.index', compact('navbarSecciones'));
     }
 
+    /** Mostrar formulario para crear una nueva sección **/
     public function crear()
     {
         return view('navbar.secciones.crear');
     }
 
-    public function guardarSeccion(Request $request)
+    /** Guardar una nueva sección **/
+    public function guardar(Request $request)
     {
-        $request->validate(['nombre' => 'required']);
-        NavbarSeccion::create(['nombre' => $request->nombre]);
-        return redirect()->route('navbar.index')->with('success', 'Sección creada correctamente');
+        $request->validate([
+            'nombre' => 'required|string|max:255'
+        ]);
+
+        NavbarSeccion::create([
+            'nombre' => $request->nombre,
+        ]);
+
+        return redirect()->route('navbar.secciones.index')
+                         ->with('success', 'Sección creada correctamente.');
     }
 
-  
-    public function editarSeccion(NavbarSeccion $seccion)
+    /** Mostrar formulario para editar una sección existente **/
+    public function editar(NavbarSeccion $navbar_seccion)
     {
-        return view('navbar.editarSeccion', compact('seccion'));
+        return view('navbar.secciones.editar', compact('navbar_seccion'));
     }
 
-    public function actualizarSeccion(Request $request, NavbarSeccion $seccion)
+    /** Actualizar los datos de una sección **/
+    public function actualizar(Request $request, NavbarSeccion $navbar_seccion)
     {
-        $request->validate(['nombre' => 'required']);
-        $seccion->update(['nombre' => $request->nombre]);
-        return redirect()->route('navbar.index')->with('success', 'Sección actualizada');
+        $request->validate([
+    'nombre' => 'required|string|max:100',
+    'ruta' => 'nullable|string|max:255',
+]);
+
+
+        $navbar_seccion->update([
+            'nombre' => $request->nombre,
+        ]);
+
+        return redirect()->route('navbar.secciones.index')
+                         ->with('success', 'Sección actualizada correctamente.');
     }
 
-
-    public function borrarSeccion(NavbarSeccion $seccion)
+    /** Eliminar una sección **/
+    public function borrar(NavbarSeccion $navbar_seccion)
     {
-        $seccion->delete();
-        return redirect()->route('navbar.index')->with('success', 'Sección eliminada');
+        $navbar_seccion->delete();
+
+        return redirect()->route('navbar.secciones.index')
+                         ->with('success', 'Sección eliminada correctamente.');
     }
 
-    public function crearContenido(NavbarSeccion $seccion)
+    /** Mostrar formulario para crear un submenú (contenido) **/
+    public function crearContenido(NavbarSeccion $navbar_seccion)
     {
-        return view('navbar.crearContenido', compact('seccion'));
+        return view('navbar.contenidos.crear', compact('navbar_seccion'));
     }
 
-    public function guardarContenido(Request $request, NavbarSeccion $seccion)
+    /** Guardar un nuevo submenú **/
+    public function guardarContenido(Request $request, NavbarSeccion $navbar_seccion)
     {
-        $request->validate(['nombre' => 'required']);
-        $seccion->hijos()->create([
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'ruta' => 'nullable|string|max:255'
+        ]);
+
+        $navbar_seccion->hijos()->create([
             'nombre' => $request->nombre,
             'ruta' => $request->ruta,
         ]);
-        return redirect()->route('navbar.index')->with('success', 'Contenido creado');
+
+        return redirect()->route('navbar.secciones.index')
+                         ->with('success', 'Submenú creado correctamente.');
     }
 
-
-    public function editarContenido(NavbarContenido $contenido)
+    /** Editar contenido existente **/
+    public function editarContenido(NavbarContenido $navbar_contenido)
     {
-        return view('navbar.editarContenido', compact('contenido'));
+        return view('navbar.contenidos.editar', compact('navbar_contenido'));
     }
 
-    public function actualizarContenido(Request $request, NavbarContenido $contenido)
+    /** Actualizar contenido **/
+    public function actualizarContenido(Request $request, NavbarContenido $navbar_contenido)
     {
-        $request->validate(['nombre' => 'required']);
-        $contenido->update([
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'ruta' => 'nullable|string|max:255'
+        ]);
+
+        $navbar_contenido->update([
             'nombre' => $request->nombre,
             'ruta' => $request->ruta,
         ]);
-        return redirect()->route('navbar.index')->with('success', 'Contenido actualizado');
+
+        return redirect()->route('navbar.secciones.index')
+                         ->with('success', 'Submenú actualizado correctamente.');
     }
 
-   
-    public function borrarContenido(NavbarContenido $contenido)
+    /** Eliminar contenido **/
+    public function borrarContenido(NavbarContenido $navbar_contenido)
     {
-        $contenido->delete();
-        return redirect()->route('navbar.index')->with('success', 'Contenido eliminado');
+        $navbar_contenido->delete();
+
+        return redirect()->route('navbar.secciones.index')
+                         ->with('success', 'Submenú eliminado correctamente.');
     }
+    public function mostrarNavbar()
+{
+    $navbarSecciones = \App\Models\NavbarSeccion::with('hijos')->get();
+    return view('base.layout', compact('navbarSecciones'));
+}
+
 }

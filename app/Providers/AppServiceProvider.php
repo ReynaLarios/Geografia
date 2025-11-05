@@ -8,6 +8,8 @@ use App\Models\Contenidos;
 use App\Models\secciones;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use App\Models\NavbarSeccion;
+use App\Models\Banner;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,17 +26,25 @@ class AppServiceProvider extends ServiceProvider
      */
 
 
-public function boot(): void
+
+
+
+public function boot()
+
 {
-    // Comparte las secciones con todas las vistas
-    View::composer('*', function ($view) {
+   view()->composer('*', function ($view) {
         $view->with('secciones', Secciones::all());
+        $view->with('navbarSecciones', NavbarSeccion::with('hijos')->get());
+        $view->with('banner', Banner::latest()->first());
     });
 }
 
 
 
+
+
     }
+
 
 
 

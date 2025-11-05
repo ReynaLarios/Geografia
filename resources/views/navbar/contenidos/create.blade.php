@@ -1,18 +1,25 @@
 @extends('base.layout')
 
 @section('contenido')
-<h2>Agregar Submenú</h2>
-<form action="{{ route('navbar-contenidos.guardar') }}" method="POST">
+<div class="container py-4">
+  <h2 class="mb-4">Agregar Submenú a: <strong>{{ $seccion->nombre }}</strong></h2>
+
+  <form action="{{ route('navbar-contenidos.guardar', $seccion->id) }}" method="POST">
     @csrf
-    <input type="hidden" name="navbar_seccion_id" value="{{ $seccion_id }}">
+
     <div class="mb-3">
-        <label for="titulo" class="form-label">Título</label>
-        <input type="text" name="titulo" id="titulo" class="form-control" required>
+      <label for="nombre" class="form-label">Nombre del Submenú</label>
+      <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Ej. Contacto" required>
     </div>
+
     <div class="mb-3">
-        <label for="ruta" class="form-label">Ruta / URL</label>
-        <input type="text" name="ruta" id="ruta" class="form-control">
+      <label for="ruta" class="form-label">Ruta o URL</label>
+      <input type="text" name="ruta" id="ruta" class="form-control" placeholder="/contacto o https://ejemplo.com" required>
+      <small class="text-muted">Pon aquí la URL o la ruta interna del sitio.</small>
     </div>
-    <button class="btn btn-success">Guardar</button>
-</form>
+
+    <button type="submit" class="btn btn-success">Guardar Submenú</button>
+    <a href="{{ route('navbar.secciones.index') }}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
 @endsection

@@ -1,14 +1,22 @@
 @extends('base.layout')
 
 @section('contenido')
-<h2>Editar Sección</h2>
-<form action="{{ route('secciones.actualizar', $seccion->id) }}" method="POST">
-    @csrf
-    @method('PUT')
-    <div class="mb-3">
-        <label for="nombre" class="form-label">Nombre de la sección</label>
-        <input type="text" name="nombre" id="nombre" class="form-control" value="{{ $seccion->nombre }}" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Actualizar</button>
-</form>
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Editar Sección del Navbar</h2>
+
+    <form action="{{ route('navbar-secciones.actualizar', $seccion->id) }}" method="POST" class="p-4 bg-light rounded shadow-sm">
+        @csrf
+        @method('PUT')
+
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre de la sección</label>
+            <input type="text" name="nombre" id="nombre" class="form-control" value="{{ $seccion->nombre }}" required>
+        </div>
+
+        <div class="text-end">
+            <button type="submit" class="btn btn-primary">Actualizar</button>
+            <a href="{{ route('navbar.index') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
 @endsection
