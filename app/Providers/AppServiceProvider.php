@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use App\Models\NavbarSeccion;
 use App\Models\Banner;
+use App\Models\Seccion;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,17 +25,20 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-
-
-
-
+    
 
 public function boot()
-
 {
-   view()->composer('*', function ($view) {
-        $view->with('secciones', Secciones::all());
-        $view->with('navbarSecciones', NavbarSeccion::with('hijos')->get());
+    // Este composer se aplica a todas las vistas
+    view()->composer('*', function ($view) {
+
+        // Barra vertical
+        $view->with('secciones', Seccion::with('contenidos')->get());
+
+        // Barra horizontal (navbar)
+        $view->with('navbarSecciones', NavbarSeccion::with('contenidosNavbar')->get());
+
+        // Banner
         $view->with('banner', Banner::latest()->first());
     });
 }
@@ -42,14 +46,13 @@ public function boot()
 
 
 
-
-    }
+    
 
 
 
 
     
-    
 
 
 
+}

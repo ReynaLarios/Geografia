@@ -8,19 +8,20 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
+    @if($banner && $banner->imagen)
+        <div class="mb-3">
+            <label>Imagen actual:</label><br>
+            <img src="{{ asset('banners/' . $banner->imagen) }}" alt="Banner" width="300">
+        </div>
+    @endif
+
     <form action="{{ route('banner.actualizar') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
-            <label>Imagen actual:</label><br>
-            @if($banner && $banner->imagen)
-                <img src="{{ asset('storage/'.$banner->imagen) }}" alt="Banner" width="300">
-            @endif
-        </div>
-        <div class="mb-3">
-            <label>Subir nueva imagen:</label>
+            <label>Nueva imagen:</label>
             <input type="file" name="imagen" class="form-control" required>
         </div>
-        <button type="submit" class="btn btn-primary">Actualizar Banner</button>
+        <button type="submit" class="btn btn-primary">Actualizar</button>
     </form>
 
     <form action="{{ route('banner.borrar') }}" method="POST" class="mt-2">
@@ -33,3 +34,4 @@
     </form>
 </div>
 @endsection
+

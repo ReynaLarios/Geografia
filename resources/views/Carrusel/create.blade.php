@@ -2,7 +2,7 @@
 
 @section('contenido')
 <div class="container mt-4">
-    <h3>Agregar Imagen al Carrusel</h3>
+    <h3>Subir Nueva Imagen</h3>
 
     <form action="{{ route('inicio.storeImagen') }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -12,7 +12,7 @@
             <input type="file" name="imagen" id="imagen" class="form-control" accept="image/*" required>
         </div>
 
-        <button type="submit" class="btn btn-success">Subir Imagen</button>
+        <button type="submit" class="btn btn-success">Guardar</button>
         <a href="{{ route('inicio.index') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>

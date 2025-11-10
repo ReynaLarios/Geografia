@@ -37,7 +37,7 @@
                 </div>
 
                 <div class="d-flex justify-content-between">
-                    <a href="{{ route('videoteca.index') }}" class="btn btn-secondary">Regresar</a>
+                    <a href="{{ route('videoteca') }}" class="btn btn-secondary">Regresar</a>
                     <button type="submit" class="btn btn-primary">Guardar cambios</button>
                 </div>
             </form>

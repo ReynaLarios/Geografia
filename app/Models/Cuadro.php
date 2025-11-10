@@ -4,17 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 class Cuadro extends Model
-{
-    use HasFactory;
 
-    protected $fillable = ['titulo', 'autor', 'archivo', 'mostrar', 'contenido_id'];
+
+{
+    protected $fillable = ['contenido_id', 'titulo', 'autor','nombre_real','archivo', 'mostrar'];
 
     public function contenido()
     {
-        return $this->belongsTo(Contenidos::class, 'contenido_id');
+        return $this->belongsTo(Contenidos::class);
     }
 }
-
-

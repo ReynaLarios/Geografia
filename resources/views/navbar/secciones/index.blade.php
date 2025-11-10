@@ -1,41 +1,76 @@
 @extends('base.layout')
 
 @section('contenido')
-<main class="p-4" style="background-color: #fff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-    <h2 class="text-center mb-4">Secciones del Navbar</h2>
+<div class="container py-4">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light rounded shadow-sm">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Mi Sitio</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+    <h2 class="text-center mb-4">Gestión del Menú de Navegación</h2>
 
-            <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav">
-                    @foreach ($navbarSecciones as $seccion)
-                        @if ($seccion->hijos->count() > 0)
-                            <!-- Dropdown para secciones con hijos -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown{{ $seccion->id }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    {{ $seccion->nombre }}
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown{{ $seccion->id }}">
-                                    @foreach ($seccion->hijos as $hijo)
-                                        <li><a class="dropdown-item" href="#">{{ $hijo->nombre }}</a></li>
-                                    @endforeach
-                                </ul>
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    <a href="{{ route('navbar.secciones.crear') }}" class="btn btn-primary mb-3">+ Crear Sección</a>
+
+    <div class="list-group">
+        @foreach($navbarSecciones as $seccion)
+            <div class="list-group-item mb-3 shadow-sm rounded">
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <strong>{{ $seccion->nombre }}</strong>
+
+                    <div>
+                        <a href="{{ route('navbar.secciones.editar', $seccion->id) }}" class="btn btn-sm btn-primary">Editar</a>
+
+                        <form action="{{ route('navbar.secciones.borrar', $seccion->id) }}"
+                              method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-sm btn-danger">Eliminar</button>
+                        </form>
+
+                        <a href="{{ route('navbar.contenidos.crear', $seccion->id) }}"
+                           class="btn btn-sm btn-secondary">
+                            + Submenú
+                        </a>
+                    </div>
+                </div>
+
+                {{-- SUBMENÚS --}}
+                @if($seccion->contenidosNavbar->count())
+                    <ul class="list-group list-group-flush mt-3 ms-3">
+                        @foreach($seccion->contenidosNavbar as $hijo)
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                                <div>
+                                    📁 {{ $hijo->titulo }}
+
+                                    @if($hijo->ruta)
+                                        <a href="{{ $hijo->ruta }}" target="_blank" class="text-muted ms-2">
+                                            <small>({{ $hijo->ruta }})</small>
+                                        </a>
+                                    @endif
+                                </div>
+
+                                <div>
+                                    <a href="{{ route('navbar.contenidos.editar', $hijo->id) }}" class="btn btn-sm btn-primary">Editar</a>
+
+                                    <form action="{{ route('navbar.contenidos.borrar', $hijo->id) }}"
+                                          method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-danger">Eliminar</button>
+                                    </form>
+                                </div>
                             </li>
-                        @else
-                            <!-- Sección sin hijos -->
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">{{ $seccion->nombre }}</a>
-                            </li>
-                        @endif
-                    @endforeach
-                </ul>
+                        @endforeach
+                    </ul>
+                @else
+                    <p class="text-muted ms-3 mt-2"><em>Sin submenús</em></p>
+                @endif
+
             </div>
-        </div>
-    </nav>
-</main>
+        @endforeach
+    </div>
+
+</div>
 @endsection

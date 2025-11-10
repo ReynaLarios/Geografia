@@ -23,12 +23,9 @@
                 @endforeach
             </select>
         </div>
-
-        <div class="mb-3">
-            <label class="form-label">Descripción</label>
-            <textarea name="descripcion" class="form-control">{{ old('descripcion', $contenido->descripcion) }}</textarea>
-        </div>
-
+<textarea name="descripcion" id="descripcion" class="form-control" rows="10">
+    {!! old('descripcion', $seccion->descripcion ?? '') !!}
+</textarea>
         <div class="mb-3">
             <label class="form-label">Imagen principal (opcional)</label>
             <input type="file" name="imagen" class="form-control">
@@ -46,38 +43,37 @@
 
         {{-- Cuadro tipo tabla --}}
         <h5 class="mt-4">Cuadro tipo tabla</h5>
-        <table class="table table-bordered" id="tabla-cuadro">
-            <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Autor</th>
-                    <th>Archivo</th>
-                    <th>Mostrar</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach(old('cuadro_titulo', $contenido->cuadros->pluck('titulo')->toArray()) as $index => $titulo)
-                    <tr>
-                        <td><input type="text" name="cuadro_titulo[]" class="form-control" value="{{ $titulo }}"></td>
-                        <td><input type="text" name="cuadro_autor[]" class="form-control" value="{{ old('cuadro_autor.'.$index, $contenido->cuadros[$index]->autor ?? '') }}"></td>
-                        <td>
-                            <input type="file" name="cuadro_archivo[]" class="form-control">
-                            @if(isset($contenido->cuadros[$index]) && $contenido->cuadros[$index]->archivo)
-                                <div class="mt-1">
-                                    <a href="{{ asset('storage/'.$contenido->cuadros[$index]->archivo) }}" target="_blank">📎 Ver archivo</a>
-                                </div>
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            <input type="checkbox" name="mostrar_cuadro[]" value="1" 
-                                {{ old('mostrar_cuadro.'.$index, $contenido->cuadros[$index]->mostrar ?? false) ? 'checked' : '' }}>
-                        </td>
-                        <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+<table class="table table-bordered" id="tabla-cuadro">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Autor</th>
+            <th>Archivo</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($contenido->cuadros as $cuadro)
+        <tr>
+            <td>{{ $cuadro->titulo }}</td>
+            <td>{{ $cuadro->autor }}</td>
+            <td>
+                @if($cuadro->archivo)
+                    @php
+                        $nombre = pathinfo($cuadro->archivo, PATHINFO_FILENAME);
+                        $ext = pathinfo($cuadro->archivo, PATHINFO_EXTENSION);
+                        $tamano = Storage::disk('public')->size($cuadro->archivo);
+                        $tamanoMB = number_format($tamano / 1024 / 1024, 2);
+                    @endphp
+                    {{ Str::limit($nombre, 20) }}.{{ $ext }} ({{ $tamanoMB }} MB)
+                @else
+                    Sin archivo
+                @endif
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+
 
         <button type="button" id="agregar-fila" class="btn btn-secondary mb-3">+ Agregar fila</button>
         <br>
@@ -109,6 +105,16 @@
                 e.target.closest('tr').remove();
             }
         });
+    });
+</script>
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+<script>
+ClassicEditor
+    .create(document.querySelector('#descripcion'), {
+        toolbar: [ 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ]
+    })
+    .catch(error => {
+        console.error(error);
     });
 </script>
 @endsection

@@ -1,24 +1,104 @@
 @extends('base.layout')
 
 @section('contenido')
-<main class="p-4">
+<main class="p-4" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+    <h2>Crear Sección</h2>
 
-    <h1 class="text-2xl font-bold mb-4">Secciones</h1>
+    <form action="{{ route('secciones.guardar') }}" method="POST" enctype="multipart/form-data">
+        @csrf
 
-    <div class="row">
-        @foreach($secciones as $seccion)
-            <div class="col-md-12 mb-4">
-                <div class="card p-3">
-                    <h3 class="card-title">{{ $seccion->nombre }}</h3>
-                    <p class="card-text">{{ $seccion->descripcion }}</p>
+        {{-- Nombre de la sección --}}
+        <div class="mb-3">
+            <label class="form-label">Nombre de la sección</label>
+            <input type="text" name="nombre" class="form-control" value="{{ old('nombre') }}" required>
+        </div>
 
-                    @if($seccion->nombre == 'Multimedia')
-                        <a href="{{ route('videoteca') }}" class="btn btn-success mt-2">Ver Videoteca</a>
-                    @endif
-                </div>
-            </div>
-        @endforeach
-    </div>
+        {{-- Descripción --}}
+        <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion') }}</textarea>
+        </div>
 
+        {{-- Video --}}
+        <div class="mb-3">
+            <label class="form-label">Subir Video (opcional)</label>
+            <input type="file" name="video" class="form-control" accept="video/mp4,video/webm,video/ogg">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">O URL de YouTube (opcional)</label>
+            <input type="url" name="youtube_url" class="form-control" placeholder="https://www.youtube.com/watch?v=...">
+        </div>
+
+        {{-- Cuadro tipo tabla --}}
+        <h5 class="mt-4">Cuadro tipo tabla</h5>
+        <table class="table table-bordered" id="tabla-cuadro">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Archivo</th>
+                    <th>Mostrar</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" name="cuadro_titulo[]" class="form-control"></td>
+                    <td><input type="text" name="cuadro_autor[]" class="form-control"></td>
+                    <td><input type="file" name="cuadro_archivo[]" class="form-control"></td>
+                    <td class="text-center"><input type="checkbox" name="mostrar_cuadro[]" value="1"></td>
+                    <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button type="button" id="agregar-fila" class="btn btn-secondary mb-3">+ Agregar fila</button>
+        <br>
+
+        {{-- Botones --}}
+        <button type="submit" class="btn btn-primary mt-1">Guardar</button>
+        <a href="{{ route('secciones.listado') }}" class="btn btn-outline-secondary mt-1">← Regresar a Secciones</a>
+    </form>
 </main>
+@endsection
+
+@section('scripts')
+{{-- Agregar/eliminar filas dinámicamente --}}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
+    const btnAgregar = document.getElementById('agregar-fila');
+
+    btnAgregar.addEventListener('click', function() {
+        const nuevaFila = document.createElement('tr');
+        nuevaFila.innerHTML = `
+            <td><input type="text" name="cuadro_titulo[]" class="form-control"></td>
+            <td><input type="text" name="cuadro_autor[]" class="form-control"></td>
+            <td><input type="file" name="cuadro_archivo[]" class="form-control"></td>
+            <td class="text-center"><input type="checkbox" name="mostrar_cuadro[]" value="1"></td>
+            <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
+        `;
+        tabla.appendChild(nuevaFila);
+    });
+
+    tabla.addEventListener('click', function(e) {
+        if(e.target && e.target.classList.contains('eliminar-fila')) {
+            e.target.closest('tr').remove();
+        }
+    });
+});
+</script>
+
+{{-- CKEditor para la descripción --}}
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+<script>
+ClassicEditor
+    .create(document.querySelector('#descripcion'), {
+        toolbar: [ 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ]
+    })
+    .catch(error => {
+        console.error(error);
+    });
+</script>
 @endsection

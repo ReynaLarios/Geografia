@@ -6,20 +6,22 @@ use App\Models\Contenidos;
 use App\Models\Secciones;
 use App\Models\Archivo;
 use App\Models\Cuadro;
+use App\Models\Seccion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ContenidosController extends Controller
 {
-    public function listar()
-    {
-        $contenidos = Contenidos::with(['seccion','archivos','cuadros'])->get();
-        return view('Contenidos.contenidos', compact('contenidos'));
-    }
+    public function listado()
+{
+    $contenidos = Contenidos::with(['seccion','archivos','cuadros'])->get();
+    return view('Contenidos.contenidos', compact('contenidos'));
+}
+
 
     public function crear()
     {
-        $secciones = Secciones::all();
+        $secciones = Seccion::all();
         return view('Contenidos.contenidos', compact('secciones'));
     }
 
@@ -79,7 +81,7 @@ class ContenidosController extends Controller
     public function editar($id)
     {
         $contenido = Contenidos::with(['archivos','cuadros'])->findOrFail($id);
-        $secciones = Secciones::all();
+        $secciones = Seccion::all();
         return view('Contenidos.editar', compact('contenido','secciones'));
     }
 
@@ -122,48 +124,62 @@ class ContenidosController extends Controller
         }
 
         
-        if($request->filled('cuadros')) {
-            foreach($request->cuadros as $idCuadro => $item) {
-                if(isset($item['id'])) {
-                    $cuadro = Cuadro::find($item['id']);
-                    if($cuadro) {
-                        $archivoPath = isset($item['archivo']) ? $item['archivo']->store('cuadros','public') : $cuadro->archivo;
-                        $cuadro->update([
-                            'titulo' => $item['titulo'],
-                            'autor' => $item['autor'],
-                            'archivo' => $archivoPath,
-                            'mostrar' => true
-                        ]);
-                    }
-                } else {
-                    if($item['titulo'] || $item['autor'] || isset($item['archivo'])) {
-                        $archivoPath = isset($item['archivo']) ? $item['archivo']->store('cuadros','public') : null;
-                        Cuadro::create([
-                            'titulo' => $item['titulo'],
-                            'autor' => $item['autor'],
-                            'archivo' => $archivoPath,
-                            'mostrar' => true,
-                            'contenido_id' => $contenido->id
-                        ]);
-                    }
-                }
+       if($request->filled('cuadro_titulo')) {
+    foreach($request->cuadro_titulo as $index => $titulo) {
+        if($titulo || $request->cuadro_autor[$index] ?? null || $request->file('cuadro_archivo')[$index] ?? null) {
+            $archivoPath = $request->file('cuadro_archivo')[$index] ?? null;
+            if($archivoPath) {
+                $archivoPath = $archivoPath->store('cuadros','public');
             }
+
+            Cuadro::create([
+                'titulo' => $titulo,
+                'autor' => $request->cuadro_autor[$index] ?? null,
+                'archivo' => $archivoPath,
+                'mostrar' => isset($request->mostrar_cuadro[$index]),
+                'contenido_id' => $contenido->id // o 'seccion_id' si es sección
+            ]);
+        }
+    }
+
+
         }
 
         return redirect()->route('contenidos.listado')->with('success','Contenido actualizado correctamente.');
     }
+public function mostrar($id)
+{
+    $contenido = Contenidos::with(['seccion', 'archivos', 'cuadros'])->findOrFail($id);
 
-    public function mostrar($id)
-    {
-        $contenido = Contenidos::with(['archivos','cuadros'])->findOrFail($id);
-        return view('Contenidos.mostrar', compact('contenido'));
+    // Traer la sección de ese contenido
+    $seccion = $contenido->seccion;
+
+    // Traer todas las secciones para la barra lateral si quieres también
+    $secciones = Seccion::all();
+
+    return view('contenidos.mostrar', compact('contenido', 'seccion', 'secciones'));
+}
+
+public function borrar($id)
+{
+    $contenido = Contenidos::findOrFail($id);
+
+    // Si tiene archivos o cuadros asociados, eliminarlos primero
+    foreach ($contenido->archivos as $archivo) {
+        Storage::disk('public')->delete($archivo->ruta);
+        $archivo->delete();
     }
 
-    public function borrar($id)
-    {
-        $contenido= Secciones::findOrFail($id);
-        $contenido->delete();
-
-        return redirect()->route('contenidos.listado')->with('success', 'Sección eliminada correctamente.');
+    foreach ($contenido->cuadros as $cuadro) {
+        if ($cuadro->archivo) {
+            Storage::disk('public')->delete($cuadro->archivo);
+        }
+        $cuadro->delete();
     }
+
+    $contenido->delete();
+
+    return redirect()->back()->with('success', 'Contenido eliminado correctamente.');
+}
+
 }

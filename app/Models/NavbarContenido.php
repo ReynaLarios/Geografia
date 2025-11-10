@@ -9,11 +9,16 @@ class NavbarContenido extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['navbar_seccion_id', 'nombre', 'ruta'];
+    protected $fillable = [
+        'navbar_seccion_id',
+        'titulo',
+        'descripcion',
+        'imagen'
+    ];
 
-    public function seccion()
-    {
-        return $this->belongsTo(NavbarSeccion::class, 'navbar_seccion_id');
-    }
+  public function seccion()
+{
+    return $this->belongsTo(NavbarSeccion::class, 'navbar_seccion_id');
 }
 
+}

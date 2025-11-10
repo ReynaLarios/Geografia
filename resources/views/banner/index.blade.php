@@ -10,13 +10,14 @@
 
   @if($banner && $banner->imagen)
     <div class="mb-4">
-      <img src="{{ asset('storage/' . $banner->imagen) }}" class="banner" alt="Banner">
+     <img src="{{ asset('banners/' . $banner->imagen) }}" class="banner img-fluid" alt="Banner">
 
-    <form action="{{ route('banner.borrar') }}" method="POST" onsubmit="return confirm('¿Eliminar banner actual?')">
-      @csrf
-      @method('DELETE')
-      <button class="btn btn-danger mb-4">🗑 Eliminar Banner</button>
-    </form>
+      <form action="{{ route('banner.borrar') }}" method="POST" onsubmit="return confirm('¿Eliminar banner actual?')">
+        @csrf
+        @method('DELETE')
+        <button class="btn btn-danger mt-3">🗑 Eliminar Banner</button>
+      </form>
+    </div>
   @endif
 
   <form action="{{ route('banner.guardar') }}" method="POST" enctype="multipart/form-data" class="border p-4 rounded bg-white shadow-sm">
@@ -27,5 +28,6 @@
     </div>
     <button type="submit" class="btn btn-primary">💾 Guardar</button>
   </form>
+
 </div>
 @endsection

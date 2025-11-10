@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\inicio;
+use App\Models\Inicio;
+use App\Models\Carrusel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class InicioController extends Controller
 {
+    // ================== NOTICIAS ==================
+
     public function index()
     {
-        $inicio = inicio::all();
-        return view('Inicio.index', compact('inicio'));
+        $noticias = Inicio::all();
+        $imagenes = Carrusel::all(); // Carrusel dinámico
+        return view('Inicio.index', compact('noticias','imagenes'));
     }
 
     public function create()
@@ -24,34 +28,26 @@ class InicioController extends Controller
         $request->validate([
             'titulo' => 'required|string|max:255',
             'descripcion' => 'required|string',
-            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        $rutaImagen = null;
-        if ($request->hasFile('imagen')) {
-            $rutaImagen = $request->file('imagen')->store('imagenes', 'public');
-        }
-
-        inicio::create([
+        Inicio::create([
             'titulo' => $request->titulo,
-            'descripcion' => $request->descripcion,
-            'imagen' => $rutaImagen,
+            'descripcion' => $request->descripcion
         ]);
 
-        return redirect()->route('inicio.index')->with('success', 'Noticia creada correctamente.');
+        return redirect()->route('inicio.index')->with('success','Noticia creada correctamente.');
     }
 
     public function show($id)
     {
-        $inicio = inicio::findOrFail($id);
-        return view('Inicio.show', compact('inicio'));
+        $noticia = Inicio::findOrFail($id);
+        return view('Inicio.show', compact('noticia'));
     }
 
-    public function edit(Request $request, $id)
+    public function edit($id)
     {
-        $inicio = inicio::findOrFail($id);
-        $soloImagen = $request->get('soloImagen', false); 
-        return view('Inicio.edit', compact('inicio', 'soloImagen'));
+        $noticia = Inicio::findOrFail($id);
+        return view('Inicio.edit', compact('noticia'));
     }
 
     public function update(Request $request, $id)
@@ -59,43 +55,78 @@ class InicioController extends Controller
         $request->validate([
             'titulo' => 'required|string|max:255',
             'descripcion' => 'required|string',
-            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        
-        $inicio = inicio::findOrFail($id);
+        $noticia = Inicio::findOrFail($id);
+        $noticia->titulo = $request->titulo;
+        $noticia->descripcion = $request->descripcion;
+        $noticia->save();
 
-        if ($request->hasFile('imagen')) {
-            if ($inicio->imagen && Storage::disk('public')->exists($inicio->imagen)) {
-                Storage::disk('public')->delete($inicio->imagen);
-            }
-            $inicio->imagen = $request->file('imagen')->store('imagenes', 'public');
-        }
-
-      
-        if (!$request->has('soloImagen')) {
-            $inicio->titulo = $request->titulo;
-            $inicio->descripcion = $request->descripcion;
-        }
-
-        $inicio->save();
-
-        return redirect()->route('inicio.index')->with('success', 'Noticia actualizada correctamente.');
+        return redirect()->route('inicio.index')->with('success','Noticia actualizada correctamente.');
     }
 
     public function destroy($id)
     {
-        $inicio = inicio::findOrFail($id);
+        $noticia = Inicio::findOrFail($id);
+        $noticia->delete();
+        return redirect()->route('inicio.index')->with('success','Noticia eliminada correctamente.');
+    }
 
-        if ($inicio->imagen && Storage::disk('public')->exists($inicio->imagen)) {
-            Storage::disk('public')->delete($inicio->imagen);
+    // ================== CARRUSEL ==================
+
+    public function createImagen()
+    {
+        return view('Inicio.createImagen');
+    }
+
+    public function storeImagen(Request $request)
+    {
+        $request->validate([
+            'imagen' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048'
+        ]);
+
+        $ruta = $request->file('imagen')->store('imagenes','public');
+        Carrusel::create(['imagen'=>$ruta]);
+
+        return redirect()->route('inicio.index')->with('success','Imagen agregada correctamente.');
+    }
+
+    public function editImagen($id)
+    {
+        $imagen = Carrusel::findOrFail($id);
+        return view('Inicio.editImagen', compact('imagen'));
+    }
+
+    public function updateImagen(Request $request, $id)
+    {
+        $request->validate([
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
+        ]);
+
+        $imagen = Carrusel::findOrFail($id);
+
+        if($request->hasFile('imagen')){
+            if($imagen->imagen && Storage::disk('public')->exists($imagen->imagen)){
+                Storage::disk('public')->delete($imagen->imagen);
+            }
+            $imagen->imagen = $request->file('imagen')->store('imagenes','public');
         }
 
-        $inicio->delete();
+        $imagen->save();
 
-        return redirect()->route('inicio.index')->with('success', 'Noticia eliminada correctamente.');
+        return redirect()->route('inicio.index')->with('success','Imagen actualizada correctamente.');
+    }
+
+    public function destroyImagen($id)
+    {
+        $imagen = Carrusel::findOrFail($id);
+
+        if($imagen->imagen && Storage::disk('public')->exists($imagen->imagen)){
+            Storage::disk('public')->delete($imagen->imagen);
+        }
+
+        $imagen->delete();
+
+        return back()->with('success','Imagen eliminada correctamente.');
     }
 }
-
-
-

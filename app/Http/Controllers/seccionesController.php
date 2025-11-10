@@ -2,26 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Secciones;
-use App\Models\Videoteca;
 use Illuminate\Http\Request;
+use App\Models\Seccion;
 
 class SeccionesController extends Controller
 {
-    
-   public function listado()
-{
-    $secciones = \App\Models\Secciones::all(); // solo las secciones
-    $videos = \App\Models\Videoteca::with('categoria')->get(); // todos los videos para la sección extra
+    // Listado general de secciones
+    public function listado()
+    {
+        $secciones = Seccion::all();
 
-    return view('secciones.listado', compact('secciones', 'videos'));
-}
+        return view('secciones.listado', [
+            'secciones' => $secciones,
+            'seccionActual' => null // Para el sidebar
+        ]);
+    }
 
+    // Mostrar una sección con sus contenidos
+    public function mostrar($id)
+    {
+        $secciones = Seccion::all(); // Para el sidebar
+        $seccion = Seccion::with('contenidos')->findOrFail($id);
 
-    // Crear nueva sección
+        // Si es Videoteca, redirige directo
+        if ($seccion->id == 24) {
+            return redirect()->route('videoteca');
+        }
+
+        return view('secciones.mostrar', [
+            'secciones' => $secciones,
+            'seccion' => $seccion,
+            'seccionActual' => $seccion // Para el sidebar: mostrar contenidos de esta sección
+        ]);
+    }
+
+    // Formulario para crear nueva sección
     public function crear()
     {
-        return view('secciones.secciones'); 
+        $secciones = Seccion::all(); // sidebar
+        return view('secciones.secciones', compact('secciones'));
     }
 
     // Guardar nueva sección
@@ -29,68 +48,38 @@ class SeccionesController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'descripcion' => 'required',
+            'descripcion' => 'nullable|string',
         ]);
 
-        Secciones::create([
-            'nombre' => $request->nombre,
-            'descripcion' => $request->descripcion, 
-        ]);
+        Seccion::create($request->all());
 
         return redirect()->route('secciones.listado')->with('success', 'Sección creada correctamente.');
     }
 
-    // Editar sección
+    // Formulario para editar sección
     public function editar($id)
     {
-        $seccion = Secciones::findOrFail($id);
-        return view('secciones.editar', compact('seccion'));
+        $secciones = Seccion::all(); // sidebar
+        $seccion = Seccion::findOrFail($id);
+
+        return view('secciones.editar', compact('secciones', 'seccion'));
     }
 
     // Actualizar sección
     public function actualizar(Request $request, $id)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'required',
-        ]);
+        $seccion = Seccion::findOrFail($id);
+        $seccion->update($request->all());
 
-        $seccion = Secciones::findOrFail($id);
-        $seccion->update([
-            'nombre' => $request->nombre,
-            'descripcion' => $request->descripcion,
-        ]);
-
-        return redirect()->route('secciones.listado')->with('success', 'Sección actualizada correctamente');
+        return redirect()->route('secciones.listado')->with('success', 'Sección actualizada.');
     }
 
-  
+    // Borrar sección
     public function borrar($id)
     {
-        $seccion = Secciones::findOrFail($id);
+        $seccion = Seccion::findOrFail($id);
         $seccion->delete();
 
-        return redirect()->route('secciones.listado')->with('success', 'Sección eliminada correctamente.');
+        return redirect()->route('secciones.listado')->with('success', 'Sección eliminada.');
     }
-
-    // Mostrar una sección individual
-public function mostrar($id)
-{
-    if($id == 24) {
-        // Redirige a la videoteca
-        return redirect()->route('secciones.videoteca');
-    }
-
-    $seccion = Secciones::with('contenidos')->findOrFail($id);
-    return view('secciones.mostrar', compact('seccion'));
-}
-
-// Página de videoteca para la sección 24
-public function videoteca()
-{
-    $videos = Videoteca::with('categoria')->get();
-    return view('secciones.videoteca', compact('videos'));
-}
-
-   
 }

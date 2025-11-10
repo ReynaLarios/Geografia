@@ -4,39 +4,70 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Banner;
-use Illuminate\Support\Facades\Storage;
 
 class BannerController extends Controller
 {
+    public function index()
+    {
+        $banner = Banner::first();
+        return view('banner.index', compact('banner'));
+    }
+
+    public function guardar(Request $request)
+    {
+        $request->validate([
+            'imagen' => 'required|image'
+        ]);
+
+        $nombre = time() . '.' . $request->imagen->extension();
+        $request->imagen->move(public_path('banners'), $nombre);
+
+        $banner = Banner::first() ?? new Banner();
+        $banner->imagen = $nombre;
+        $banner->save();
+
+        return back()->with('success', 'Banner guardado correctamente.');
+    }
+
+    public function editar()
+    {
+        $banner = Banner::first();
+        return view('banner.editar', compact('banner'));
+    }
+
     public function actualizar(Request $request)
     {
         $request->validate([
-            'imagen' => 'required|image|mimes:jpg,jpeg,png,gif|max:4096',
+            'imagen' => 'required|image'
         ]);
 
-        $banner = Banner::latest()->first();
+        $banner = Banner::first();
 
-        if($banner){
-       
-            if(Storage::exists('public/'.$banner->imagen)){
-                Storage::delete('public/'.$banner->imagen);
-            }
-        } else {
-            $banner = new Banner();
+        // Borrar imagen anterior
+        if ($banner && $banner->imagen && file_exists(public_path('banners/' . $banner->imagen))) {
+            unlink(public_path('banners/' . $banner->imagen));
         }
 
-        $ruta = $request->file('imagen')->store('banners', 'public');
-        $banner->imagen = $ruta;
+        // Guardar nueva
+        $nombre = time() . '.' . $request->imagen->extension();
+        $request->imagen->move(public_path('banners'), $nombre);
+
+        $banner->imagen = $nombre;
         $banner->save();
 
         return back()->with('success', 'Banner actualizado correctamente.');
     }
 
-    // Eliminar banner
-    public function borrar(Banner $banner)
+    public function borrar()
     {
+        $banner = Banner::first();
+
+        if ($banner && $banner->imagen && file_exists(public_path('banners/' . $banner->imagen))) {
+            unlink(public_path('banners/' . $banner->imagen));
+        }
+
         $banner->delete();
-        return redirect()->route('banner.index')->with('success', 'banner eliminado correctamente.');
+
+        return back()->with('success', 'Banner eliminado.');
     }
 }
-

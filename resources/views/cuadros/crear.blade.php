@@ -8,8 +8,10 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <form action="{{ route('cuadros.guardar') }}" method="POST">
-        @csrf
+    <form action="{{ route('cuadros.guardar') }}" method="POST" enctype="multipart/form-data">
+    @csrf
+    @method('PUT')
+
         <div class="mb-3">
             <label for="titulo" class="form-label">Título</label>
             <input type="text" name="titulo" id="titulo" class="form-control" placeholder="Título del cuadro" required>

@@ -9,6 +9,7 @@
         {!! $seccion->descripcion !!}
     </div>
 
+    {{-- Contenidos relacionados --}}
     @if($seccion->contenidos->isNotEmpty())
         <div class="card mt-4 shadow-sm">
             <div class="card-body">
@@ -16,10 +17,7 @@
                 <ul class="list-unstyled">
                     @foreach($seccion->contenidos as $contenido)
                         <li class="mb-3">
-                            <strong>{{ $contenido->titulo }}</strong><br>
-                            <div class="contenido-descripcion">
-                                {!! $contenido->descripcion !!}
-                            </div>
+                            <strong>{{ $contenido->titulo }}</strong>
                         </li>
                     @endforeach
                 </ul>

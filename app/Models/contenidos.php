@@ -23,7 +23,7 @@ class Contenidos extends Model
 
     public function seccion()
     {
-        return $this->belongsTo(Secciones::class, 'seccion_id');
+        return $this->belongsTo(Seccion::class, 'seccion_id');
     }
 }
 
