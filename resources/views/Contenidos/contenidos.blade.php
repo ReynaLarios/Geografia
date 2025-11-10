@@ -7,13 +7,13 @@
     <form action="{{ route('contenidos.guardar') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
-        {{-- Título --}}
+      
         <div class="mb-3">
             <label class="form-label">Título</label>
             <input type="text" name="titulo" class="form-control" value="{{ old('titulo') }}" required>
         </div>
 
-        {{-- Sección --}}
+      
         <div class="mb-3">
             <label class="form-label">Sección</label>
             <select name="seccion_id" class="form-select" required>
@@ -23,25 +23,25 @@
             </select>
         </div>
 
-        {{-- Descripción --}}
+      
         <div class="mb-3">
             <label class="form-label">Descripción</label>
             <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion') }}</textarea>
         </div>
 
-        {{-- Imagen principal --}}
+
         <div class="mb-3">
             <label class="form-label">Imagen principal (opcional)</label>
             <input type="file" name="imagen" class="form-control">
         </div>
 
-        {{-- Archivos adicionales --}}
+       
         <div class="mb-3">
             <label class="form-label">Archivos adicionales</label>
             <input type="file" name="archivos[]" multiple class="form-control">
         </div>
 
-        {{-- Cuadro tipo tabla --}}
+       
         <h5 class="mt-4">Cuadro tipo tabla</h5>
         <table class="table table-bordered" id="tabla-cuadro">
             <thead>
@@ -75,7 +75,7 @@
 @section('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    let index = 0; // para el array de cuadros
+    let index = 0; 
     const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
     const btnAgregar = document.getElementById('agregar-fila');
 
@@ -92,14 +92,14 @@ document.addEventListener('DOMContentLoaded', function() {
         tabla.appendChild(nuevaFila);
     });
 
-    // eliminar fila
+
     tabla.addEventListener('click', function(e){
         if(e.target && e.target.classList.contains('eliminar-fila')){
             e.target.closest('tr').remove();
         }
     });
 
-    // CKEditor
+    
     ClassicEditor
         .create(document.querySelector('#descripcion'))
         .catch(error => { console.error(error); });

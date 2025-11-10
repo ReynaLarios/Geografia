@@ -51,7 +51,7 @@ public function actualizar(Request $request, NavbarContenido $contenido)
     return redirect()->route('navbar.secciones.index')->with('success', 'Submenú actualizado correctamente.');
 }
 
-/** ✅ BORRAR SUBMENÚ */
+
 public function borrar(NavbarContenido $contenido)
 {
     $contenido->delete();
@@ -62,7 +62,7 @@ public function borrar(NavbarContenido $contenido)
 
 public function editar(NavbarContenido $contenido)
 {
-    $navbar_contenido = $contenido; // renombramos para la vista
+    $navbar_contenido = $contenido; 
     return view('navbar.contenidos.editar', compact('navbar_contenido'));
 }
 public function store(Request $request)

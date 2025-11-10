@@ -29,7 +29,6 @@
         </div>
     </div>
 
-    {{-- Lista de videos --}}
     @if($videos->count() > 0)
         <div class="row">
             @foreach($videos as $video)

@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-// app/Providers/AppServiceProvider.php
+
 
 use App\Models\Contenidos;
 use App\Models\secciones;
@@ -29,16 +29,16 @@ class AppServiceProvider extends ServiceProvider
 
 public function boot()
 {
-    // Este composer se aplica a todas las vistas
+  
     view()->composer('*', function ($view) {
 
-        // Barra vertical
+    
         $view->with('secciones', Seccion::with('contenidos')->get());
 
-        // Barra horizontal (navbar)
+       
         $view->with('navbarSecciones', NavbarSeccion::with('contenidosNavbar')->get());
 
-        // Banner
+      
         $view->with('banner', Banner::latest()->first());
     });
 }

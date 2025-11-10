@@ -200,10 +200,12 @@
 
 <div class="banner-container position-relative">
     @if ($banner && file_exists(storage_path('app/public/' . $banner->imagen)))
-        <img src="{{ asset('storage/'.$banner->imagen) }}" class="banner" alt="Banner">
     @endif
+    <img src="{{ asset('storage/'.$banner->imagen) }}" class="banner" alt="Banner">
 </div>
-{{-- NAVBAR INFERIOR (SECCIONES) --}}
+{{$banner->imagen}}
+
+{{-- NAVBAR INFERIOR --}}
 <nav class="navbar-bottom">
 
     <div class="paste-button">
@@ -214,13 +216,13 @@
 
     @foreach($navbarSecciones ?? [] as $sec)
     <div class="paste-button" style="position: relative;">
-        <!-- Botón principal de la sección -->
+        
         <button class="button">
             {{ $sec->nombre }}
             @if($sec->contenidosNavbar && $sec->contenidosNavbar->count()) ▼ @endif
         </button>
 
-        <!-- Dropdown -->
+   
         <div class="dropdown-content">
             <div class="d-flex justify-content-between align-items-center px-2 mb-2">
                 <a href="{{ route('navbar.contenidos.editar', $sec->id) }}" class="btn btn-sm btn-warning">Editar</a>
@@ -258,7 +260,6 @@
     <aside class="sidebar">
         <h4>Secciones</h4>
 
-        {{-- ✅ Botones dinámicos según contexto --}}
         @if(isset($seccion))
             {{-- Estás dentro de una sección → agregar contenido --}}
             <button class="fancy mb-3" onclick="window.location='{{ route('contenidos.crear') }}?seccion_id={{ $seccion->id }}'">

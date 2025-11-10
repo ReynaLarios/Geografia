@@ -8,26 +8,26 @@ use Illuminate\Support\Facades\Storage;
 
 class CuadroController extends Controller
 {
-    // Mostrar todos los cuadros
+  
     public function index()
     {
         $cuadros = Cuadro::all();
         return view('cuadros.index', compact('cuadros'));
     }
 
-    // Mostrar formulario para crear
+   
     public function crear()
     {
         return view('cuadros.crear');
     }
 
-    // Guardar un nuevo cuadro con archivo
+   
     public function guardar(Request $request)
     {
         $request->validate([
             'titulo' => 'required|string|max:255',
             'autor' => 'nullable|string|max:255',
-            'archivo' => 'nullable|file|max:10240', // hasta 10MB
+            'archivo' => 'nullable|file|max:10240',
         ]);
 
         $archivoPath = null;
@@ -48,13 +48,13 @@ class CuadroController extends Controller
         return redirect()->route('cuadros.index')->with('success', 'Cuadro agregado correctamente.');
     }
 
-    // Mostrar formulario para editar
+ 
     public function editar(Cuadro $cuadro)
     {
         return view('cuadros.editar', compact('cuadro'));
     }
 
-    // Actualizar cuadro con archivo
+   
     public function actualizar(Request $request, Cuadro $cuadro)
     {
         $request->validate([
@@ -66,7 +66,7 @@ class CuadroController extends Controller
         $datos = $request->only('titulo', 'autor');
 
         if($request->hasFile('archivo')){
-            // Eliminar archivo viejo si existe
+           
             if($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo)){
                 Storage::disk('public')->delete($cuadro->archivo);
             }
@@ -83,7 +83,7 @@ class CuadroController extends Controller
         return redirect()->route('cuadros.index')->with('success', 'Cuadro actualizado correctamente.');
     }
 
-    // Eliminar cuadro y su archivo
+
     public function borrar(Cuadro $cuadro)
     {
         if($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo)){

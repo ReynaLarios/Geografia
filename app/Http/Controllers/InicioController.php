@@ -9,12 +9,12 @@ use Illuminate\Support\Facades\Storage;
 
 class InicioController extends Controller
 {
-    // ================== NOTICIAS ==================
+   
 
     public function index()
     {
         $noticias = Inicio::all();
-        $imagenes = Carrusel::all(); // Carrusel dinámico
+        $imagenes = Carrusel::all(); 
         return view('Inicio.index', compact('noticias','imagenes'));
     }
 
@@ -72,7 +72,6 @@ class InicioController extends Controller
         return redirect()->route('inicio.index')->with('success','Noticia eliminada correctamente.');
     }
 
-    // ================== CARRUSEL ==================
 
     public function createImagen()
     {

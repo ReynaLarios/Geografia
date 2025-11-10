@@ -7,19 +7,18 @@
     <form action="{{ route('secciones.guardar') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
-        {{-- Nombre de la sección --}}
+
         <div class="mb-3">
             <label class="form-label">Nombre de la sección</label>
             <input type="text" name="nombre" class="form-control" value="{{ old('nombre') }}" required>
         </div>
 
-        {{-- Descripción --}}
         <div class="mb-3">
             <label class="form-label">Descripción</label>
             <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion') }}</textarea>
         </div>
 
-        {{-- Video --}}
+   
         <div class="mb-3">
             <label class="form-label">Subir Video (opcional)</label>
             <input type="file" name="video" class="form-control" accept="video/mp4,video/webm,video/ogg">
@@ -30,7 +29,7 @@
             <input type="url" name="youtube_url" class="form-control" placeholder="https://www.youtube.com/watch?v=...">
         </div>
 
-        {{-- Cuadro tipo tabla --}}
+    
         <h5 class="mt-4">Cuadro tipo tabla</h5>
         <table class="table table-bordered" id="tabla-cuadro">
             <thead>
@@ -56,7 +55,7 @@
         <button type="button" id="agregar-fila" class="btn btn-secondary mb-3">+ Agregar fila</button>
         <br>
 
-        {{-- Botones --}}
+       
         <button type="submit" class="btn btn-primary mt-1">Guardar</button>
         <a href="{{ route('secciones.listado') }}" class="btn btn-outline-secondary mt-1">← Regresar a Secciones</a>
     </form>
@@ -64,7 +63,7 @@
 @endsection
 
 @section('scripts')
-{{-- Agregar/eliminar filas dinámicamente --}}
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
@@ -90,7 +89,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-{{-- CKEditor para la descripción --}}
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 <script>
 ClassicEditor

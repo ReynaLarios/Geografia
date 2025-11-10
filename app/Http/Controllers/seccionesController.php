@@ -7,24 +7,22 @@ use App\Models\Seccion;
 
 class SeccionesController extends Controller
 {
-    // Listado general de secciones
     public function listado()
     {
         $secciones = Seccion::all();
 
         return view('secciones.listado', [
             'secciones' => $secciones,
-            'seccionActual' => null // Para el sidebar
+            'seccionActual' => null 
         ]);
     }
 
-    // Mostrar una sección con sus contenidos
     public function mostrar($id)
     {
-        $secciones = Seccion::all(); // Para el sidebar
+        $secciones = Seccion::all();
         $seccion = Seccion::with('contenidos')->findOrFail($id);
 
-        // Si es Videoteca, redirige directo
+        
         if ($seccion->id == 24) {
             return redirect()->route('videoteca');
         }
@@ -32,18 +30,18 @@ class SeccionesController extends Controller
         return view('secciones.mostrar', [
             'secciones' => $secciones,
             'seccion' => $seccion,
-            'seccionActual' => $seccion // Para el sidebar: mostrar contenidos de esta sección
+            'seccionActual' => $seccion 
         ]);
     }
 
-    // Formulario para crear nueva sección
+
     public function crear()
     {
-        $secciones = Seccion::all(); // sidebar
+        $secciones = Seccion::all(); 
         return view('secciones.secciones', compact('secciones'));
     }
 
-    // Guardar nueva sección
+ 
     public function guardar(Request $request)
     {
         $request->validate([
@@ -56,16 +54,15 @@ class SeccionesController extends Controller
         return redirect()->route('secciones.listado')->with('success', 'Sección creada correctamente.');
     }
 
-    // Formulario para editar sección
     public function editar($id)
     {
-        $secciones = Seccion::all(); // sidebar
+        $secciones = Seccion::all(); 
         $seccion = Seccion::findOrFail($id);
 
         return view('secciones.editar', compact('secciones', 'seccion'));
     }
 
-    // Actualizar sección
+
     public function actualizar(Request $request, $id)
     {
         $seccion = Seccion::findOrFail($id);
@@ -74,7 +71,7 @@ class SeccionesController extends Controller
         return redirect()->route('secciones.listado')->with('success', 'Sección actualizada.');
     }
 
-    // Borrar sección
+   
     public function borrar($id)
     {
         $seccion = Seccion::findOrFail($id);

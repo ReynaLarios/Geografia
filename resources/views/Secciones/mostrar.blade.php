@@ -9,7 +9,7 @@
         {!! $seccion->descripcion !!}
     </div>
 
-    {{-- Contenidos relacionados --}}
+  
     @if($seccion->contenidos->isNotEmpty())
         <div class="card mt-4 shadow-sm">
             <div class="card-body">

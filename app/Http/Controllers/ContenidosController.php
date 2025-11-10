@@ -112,7 +112,7 @@ class ContenidosController extends Controller
 
         $contenido->update($datos);
 
-        // Archivos
+    
         if($request->hasFile('archivos')) {
             foreach($request->file('archivos') as $file) {
                 $contenido->archivos()->create([
@@ -137,7 +137,7 @@ class ContenidosController extends Controller
                 'autor' => $request->cuadro_autor[$index] ?? null,
                 'archivo' => $archivoPath,
                 'mostrar' => isset($request->mostrar_cuadro[$index]),
-                'contenido_id' => $contenido->id // o 'seccion_id' si es sección
+                'contenido_id' => $contenido->id 
             ]);
         }
     }
@@ -151,10 +151,10 @@ public function mostrar($id)
 {
     $contenido = Contenidos::with(['seccion', 'archivos', 'cuadros'])->findOrFail($id);
 
-    // Traer la sección de ese contenido
+   
     $seccion = $contenido->seccion;
 
-    // Traer todas las secciones para la barra lateral si quieres también
+  
     $secciones = Seccion::all();
 
     return view('contenidos.mostrar', compact('contenido', 'seccion', 'secciones'));
@@ -164,7 +164,7 @@ public function borrar($id)
 {
     $contenido = Contenidos::findOrFail($id);
 
-    // Si tiene archivos o cuadros asociados, eliminarlos primero
+    
     foreach ($contenido->archivos as $archivo) {
         Storage::disk('public')->delete($archivo->ruta);
         $archivo->delete();

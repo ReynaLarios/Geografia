@@ -5,12 +5,10 @@
 
     <h2 class="mb-3"><strong>Cuadros</strong></h2>
 
-    {{-- Mensaje de éxito --}}
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    {{-- Formulario para agregar cuadro --}}
     <form action="{{ route('cuadros.guardar') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
@@ -30,7 +28,7 @@
         </div>
     </form>
 
-    {{-- Lista de cuadros --}}
+
     @if($cuadros->count() > 0)
         <div class="row mt-4">
             @foreach($cuadros as $cuadro)

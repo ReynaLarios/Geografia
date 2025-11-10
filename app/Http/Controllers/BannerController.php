@@ -43,12 +43,12 @@ class BannerController extends Controller
 
         $banner = Banner::first();
 
-        // Borrar imagen anterior
+ 
         if ($banner && $banner->imagen && file_exists(public_path('banners/' . $banner->imagen))) {
             unlink(public_path('banners/' . $banner->imagen));
         }
 
-        // Guardar nueva
+     
         $nombre = time() . '.' . $request->imagen->extension();
         $request->imagen->move(public_path('banners'), $nombre);
 
@@ -59,6 +59,8 @@ class BannerController extends Controller
     }
 
     public function borrar()
+
+
     {
         $banner = Banner::first();
 

@@ -41,13 +41,15 @@ class NavbarSeccionesController extends Controller
     public function actualizarSeccion(Request $request, NavbarSeccion $seccion)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255',
-            'ruta'   => 'nullable|string|max:255',
+            'nombre' => $request->nombre,
+        'descripcion' => 'nullable|string',
+        'imagen' => 'nullable|image|max:2048',
         ]);
 
         $seccion->update([
             'nombre' => $request->nombre,
-            'ruta'   => $request->ruta,
+        'descripcion' => 'nullable|string',
+        'imagen' => 'nullable|image|max:2048',
         ]);
 
         return redirect()->route('navbar.secciones.index')
