@@ -21,4 +21,15 @@ class NavbarContenido extends Model
     return $this->belongsTo(NavbarSeccion::class, 'navbar_seccion_id');
 }
 
+public function archivos()
+{
+    return $this->morphMany(Archivo::class, 'archivable');
+}
+
+public function cuadros()
+{
+    return $this->morphMany(Cuadro::class, 'cuadreable');
+}
+
+
 }

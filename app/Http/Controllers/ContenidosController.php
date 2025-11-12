@@ -3,66 +3,79 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contenidos;
-use App\Models\Secciones;
+use App\Models\Seccion;
 use App\Models\Archivo;
 use App\Models\Cuadro;
-use App\Models\Seccion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ContenidosController extends Controller
 {
+    /* ==========================================================
+       LISTADO
+    ========================================================== */
     public function listado()
-{
-    $contenidos = Contenidos::with(['seccion','archivos','cuadros'])->get();
-    return view('Contenidos.contenidos', compact('contenidos'));
-}
+    {
+        $contenidos = Contenidos::with(['seccion','archivos','cuadros'])->get();
+        return view('Contenidos.contenidos', compact('contenidos'));
+    }
 
-
+    /* ==========================================================
+       CREAR
+    ========================================================== */
     public function crear()
     {
         $secciones = Seccion::all();
-        return view('Contenidos.contenidos', compact('secciones'));
+        return view('Contenidos.crear', compact('secciones'));
     }
 
-   
+    /* ==========================================================
+       GUARDAR
+    ========================================================== */
     public function guardar(Request $request)
     {
         $request->validate([
             'titulo' => 'required|string|max:255',
             'seccion_id' => 'required|exists:secciones,id',
             'descripcion' => 'nullable|string',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'imagen' => 'nullable|image|max:2048',
             'archivos.*' => 'nullable|file|max:10240',
             'cuadros.*.titulo' => 'nullable|string|max:255',
             'cuadros.*.autor' => 'nullable|string|max:255',
             'cuadros.*.archivo' => 'nullable|file|max:5120'
         ]);
 
+        // Crear contenido
         $datos = $request->only(['titulo','descripcion','seccion_id']);
 
         if ($request->hasFile('imagen')) {
-            $datos['imagen'] = $request->file('imagen')->store('contenidos','public');
+            $datos['imagen'] = $request->file('imagen')->store('contenidos', 'public');
         }
 
         $contenido = Contenidos::create($datos);
 
-       
-        if($request->hasFile('archivos')) {
-            foreach($request->file('archivos') as $file) {
+        /* Archivos */
+        if ($request->hasFile('archivos')) {
+            foreach ($request->file('archivos') as $file) {
                 $contenido->archivos()->create([
                     'nombre' => $file->getClientOriginalName(),
-                    'ruta' => $file->store('archivos','public'),
+                    'ruta' => $file->store('archivos', 'public'),
                     'tipo' => $file->getClientOriginalExtension()
                 ]);
             }
         }
 
-       
-        if($request->filled('cuadros')) {
-            foreach($request->cuadros as $item) {
-                if($item['titulo'] || $item['autor'] || isset($item['archivo'])) {
-                    $archivoPath = isset($item['archivo']) ? $item['archivo']->store('cuadros','public') : null;
+        /* Cuadros */
+        if ($request->filled('cuadros')) {
+            foreach ($request->cuadros as $item) {
+                
+                // Si viene info del cuadro
+                if ($item['titulo'] || $item['autor'] || isset($item['archivo'])) {
+
+                    $archivoPath = isset($item['archivo'])
+                        ? $item['archivo']->store('cuadros', 'public')
+                        : null;
+
                     Cuadro::create([
                         'titulo' => $item['titulo'],
                         'autor' => $item['autor'],
@@ -74,18 +87,24 @@ class ContenidosController extends Controller
             }
         }
 
-        return redirect()->route('contenidos.listado')->with('success','Contenido creado correctamente.');
+        return redirect()->route('contenidos.listado')
+                         ->with('success', 'Contenido creado correctamente.');
     }
 
- 
+    /* ==========================================================
+       EDITAR
+    ========================================================== */
     public function editar($id)
     {
         $contenido = Contenidos::with(['archivos','cuadros'])->findOrFail($id);
         $secciones = Seccion::all();
+
         return view('Contenidos.editar', compact('contenido','secciones'));
     }
 
-    
+    /* ==========================================================
+       ACTUALIZAR
+    ========================================================== */
     public function actualizar(Request $request, $id)
     {
         $contenido = Contenidos::with(['cuadros'])->findOrFail($id);
@@ -94,7 +113,7 @@ class ContenidosController extends Controller
             'titulo' => 'required|string|max:255',
             'seccion_id' => 'required|exists:secciones,id',
             'descripcion' => 'nullable|string',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'imagen' => 'nullable|image|max:2048',
             'archivos.*' => 'nullable|file|max:10240',
             'cuadros.*.titulo' => 'nullable|string|max:255',
             'cuadros.*.autor' => 'nullable|string|max:255',
@@ -103,18 +122,21 @@ class ContenidosController extends Controller
 
         $datos = $request->only(['titulo','descripcion','seccion_id']);
 
-        if($request->hasFile('imagen')) {
-            if($contenido->imagen && Storage::disk('public')->exists($contenido->imagen)) {
+        /* Imagen */
+        if ($request->hasFile('imagen')) {
+
+            if ($contenido->imagen && Storage::disk('public')->exists($contenido->imagen)) {
                 Storage::disk('public')->delete($contenido->imagen);
             }
+
             $datos['imagen'] = $request->file('imagen')->store('contenidos','public');
         }
 
         $contenido->update($datos);
 
-    
-        if($request->hasFile('archivos')) {
-            foreach($request->file('archivos') as $file) {
+        /* Archivos nuevos */
+        if ($request->hasFile('archivos')) {
+            foreach ($request->file('archivos') as $file) {
                 $contenido->archivos()->create([
                     'nombre' => $file->getClientOriginalName(),
                     'ruta' => $file->store('archivos','public'),
@@ -123,63 +145,66 @@ class ContenidosController extends Controller
             }
         }
 
-        
-       if($request->filled('cuadro_titulo')) {
-    foreach($request->cuadro_titulo as $index => $titulo) {
-        if($titulo || $request->cuadro_autor[$index] ?? null || $request->file('cuadro_archivo')[$index] ?? null) {
-            $archivoPath = $request->file('cuadro_archivo')[$index] ?? null;
-            if($archivoPath) {
-                $archivoPath = $archivoPath->store('cuadros','public');
+        /* Cuadros nuevos */
+        if ($request->filled('cuadros')) {
+            foreach ($request->cuadros as $item) {
+
+                if ($item['titulo'] || $item['autor'] || isset($item['archivo'])) {
+
+                    $archivoPath = isset($item['archivo'])
+                        ? $item['archivo']->store('cuadros','public')
+                        : null;
+
+                    Cuadro::create([
+                        'titulo' => $item['titulo'],
+                        'autor' => $item['autor'],
+                        'archivo' => $archivoPath,
+                        'mostrar' => true,
+                        'contenido_id' => $contenido->id
+                    ]);
+                }
             }
-
-            Cuadro::create([
-                'titulo' => $titulo,
-                'autor' => $request->cuadro_autor[$index] ?? null,
-                'archivo' => $archivoPath,
-                'mostrar' => isset($request->mostrar_cuadro[$index]),
-                'contenido_id' => $contenido->id 
-            ]);
-        }
-    }
-
-
         }
 
-        return redirect()->route('contenidos.listado')->with('success','Contenido actualizado correctamente.');
-    }
-public function mostrar($id)
-{
-    $contenido = Contenidos::with(['seccion', 'archivos', 'cuadros'])->findOrFail($id);
-
-   
-    $seccion = $contenido->seccion;
-
-  
-    $secciones = Seccion::all();
-
-    return view('contenidos.mostrar', compact('contenido', 'seccion', 'secciones'));
-}
-
-public function borrar($id)
-{
-    $contenido = Contenidos::findOrFail($id);
-
-    
-    foreach ($contenido->archivos as $archivo) {
-        Storage::disk('public')->delete($archivo->ruta);
-        $archivo->delete();
+        return redirect()->route('contenidos.listado')
+                         ->with('success','Contenido actualizado correctamente.');
     }
 
-    foreach ($contenido->cuadros as $cuadro) {
-        if ($cuadro->archivo) {
-            Storage::disk('public')->delete($cuadro->archivo);
+    /* ==========================================================
+       MOSTRAR
+    ========================================================== */
+    public function mostrar($id)
+    {
+        $contenido = Contenidos::with(['seccion','archivos','cuadros'])->findOrFail($id);
+        $secciones = Seccion::all();
+
+        return view('contenidos.mostrar', compact('contenido','secciones'));
+    }
+
+    /* ==========================================================
+       BORRAR
+    ========================================================== */
+    public function borrar($id)
+    {
+        $contenido = Contenidos::findOrFail($id);
+
+        // Archivos
+        foreach ($contenido->archivos as $archivo) {
+            Storage::disk('public')->delete($archivo->ruta);
+            $archivo->delete();
         }
-        $cuadro->delete();
+
+        // Cuadros
+        foreach ($contenido->cuadros as $cuadro) {
+            if ($cuadro->archivo) {
+                Storage::disk('public')->delete($cuadro->archivo);
+            }
+            $cuadro->delete();
+        }
+
+        // Contenido
+        $contenido->delete();
+
+        return back()->with('success', 'Contenido eliminado correctamente.');
     }
-
-    $contenido->delete();
-
-    return redirect()->back()->with('success', 'Contenido eliminado correctamente.');
-}
-
 }

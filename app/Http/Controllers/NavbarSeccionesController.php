@@ -3,64 +3,96 @@
 namespace App\Http\Controllers;
 
 use App\Models\NavbarSeccion;
-use App\Models\NavbarContenido;
+use App\Models\Cuadro;
 use Illuminate\Http\Request;
 
 class NavbarSeccionesController extends Controller
 {
     public function index()
     {
-        $navbarSecciones = NavbarSeccion::with('contenidosNavbar')->get();
-        return view('navbar.secciones.index', compact('navbarSecciones'));
+        $secciones = NavbarSeccion::all();
+        return view('navbar.secciones.index', compact('secciones'));
     }
 
     public function crear()
     {
-        return view('navbar.secciones.guardar');
+        return view('navbar.secciones.crear');
     }
 
     public function guardar(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255'
+            'nombre' => 'required'
         ]);
 
-        NavbarSeccion::create([
+        // Imagen principal
+        $imagen = null;
+        if ($request->hasFile('imagen')) {
+            $imagen = $request->file('imagen')->store('imagenes', 'public');
+        }
+
+        // Archivos múltiples
+        $archivosGuardados = [];
+        if ($request->hasFile('archivos')) {
+            foreach($request->file('archivos') as $file){
+                $archivosGuardados[] = $file->store('archivos', 'public');
+            }
+        }
+
+        // Crear sección
+        $seccion = NavbarSeccion::create([
             'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'imagen' => $imagen,
+            'archivos' => $archivosGuardados
         ]);
+
+        // Guardar cuadros polimórficos
+        if ($request->cuadros) {
+            foreach ($request->cuadros as $cuadro) {
+
+                $archivoCuadro = null;
+                if (isset($cuadro['archivo'])) {
+                    $archivoCuadro = $cuadro['archivo']->store('cuadros', 'public');
+                }
+
+                Cuadro::create([
+                    'cuadrobable_id' => $seccion->id,
+                    'cuadrobable_type' => NavbarSeccion::class,
+                    'titulo' => $cuadro['titulo'] ?? '',
+                    'autor' => $cuadro['autor'] ?? '',
+                    'archivo' => $archivoCuadro,
+                    'mostrar' => isset($cuadro['mostrar']) ? 1 : 0
+                ]);
+            }
+        }
 
         return redirect()->route('navbar.secciones.index')
-                         ->with('success', 'Sección creada correctamente.');
+            ->with('ok', 'Sección guardada');
     }
 
-    public function editarSeccion(NavbarSeccion $seccion)
+    public function mostrar($id)
     {
-        return view('navbar.secciones.edit', compact('seccion'));
+        $seccion = NavbarSeccion::with('cuadros')->findOrFail($id);
+        return view('navbar.secciones.mostrar', compact('seccion'));
     }
 
-    public function actualizarSeccion(Request $request, NavbarSeccion $seccion)
+    public function editar($id)
     {
-        $request->validate([
-            'nombre' => $request->nombre,
-        'descripcion' => 'nullable|string',
-        'imagen' => 'nullable|image|max:2048',
-        ]);
-
-        $seccion->update([
-            'nombre' => $request->nombre,
-        'descripcion' => 'nullable|string',
-        'imagen' => 'nullable|image|max:2048',
-        ]);
-
-        return redirect()->route('navbar.secciones.index')
-                         ->with('success', 'Sección actualizada correctamente.');
+        $seccion = NavbarSeccion::with('cuadros')->findOrFail($id);
+        return view('navbar.secciones.editar', compact('seccion'));
     }
 
-    public function borrarSeccion(NavbarSeccion $seccion)
+    public function eliminar($id)
     {
-        $seccion->delete();
+        // ✅ eliminar cuadros polimórficos
+        Cuadro::where('cuadrobable_id', $id)
+              ->where('cuadrobable_type', NavbarSeccion::class)
+              ->delete();
 
-        return redirect()->route('navbar.secciones.index')
-                         ->with('success', 'Sección eliminada correctamente.');
+        // ✅ eliminar sección
+        NavbarSeccion::where('id', $id)->delete();
+
+        return back()->with('ok', 'Sección eliminada');
     }
 }

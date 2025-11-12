@@ -7,19 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Archivo extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'nombre',
-        'ruta',
-        'tipo',
-        'contenido_id',
+        'archivable_id',
+        'archivable_type',
+        'nombre_real',
+        'archivo',
     ];
 
-    public function contenido()
+    public function archivable()
     {
-        return $this->belongsTo(Contenidos::class);
+        return $this->morphTo();
     }
-
-    
 }

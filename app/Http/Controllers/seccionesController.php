@@ -7,41 +7,52 @@ use App\Models\Seccion;
 
 class SeccionesController extends Controller
 {
+    /* ==========================================================
+       LISTADO DE SECCIONES
+    ========================================================== */
     public function listado()
     {
         $secciones = Seccion::all();
 
         return view('secciones.listado', [
             'secciones' => $secciones,
-            'seccionActual' => null 
+            'seccionActual' => null
         ]);
     }
 
+    /* ==========================================================
+       MOSTRAR SECCIÓN (CON CONTENIDOS Y CUADROS)
+    ========================================================== */
     public function mostrar($id)
-    {
-        $secciones = Seccion::all();
-        $seccion = Seccion::with('contenidos')->findOrFail($id);
+{
+    $secciones = Seccion::all(); // Para la barra vertical
+    $seccion = Seccion::with(['contenidos', 'cuadros'])->findOrFail($id);
 
-        
-        if ($seccion->id == 24) {
-            return redirect()->route('videoteca');
-        }
-
-        return view('secciones.mostrar', [
-            'secciones' => $secciones,
-            'seccion' => $seccion,
-            'seccionActual' => $seccion 
-        ]);
+    // Caso especial: videoteca
+    if ($seccion->id == 24) {
+        return redirect()->route('videoteca');
     }
 
+    return view('secciones.mostrar', [
+        'secciones' => $secciones,
+        'seccion' => $seccion,
+        'seccionActual' => $seccion // para la barra
+    ]);
+}
 
+
+    /* ==========================================================
+       CREAR NUEVA SECCIÓN
+    ========================================================== */
     public function crear()
     {
-        $secciones = Seccion::all(); 
+        $secciones = Seccion::all();
         return view('secciones.secciones', compact('secciones'));
     }
 
- 
+    /* ==========================================================
+       GUARDAR NUEVA SECCIÓN
+    ========================================================== */
     public function guardar(Request $request)
     {
         $request->validate([
@@ -49,34 +60,56 @@ class SeccionesController extends Controller
             'descripcion' => 'nullable|string',
         ]);
 
-        Seccion::create($request->all());
+        Seccion::create([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion
+        ]);
 
-        return redirect()->route('secciones.listado')->with('success', 'Sección creada correctamente.');
+        return redirect()->route('secciones.listado')
+                         ->with('success', 'Sección creada correctamente.');
     }
 
+    /* ==========================================================
+       EDITAR SECCIÓN
+    ========================================================== */
     public function editar($id)
     {
-        $secciones = Seccion::all(); 
+        $secciones = Seccion::all();
         $seccion = Seccion::findOrFail($id);
 
         return view('secciones.editar', compact('secciones', 'seccion'));
     }
 
-
+    /* ==========================================================
+       ACTUALIZAR SECCIÓN
+    ========================================================== */
     public function actualizar(Request $request, $id)
     {
-        $seccion = Seccion::findOrFail($id);
-        $seccion->update($request->all());
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+        ]);
 
-        return redirect()->route('secciones.listado')->with('success', 'Sección actualizada.');
+        $seccion = Seccion::findOrFail($id);
+
+        $seccion->update([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion
+        ]);
+
+        return redirect()->route('secciones.listado')
+                         ->with('success', 'Sección actualizada correctamente.');
     }
 
-   
+    /* ==========================================================
+       BORRAR SECCIÓN
+    ========================================================== */
     public function borrar($id)
     {
         $seccion = Seccion::findOrFail($id);
         $seccion->delete();
 
-        return redirect()->route('secciones.listado')->with('success', 'Sección eliminada.');
+        return redirect()->route('secciones.listado')
+                         ->with('success', 'Sección eliminada correctamente.');
     }
 }

@@ -11,15 +11,16 @@ class Contenidos extends Model
 
     protected $fillable = ['titulo','descripcion','seccion_id','imagen'];
 
-    public function archivos()
-    {
-        return $this->hasMany(Archivo::class, 'contenido_id');
-    }
+   public function archivos()
+{
+    return $this->morphMany(Archivo::class, 'archivable');
+}
 
-    public function cuadros()
-    {
-        return $this->hasMany(Cuadro::class, 'contenido_id');
-    }
+   public function cuadros()
+{
+    return $this->morphMany(Cuadro::class, 'cuadreable');
+}
+
 
     public function seccion()
     {

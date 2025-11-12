@@ -22,5 +22,18 @@ class Seccion extends Model
     {
         return $this->hasMany(Contenidos::class, 'seccion_id');
     }
+
+    public function archivos()
+{
+    return $this->morphMany(Archivo::class, 'archivable');
 }
+
+public function cuadros()
+{
+    return $this->morphMany(Cuadro::class, 'cuadreable');
+}
+
+}
+
+
 

@@ -2,87 +2,97 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\NavbarSeccion;
 use App\Models\NavbarContenido;
+use App\Models\Cuadro;
 use Illuminate\Http\Request;
 
 class NavbarContenidosController extends Controller
 {
-    public function crear(NavbarSeccion $seccion)
-{
-    return view('navbar.contenidos.crear', compact('seccion'));
-}
-
-public function guardar(Request $request, NavbarSeccion $seccion)
-{
-    $request->validate([
-        'titulo' => 'required|string|max:255',
-        'descripcion' => 'nullable|string',
-        'imagen' => 'nullable|image|max:2048',
-    ]);
-
-    $data = $request->only(['titulo', 'descripcion']);
-    
-    if($request->hasFile('imagen')) {
-        $data['imagen'] = $request->file('imagen')->store('navbar', 'public');
+    public function index()
+    {
+        $contenidos = NavbarContenido::all();
+        return view('navbar.contenidos.index', compact('contenidos'));
     }
 
-    $seccion->contenidosNavbar()->create($data);
-
-    return redirect()->route('navbar.secciones.index')->with('success', 'Submenú agregado correctamente.');
-}
-
-public function actualizar(Request $request, NavbarContenido $contenido)
-{
-    $request->validate([
-        'titulo' => 'required|string|max:255',
-        'descripcion' => 'nullable|string',
-        'imagen' => 'nullable|image|max:2048',
-    ]);
-
-    $data = $request->only(['titulo', 'descripcion']);
-
-    if($request->hasFile('imagen')) {
-        $data['imagen'] = $request->file('imagen')->store('navbar', 'public');
+    public function crear()
+    {
+        return view('navbar.contenidos.crear');
     }
 
-    $contenido->update($data);
+    public function guardar(Request $request)
+    {
+        $request->validate([
+            'titulo' => 'required'
+        ]);
 
-    return redirect()->route('navbar.secciones.index')->with('success', 'Submenú actualizado correctamente.');
-}
+        // Imagen principal
+        $imagen = null;
+        if ($request->hasFile('imagen')) {
+            $imagen = $request->file('imagen')->store('imagenes', 'public');
+        }
 
+        // Archivos múltiples
+        $archivosGuardados = [];
+        if ($request->hasFile('archivos')) {
+            foreach($request->file('archivos') as $file){
+                $archivosGuardados[] = $file->store('archivos', 'public');
+            }
+        }
 
-public function borrar(NavbarContenido $contenido)
-{
-    $contenido->delete();
+        // Crear contenido
+        $contenido = NavbarContenido::create([
+            'titulo' => $request->titulo,
+            'descripcion' => $request->descripcion,
+            'imagen' => $imagen,
+            'archivos' => $archivosGuardados
+        ]);
 
-    return redirect()->route('navbar.secciones.index')
-                     ->with('success', 'Submenú eliminado correctamente.');
-}
+        // Guardar CUADROS polimórficos
+        if ($request->cuadros) {
+            foreach ($request->cuadros as $cuadro) {
 
-public function editar(NavbarContenido $contenido)
-{
-    $navbar_contenido = $contenido; 
-    return view('navbar.contenidos.editar', compact('navbar_contenido'));
-}
-public function store(Request $request)
-{
-    $request->validate([
-        'nombre' => 'required|string|max:255',
-        'url' => 'nullable|string|max:255',
-        'seccion_id' => 'required|exists:navbar_seccions,id',
-    ]);
+                $archivoCuadro = null;
+                if (isset($cuadro['archivo'])) {
+                    $archivoCuadro = $cuadro['archivo']->store('cuadros', 'public');
+                }
 
-    NavbarContenido::create([
-        'titulo' => $request->titulo,
-        'url' => $request->url,
-        'navbar_seccion_id' => $request->navbar_seccion_id,
-    ]);
+                Cuadro::create([
+                    'cuadrobable_id' => $contenido->id,
+                    'cuadrobable_type' => NavbarContenido::class,
+                    'titulo' => $cuadro['titulo'] ?? '',
+                    'autor' => $cuadro['autor'] ?? '',
+                    'archivo' => $archivoCuadro,
+                    'mostrar' => isset($cuadro['mostrar']) ? 1 : 0
+                ]);
+            }
+        }
 
-    return redirect()->route('navbar.secciones.index')
-                     ->with('success', 'Contenido agregado correctamente.');
-}
+        return redirect()->route('navbar.contenidos.index')
+            ->with('ok', 'Contenido guardado');
+    }
 
+    public function mostrar($id)
+    {
+        $contenido = NavbarContenido::with('cuadros')->findOrFail($id);
+        return view('navbar.contenidos.mostrar', compact('contenido'));
+    }
 
+    public function editar($id)
+    {
+        $contenido = NavbarContenido::with('cuadros')->findOrFail($id);
+        return view('navbar.contenidos.editar', compact('contenido'));
+    }
 
+    public function eliminar($id)
+    {
+        // Eliminar cuadros polimórficos
+        Cuadro::where('cuadrobable_id', $id)
+              ->where('cuadrobable_type', NavbarContenido::class)
+              ->delete();
+
+        // Eliminar contenido
+        NavbarContenido::where('id', $id)->delete();
+
+        return back()->with('ok', 'Contenido eliminado');
+    }
 }

@@ -1,34 +1,32 @@
 @extends('base.layout')
 
 @section('contenido')
-<div class="container mt-4">
-    <h2 class="mb-3"><strong>Agregar Nuevo Cuadro</strong></h2>
+<main class="p-4" style="background:#fff; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+    <h2 class="mb-3">Crear Cuadro</h2>
 
     <form action="{{ route('cuadros.guardar') }}" method="POST" enctype="multipart/form-data">
-    @csrf
-    @method('PUT')
+        @csrf
 
         <div class="mb-3">
-            <label for="titulo" class="form-label">Título</label>
-            <input type="text" name="titulo" id="titulo" class="form-control" placeholder="Título del cuadro" required>
+            <label class="form-label">Título</label>
+            <input type="text" name="titulo" class="form-control" required>
         </div>
 
         <div class="mb-3">
-            <label for="autor" class="form-label">Autor</label>
-            <input type="text" name="autor" id="autor" class="form-control" placeholder="Nombre del autor">
+            <label class="form-label">Autor</label>
+            <input type="text" name="autor" class="form-control">
         </div>
 
         <div class="mb-3">
-            <label for="enlace" class="form-label">Enlace</label>
-            <input type="url" name="enlace" id="enlace" class="form-control" placeholder="https://...">
+            <label class="form-label">Archivo</label>
+            <input type="file" name="archivo" class="form-control" accept=".pdf,.doc,.docx,.pptx,.xlsx">
         </div>
 
-        <button type="submit" class="btn btn-primary">Agregar Cuadro</button>
-        <a href="{{ route('cuadros.index') }}" class="btn btn-secondary">Cancelar</a>
+        <button class="btn btn-primary">Guardar</button>
+        <a href="{{ route('cuadros.listado') }}" class="btn btn-outline-secondary">Cancelar</a>
     </form>
-</div>
+
+</main>
 @endsection
+

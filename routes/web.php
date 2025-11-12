@@ -14,28 +14,41 @@ use App\Http\Controllers\VideotecaController;
 use App\Http\Controllers\NavbarSeccionesController;
 use App\Http\Controllers\NavbarContenidosController;
 use App\Http\Controllers\BannerController;
+use App\Http\Controllers\PublicController;
 
-
-Route::get('/', function () {
-    return redirect()->route('login.form');
+/*
+|--------------------------------------------------------------------------
+| RUTAS PÚBLICAS (modo lectura)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('')->group(function () {
+    Route::get('/', [PublicController::class, 'inicio'])->name('public.inicio');
+    Route::get('/seccion/{id}', [PublicController::class, 'verSeccion'])->name('public.verSeccion');
+    Route::get('/contenido/{id}', [PublicController::class, 'verContenido'])->name('public.verContenido');
+    Route::get('/videoteca', [PublicController::class, 'videoteca'])->name('public.videoteca');
 });
 
-// Login
+/*
+|--------------------------------------------------------------------------
+| LOGIN / REGISTRO
+|--------------------------------------------------------------------------
+*/
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login.form');
 Route::post('login', [LoginController::class, 'login'])->name('login.post');
 
-// Registro
 Route::get('register', [LoginController::class, 'showRegisterForm'])->name('register.form');
 Route::post('register', [LoginController::class, 'register'])->name('register.post');
 
-
+/*
+|--------------------------------------------------------------------------
+| ADMINISTRADOR (solo autenticados)
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['admin'])->prefix('administrador')->group(function () {
 
-    // Dashboard
+    // Dashboard principal
     Route::get('/dashboard', [InicioController::class, 'index'])->name('dashboard');
-
-    // Logout
-    Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     // Administradores
     Route::get('/listado', [AdministradorController::class, 'listado'])->name('administrador.listado');
@@ -45,8 +58,12 @@ Route::middleware(['admin'])->prefix('administrador')->group(function () {
     Route::get('/mostrar/{id}', [AdministradorController::class, 'mostrar'])->name('administrador.mostrar');
     Route::delete('/eliminar/{id}', [AdministradorController::class, 'eliminar'])->name('administrador.eliminar');
 
-
-// Ruta principal para mostrar todos los videos (para el botón)
+    /*
+    |--------------------------------------------------------------------------
+    | VIDEOTECA
+    |--------------------------------------------------------------------------
+    */
+    // Ruta principal para mostrar todos los videos (para el botón)
 Route::get('/videoteca', [VideotecaController::class, 'index'])->name('videoteca');
 
 // Rutas CRUD de videoteca
@@ -63,8 +80,6 @@ Route::get('/secciones/{id}/editar', [SeccionesController::class, 'editar'])->na
 Route::put('/secciones/{id}/actualizar', [SeccionesController::class, 'actualizar'])->name('secciones.actualizar');
 Route::delete('/secciones/{id}/borrar', [SeccionesController::class, 'borrar'])->name('secciones.borrar');
 Route::get('/secciones/{id}', [SeccionesController::class, 'mostrar'])->name('secciones.mostrar');
-
-
 
 
     // Contenidos
@@ -120,16 +135,27 @@ Route::prefix('navbar')->group(function() {
     Route::delete('secciones/{seccion}', [NavbarSeccionesController::class, 'borrarSeccion'])->name('navbar.secciones.borrar');
 
     // SUBMENÚS (CONTENIDOS) DEL NAVBAR
-Route::get('secciones/{seccion}/contenidos/crear', [NavbarContenidosController::class, 'crear'])->name('navbar.contenidos.crear');
-Route::post('secciones/{seccion}/contenidos', [NavbarContenidosController::class, 'guardar'])->name('navbar.contenidos.guardar');
-Route::get('navbar/contenidos/{contenido}/editar', [NavbarContenidosController::class, 'editar'])->name('navbar.contenidos.editar');
-Route::put('navbar/contenidos/{contenido}', [NavbarContenidosController::class, 'update'])->name('navbar.contenidos.actualizar');
-Route::delete('navbar/contenidos/{contenido}', [NavbarContenidosController::class, 'borrar'])->name('navbar.contenidos.borrar');
-Route::get('/navbar/contenidos/{contenido}/mostrar', [ContenidosController::class, 'mostrar'])->name('navbar.contenidos.mostrar');
-Route::post('administrador/navbar/contenidos', [NavbarContenidosController::class, 'store'])
-     ->name('navbar.contenidos.guardar');
+Route::prefix('administrador/navbar')->group(function() {
 
+    Route::get('contenidos', [NavbarContenidosController::class, 'index'])
+        ->name('navbar.contenidos.index');
+
+    Route::get('contenidos/crear', [NavbarContenidosController::class, 'crear'])
+        ->name('navbar.contenidos.crear');
+
+    Route::post('contenidos/guardar', [NavbarContenidosController::class, 'guardar'])
+        ->name('navbar.contenidos.guardar');
+
+    Route::get('contenidos/{id}', [NavbarContenidosController::class, 'mostrar'])
+        ->name('navbar.contenidos.mostrar');
+
+    Route::get('contenidos/{id}/editar', [NavbarContenidosController::class, 'editar'])
+        ->name('navbar.contenidos.editar');
+
+    Route::delete('contenidos/{id}/borrar', [NavbarContenidosController::class, 'borrar'])
+        ->name('navbar.contenidos.borrar');
 });
+
 
 
 
@@ -150,4 +176,5 @@ Route::delete('/admin/banner/borrar', [BannerController::class, 'borrar'])->name
 
 });
 
+});
 

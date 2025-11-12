@@ -1,76 +1,51 @@
 @extends('base.layout')
 
 @section('contenido')
-<div class="container py-4">
+<div class="container mt-4">
+    <h2 class="mb-4">Secciones del Navbar</h2>
 
-    <h2 class="text-center mb-4">Gestión del Menú de Navegación</h2>
+    <a href="{{ route('navbar.secciones.crear') }}" class="btn btn-primary mb-3">+ Nueva Sección</a>
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción corta</th>
+                <th>Imagen</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
 
-    <a href="{{ route('navbar.secciones.crear') }}" class="btn btn-primary mb-3">+ Crear Sección</a>
+        <tbody>
+            @forelse ($secciones as $sec)
+                <tr>
+                    <td>{{ $sec->nombre }}</td>
+                    <td>{!! Str::limit(strip_tags($sec->descripcion), 70) !!}</td>
 
-    <div class="list-group">
-        @foreach($navbarSecciones as $seccion)
-            <div class="list-group-item mb-3 shadow-sm rounded">
+                    <td>
+                        @if($sec->imagen)
+                            <img src="{{ asset('storage/'.$sec->imagen) }}" width="70">
+                        @else
+                            <span class="text-muted">Sin imagen</span>
+                        @endif
+                    </td>
 
-                <div class="d-flex justify-content-between align-items-center">
-                    <strong>{{ $seccion->nombre }}</strong>
+                    <td>
+                        <a href="{{ route('navbar.secciones.mostrar', $sec->id) }}" class="btn btn-info btn-sm">Ver</a>
+                        <a href="{{ route('navbar.secciones.editar', $sec->id) }}" class="btn btn-warning btn-sm">Editar</a>
 
-                    <div>
-                        <a href="{{ route('navbar.secciones.editar', $seccion->id) }}" class="btn btn-sm btn-primary">Editar</a>
-
-                        <form action="{{ route('navbar.secciones.borrar', $seccion->id) }}"
+                        <form action="{{ route('navbar.secciones.eliminar', $sec->id) }}"
                               method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-sm btn-danger">Eliminar</button>
+                              @csrf @method('DELETE')
+                              <button class="btn btn-danger btn-sm" 
+                                      onclick="return confirm('¿Eliminar sección?')">Eliminar</button>
                         </form>
-
-                        <a href="{{ route('navbar.contenidos.crear', $seccion->id) }}"
-                           class="btn btn-sm btn-secondary">
-                            + Submenú
-                        </a>
-                    </div>
-                </div>
-
-                {{-- SUBMENÚS --}}
-                @if($seccion->contenidosNavbar->count())
-                    <ul class="list-group list-group-flush mt-3 ms-3">
-                        @foreach($seccion->contenidosNavbar as $hijo)
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-
-                                <div>
-                                    📁 {{ $hijo->titulo }}
-
-                                    @if($hijo->ruta)
-                                        <a href="{{ $hijo->ruta }}" target="_blank" class="text-muted ms-2">
-                                            <small>({{ $hijo->ruta }})</small>
-                                        </a>
-                                    @endif
-                                </div>
-
-                                <div>
-                                    <a href="{{ route('navbar.contenidos.editar', $hijo->id) }}" class="btn btn-sm btn-primary">Editar</a>
-
-                                    <form action="{{ route('navbar.contenidos.borrar', $hijo->id) }}"
-                                          method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-sm btn-danger">Eliminar</button>
-                                    </form>
-                                </div>
-                            </li>
-                        @endforeach
-                    </ul>
-                @else
-                    <p class="text-muted ms-3 mt-2"><em>Sin submenús</em></p>
-                @endif
-
-            </div>
-        @endforeach
-    </div>
-
+                    </td>
+                </tr>
+            @empty
+                <tr><td colspan="4" class="text-center text-muted">No hay secciones registradas</td></tr>
+            @endforelse
+        </tbody>
+    </table>
 </div>
 @endsection
