@@ -5,8 +5,8 @@
     <h2>Crear Sección</h2>
 
     <form action="{{ route('secciones.guardar') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-
+          @csrf
+        @method('PUT')
 
         <div class="mb-3">
             <label class="form-label">Nombre de la sección</label>
@@ -18,16 +18,23 @@
             <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion') }}</textarea>
         </div>
 
+        
+        <div class="mb-3">
+            <label class="form-label">Imagen principal (opcional)</label>
+            <input type="file" name="imagen" class="form-control">
+        </div>
+
    
         <div class="mb-3">
             <label class="form-label">Subir Video (opcional)</label>
             <input type="file" name="video" class="form-control" accept="video/mp4,video/webm,video/ogg">
         </div>
-
+       
         <div class="mb-3">
-            <label class="form-label">O URL de YouTube (opcional)</label>
-            <input type="url" name="youtube_url" class="form-control" placeholder="https://www.youtube.com/watch?v=...">
+            <label class="form-label">Archivos adicionales</label>
+            <input type="file" name="archivos[]" multiple class="form-control">
         </div>
+
 
     
         <h5 class="mt-4">Cuadro tipo tabla</h5>

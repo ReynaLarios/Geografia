@@ -7,9 +7,7 @@ use App\Models\Seccion;
 
 class SeccionesController extends Controller
 {
-    /* ==========================================================
-       LISTADO DE SECCIONES
-    ========================================================== */
+
     public function listado()
     {
         $secciones = Seccion::all();
@@ -20,15 +18,13 @@ class SeccionesController extends Controller
         ]);
     }
 
-    /* ==========================================================
-       MOSTRAR SECCIÓN (CON CONTENIDOS Y CUADROS)
-    ========================================================== */
+
     public function mostrar($id)
 {
-    $secciones = Seccion::all(); // Para la barra vertical
+    $secciones = Seccion::all();
     $seccion = Seccion::with(['contenidos', 'cuadros'])->findOrFail($id);
 
-    // Caso especial: videoteca
+ 
     if ($seccion->id == 24) {
         return redirect()->route('videoteca');
     }
@@ -36,23 +32,19 @@ class SeccionesController extends Controller
     return view('secciones.mostrar', [
         'secciones' => $secciones,
         'seccion' => $seccion,
-        'seccionActual' => $seccion // para la barra
+        'seccionActual' => $seccion 
     ]);
 }
 
 
-    /* ==========================================================
-       CREAR NUEVA SECCIÓN
-    ========================================================== */
+   
     public function crear()
     {
         $secciones = Seccion::all();
         return view('secciones.secciones', compact('secciones'));
     }
 
-    /* ==========================================================
-       GUARDAR NUEVA SECCIÓN
-    ========================================================== */
+
     public function guardar(Request $request)
     {
         $request->validate([
@@ -69,9 +61,6 @@ class SeccionesController extends Controller
                          ->with('success', 'Sección creada correctamente.');
     }
 
-    /* ==========================================================
-       EDITAR SECCIÓN
-    ========================================================== */
     public function editar($id)
     {
         $secciones = Seccion::all();
@@ -80,9 +69,7 @@ class SeccionesController extends Controller
         return view('secciones.editar', compact('secciones', 'seccion'));
     }
 
-    /* ==========================================================
-       ACTUALIZAR SECCIÓN
-    ========================================================== */
+
     public function actualizar(Request $request, $id)
     {
         $request->validate([
@@ -97,13 +84,11 @@ class SeccionesController extends Controller
             'descripcion' => $request->descripcion
         ]);
 
-        return redirect()->route('secciones.listado')
+        return redirect()->route('secciones.mostrar')
                          ->with('success', 'Sección actualizada correctamente.');
     }
 
-    /* ==========================================================
-       BORRAR SECCIÓN
-    ========================================================== */
+
     public function borrar($id)
     {
         $seccion = Seccion::findOrFail($id);

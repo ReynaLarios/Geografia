@@ -20,6 +20,17 @@
             <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion', $seccion->descripcion) }}</textarea>
         </div>
 
+ <div class="mb-3">
+            <label class="form-label">Imagen principal (opcional)</label>
+            <input type="file" name="imagen" class="form-control">
+            @if($seccion->imagen)
+                <div class="mt-2">
+                    <img src="{{ asset('storage/'.$seccion->imagen) }}" alt="Imagen" style="max-width: 150px; border-radius: 6px;">
+                </div>
+            @endif
+        </div>
+
+
         {{-- Video --}}
         <div class="mb-3">
             <label class="form-label">Subir Video (opcional)</label>
@@ -32,6 +43,11 @@
         <div class="mb-3">
             <label class="form-label">O URL de YouTube (opcional)</label>
             <input type="url" name="youtube_url" class="form-control" value="{{ old('youtube_url', $seccion->youtube_url ?? '') }}" placeholder="https://www.youtube.com/watch?v=...">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Archivos adicionales</label>
+            <input type="file" name="archivos[]" multiple class="form-control">
         </div>
 
         {{-- Cuadro tipo tabla --}}

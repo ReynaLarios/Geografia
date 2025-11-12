@@ -83,14 +83,14 @@ class NavbarContenidosController extends Controller
         return view('navbar.contenidos.editar', compact('contenido'));
     }
 
-    public function eliminar($id)
+    public function borrar($id)
     {
-        // Eliminar cuadros polimórficos
-        Cuadro::where('cuadrobable_id', $id)
-              ->where('cuadrobable_type', NavbarContenido::class)
+    
+        Cuadro::where('cuadrebable_id', $id)
+              ->where('cuadrebable_type', NavbarContenido::class)
               ->delete();
 
-        // Eliminar contenido
+     
         NavbarContenido::where('id', $id)->delete();
 
         return back()->with('ok', 'Contenido eliminado');

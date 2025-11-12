@@ -17,7 +17,7 @@ use App\Models\Cuadro;
 
 class PublicController extends Controller
 {
-    // 🔹 Página principal
+ 
     public function inicio()
     {
         $banners = Banner::all();
@@ -35,12 +35,11 @@ class PublicController extends Controller
         ));
     }
 
-    // 🔹 Mostrar una sección con sus contenidos y cuadros
     public function verSeccion($id)
     {
         $seccion = Seccion::findOrFail($id);
         $contenidos = Contenidos::where('seccion_id', $id)->get();
-        $cuadros = Cuadro::where('seccion_id', $id)->get();
+       
 
         $navbarSecciones = NavbarSeccion::all();
         $navbarContenidos = NavbarContenido::all();
@@ -48,17 +47,17 @@ class PublicController extends Controller
         return view('public.seccion', compact(
             'seccion',
             'contenidos',
-            'cuadros',
+
             'navbarSecciones',
             'navbarContenidos'
         ));
     }
 
-    // 🔹 Mostrar un contenido específico con sus archivos
+ 
     public function verContenido($id)
     {
         $contenido = Contenidos::findOrFail($id);
-        $archivos = Archivo::where('contenido_id', $id)->get();
+        
 
         $navbarSecciones = NavbarSeccion::all();
         $navbarContenidos = NavbarContenido::all();
@@ -71,7 +70,6 @@ class PublicController extends Controller
         ));
     }
 
-    // 🔹 Página de videoteca pública
     public function videoteca()
     {
         $videos = Videoteca::all();

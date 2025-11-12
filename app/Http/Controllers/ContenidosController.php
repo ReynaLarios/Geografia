@@ -11,27 +11,20 @@ use Illuminate\Support\Facades\Storage;
 
 class ContenidosController extends Controller
 {
-    /* ==========================================================
-       LISTADO
-    ========================================================== */
+ 
     public function listado()
     {
         $contenidos = Contenidos::with(['seccion','archivos','cuadros'])->get();
         return view('Contenidos.contenidos', compact('contenidos'));
     }
 
-    /* ==========================================================
-       CREAR
-    ========================================================== */
+ 
     public function crear()
     {
         $secciones = Seccion::all();
-        return view('Contenidos.crear', compact('secciones'));
+        return view('Contenidos.contenidos', compact('secciones'));
     }
 
-    /* ==========================================================
-       GUARDAR
-    ========================================================== */
     public function guardar(Request $request)
     {
         $request->validate([
@@ -45,7 +38,7 @@ class ContenidosController extends Controller
             'cuadros.*.archivo' => 'nullable|file|max:5120'
         ]);
 
-        // Crear contenido
+       
         $datos = $request->only(['titulo','descripcion','seccion_id']);
 
         if ($request->hasFile('imagen')) {
@@ -54,7 +47,6 @@ class ContenidosController extends Controller
 
         $contenido = Contenidos::create($datos);
 
-        /* Archivos */
         if ($request->hasFile('archivos')) {
             foreach ($request->file('archivos') as $file) {
                 $contenido->archivos()->create([
@@ -65,11 +57,9 @@ class ContenidosController extends Controller
             }
         }
 
-        /* Cuadros */
         if ($request->filled('cuadros')) {
             foreach ($request->cuadros as $item) {
-                
-                // Si viene info del cuadro
+        
                 if ($item['titulo'] || $item['autor'] || isset($item['archivo'])) {
 
                     $archivoPath = isset($item['archivo'])
@@ -91,9 +81,7 @@ class ContenidosController extends Controller
                          ->with('success', 'Contenido creado correctamente.');
     }
 
-    /* ==========================================================
-       EDITAR
-    ========================================================== */
+   
     public function editar($id)
     {
         $contenido = Contenidos::with(['archivos','cuadros'])->findOrFail($id);
@@ -102,9 +90,6 @@ class ContenidosController extends Controller
         return view('Contenidos.editar', compact('contenido','secciones'));
     }
 
-    /* ==========================================================
-       ACTUALIZAR
-    ========================================================== */
     public function actualizar(Request $request, $id)
     {
         $contenido = Contenidos::with(['cuadros'])->findOrFail($id);
@@ -122,7 +107,7 @@ class ContenidosController extends Controller
 
         $datos = $request->only(['titulo','descripcion','seccion_id']);
 
-        /* Imagen */
+     
         if ($request->hasFile('imagen')) {
 
             if ($contenido->imagen && Storage::disk('public')->exists($contenido->imagen)) {
@@ -134,7 +119,7 @@ class ContenidosController extends Controller
 
         $contenido->update($datos);
 
-        /* Archivos nuevos */
+  
         if ($request->hasFile('archivos')) {
             foreach ($request->file('archivos') as $file) {
                 $contenido->archivos()->create([
@@ -145,7 +130,7 @@ class ContenidosController extends Controller
             }
         }
 
-        /* Cuadros nuevos */
+  
         if ($request->filled('cuadros')) {
             foreach ($request->cuadros as $item) {
 
@@ -170,9 +155,7 @@ class ContenidosController extends Controller
                          ->with('success','Contenido actualizado correctamente.');
     }
 
-    /* ==========================================================
-       MOSTRAR
-    ========================================================== */
+  
     public function mostrar($id)
     {
         $contenido = Contenidos::with(['seccion','archivos','cuadros'])->findOrFail($id);
@@ -181,20 +164,17 @@ class ContenidosController extends Controller
         return view('contenidos.mostrar', compact('contenido','secciones'));
     }
 
-    /* ==========================================================
-       BORRAR
-    ========================================================== */
+   
     public function borrar($id)
     {
         $contenido = Contenidos::findOrFail($id);
 
-        // Archivos
+        
         foreach ($contenido->archivos as $archivo) {
             Storage::disk('public')->delete($archivo->ruta);
             $archivo->delete();
         }
 
-        // Cuadros
         foreach ($contenido->cuadros as $cuadro) {
             if ($cuadro->archivo) {
                 Storage::disk('public')->delete($cuadro->archivo);
@@ -202,7 +182,6 @@ class ContenidosController extends Controller
             $cuadro->delete();
         }
 
-        // Contenido
         $contenido->delete();
 
         return back()->with('success', 'Contenido eliminado correctamente.');

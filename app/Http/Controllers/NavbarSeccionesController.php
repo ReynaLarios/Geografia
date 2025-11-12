@@ -83,16 +83,18 @@ class NavbarSeccionesController extends Controller
         return view('navbar.secciones.editar', compact('seccion'));
     }
 
-    public function eliminar($id)
+    public function borrar($id)
     {
-        // ✅ eliminar cuadros polimórficos
+       
         Cuadro::where('cuadrobable_id', $id)
               ->where('cuadrobable_type', NavbarSeccion::class)
               ->delete();
 
-        // ✅ eliminar sección
+       
         NavbarSeccion::where('id', $id)->delete();
 
-        return back()->with('ok', 'Sección eliminada');
+       return view('borrarSeccion', compact('seccion eliminada'));
     }
 }
+
+

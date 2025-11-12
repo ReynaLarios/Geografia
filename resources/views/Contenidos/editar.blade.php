@@ -24,7 +24,7 @@
             </select>
         </div>
 <textarea name="descripcion" id="descripcion" class="form-control" rows="10">
-    {!! old('descripcion', $seccion->descripcion ?? '') !!}
+    {!! old('descripcion', $contenido->descripcion) !!}
 </textarea>
         <div class="mb-3">
             <label class="form-label">Imagen principal (opcional)</label>
@@ -81,7 +81,6 @@
     </form>
 </main>
 
-{{-- Script para agregar/eliminar filas dinámicamente --}}
 @section('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {

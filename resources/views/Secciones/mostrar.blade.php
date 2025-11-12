@@ -16,17 +16,12 @@
         </div>
     @endif
 
-    {{-- Imagen principal --}}
-    @if($seccion->imagen)
-        <div class="mb-4">
-            <h5>Imagen principal</h5>
-            <div class="border p-2 rounded text-center">
-                <img src="{{ asset('storage/' . $seccion->imagen) }}" class="img-fluid rounded" alt="Imagen de la sección">
-            </div>
+     @if($seccion->imagen)
+        <div class="mb-3">
+            <img src="{{ asset('storage/'.$seccion->imagen) }}" class="img-fluid rounded">
         </div>
     @endif
 
-    {{-- Archivos adicionales --}}
     @if($seccion->archivos && count($seccion->archivos) > 0)
         <div class="mb-4">
             <h5>Archivos adicionales</h5>
@@ -70,8 +65,6 @@
             </table>
         </div>
     @endif
-
-    {{-- Contenidos asociados --}}
     @if($seccion->contenidos && $seccion->contenidos->count() > 0)
         <div class="mb-4">
             <h5>Contenidos asociados</h5>

@@ -16,11 +16,7 @@ use App\Http\Controllers\NavbarContenidosController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\PublicController;
 
-/*
-|--------------------------------------------------------------------------
-| RUTAS PÚBLICAS (modo lectura)
-|--------------------------------------------------------------------------
-*/
+//Rutas publicas
 Route::prefix('')->group(function () {
     Route::get('/', [PublicController::class, 'inicio'])->name('public.inicio');
     Route::get('/seccion/{id}', [PublicController::class, 'verSeccion'])->name('public.verSeccion');
@@ -28,22 +24,15 @@ Route::prefix('')->group(function () {
     Route::get('/videoteca', [PublicController::class, 'videoteca'])->name('public.videoteca');
 });
 
-/*
-|--------------------------------------------------------------------------
-| LOGIN / REGISTRO
-|--------------------------------------------------------------------------
-*/
+//Login
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login.form');
 Route::post('login', [LoginController::class, 'login'])->name('login.post');
 
 Route::get('register', [LoginController::class, 'showRegisterForm'])->name('register.form');
 Route::post('register', [LoginController::class, 'register'])->name('register.post');
 
-/*
-|--------------------------------------------------------------------------
-| ADMINISTRADOR (solo autenticados)
-|--------------------------------------------------------------------------
-*/
+
+//adiministrador autenticado
 Route::middleware(['admin'])->prefix('administrador')->group(function () {
 
     // Dashboard principal
@@ -52,18 +41,14 @@ Route::middleware(['admin'])->prefix('administrador')->group(function () {
 
     // Administradores
     Route::get('/listado', [AdministradorController::class, 'listado'])->name('administrador.listado');
-    Route::post('/guardar', [AdministradorController::class, 'guardar'])->name('administrador.guardar');
+    Route::put('/guardar', [AdministradorController::class, 'guardar'])->name('administrador.guardar');
     Route::get('/editar/{id}', [AdministradorController::class, 'editar'])->name('administrador.editar');
     Route::put('/actualizar/{id}', [AdministradorController::class, 'actualizar'])->name('administrador.actualizar');
     Route::get('/mostrar/{id}', [AdministradorController::class, 'mostrar'])->name('administrador.mostrar');
     Route::delete('/eliminar/{id}', [AdministradorController::class, 'eliminar'])->name('administrador.eliminar');
 
-    /*
-    |--------------------------------------------------------------------------
-    | VIDEOTECA
-    |--------------------------------------------------------------------------
-    */
-    // Ruta principal para mostrar todos los videos (para el botón)
+
+    //Videoteca
 Route::get('/videoteca', [VideotecaController::class, 'index'])->name('videoteca');
 
 // Rutas CRUD de videoteca
@@ -126,7 +111,8 @@ Route::prefix('cuadros')->group(function () {
 
 Route::prefix('navbar')->group(function() {
 
-    // SECCIONES
+    // NAVBAR_SECCIONES
+    Route::prefix('administrador/navbar')->group(function() {
     Route::get('secciones', [NavbarSeccionesController::class, 'index'])->name('navbar.secciones.index');
     Route::get('secciones/crear', [NavbarSeccionesController::class, 'crear'])->name('navbar.secciones.crear');
     Route::post('secciones', [NavbarSeccionesController::class, 'guardar'])->name('navbar.secciones.guardar');
@@ -134,26 +120,16 @@ Route::prefix('navbar')->group(function() {
     Route::put('secciones/{seccion}', [NavbarSeccionesController::class, 'actualizarSeccion'])->name('navbar.secciones.actualizar');
     Route::delete('secciones/{seccion}', [NavbarSeccionesController::class, 'borrarSeccion'])->name('navbar.secciones.borrar');
 
-    // SUBMENÚS (CONTENIDOS) DEL NAVBAR
+
+    // NAVBAR_CONTENIDOS
 Route::prefix('administrador/navbar')->group(function() {
-
-    Route::get('contenidos', [NavbarContenidosController::class, 'index'])
-        ->name('navbar.contenidos.index');
-
-    Route::get('contenidos/crear', [NavbarContenidosController::class, 'crear'])
-        ->name('navbar.contenidos.crear');
-
-    Route::post('contenidos/guardar', [NavbarContenidosController::class, 'guardar'])
-        ->name('navbar.contenidos.guardar');
-
-    Route::get('contenidos/{id}', [NavbarContenidosController::class, 'mostrar'])
-        ->name('navbar.contenidos.mostrar');
-
-    Route::get('contenidos/{id}/editar', [NavbarContenidosController::class, 'editar'])
-        ->name('navbar.contenidos.editar');
-
-    Route::delete('contenidos/{id}/borrar', [NavbarContenidosController::class, 'borrar'])
-        ->name('navbar.contenidos.borrar');
+    Route::get('contenidos', [NavbarContenidosController::class, 'index'])->name('navbar.contenidos.index');
+    Route::get('contenidos/crear', [NavbarContenidosController::class, 'crear'])->name('navbar.contenidos.crear');
+    Route::post('contenidos/guardar', [NavbarContenidosController::class, 'guardar'])->name('navbar.contenidos.guardar');
+    Route::get('contenidos/{id}', [NavbarContenidosController::class, 'mostrar'])->name('navbar.contenidos.mostrar');
+    Route::get('contenidos/{id}/editar', [NavbarContenidosController::class, 'editar'])->name('navbar.contenidos.editar');
+    Route::put('contenidos/{contenido}', [NavbarContenidosController::class, 'actualizarContenido'])->name('navbar.contenidos.actualizar');
+    Route::delete('contenidos/{id}/borrar', [NavbarContenidosController::class, 'borrar'])->name('navbar.contenidos.borrar');
 });
 
 
@@ -165,7 +141,7 @@ Route::post('inicio/carrusel/store', [InicioController::class, 'storeImagen'])->
 Route::get('inicio/carrusel/{id}/edit', [InicioController::class, 'editImagen'])->name('inicio.editImagen');
 Route::put('inicio/carrusel/{id}', [InicioController::class, 'updateImagen'])->name('inicio.updateImagen');
 Route::delete('inicio/carrusel/{id}', [InicioController::class, 'destroyImagen'])->name('inicio.destroyImagen');
-
+});
 
 // Banners
 Route::get('/admin/banner', [BannerController::class, 'index'])->name('banner.index');
@@ -177,4 +153,3 @@ Route::delete('/admin/banner/borrar', [BannerController::class, 'borrar'])->name
 });
 
 });
-

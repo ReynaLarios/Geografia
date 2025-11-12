@@ -34,11 +34,11 @@
                         <a href="{{ route('navbar.secciones.mostrar', $sec->id) }}" class="btn btn-info btn-sm">Ver</a>
                         <a href="{{ route('navbar.secciones.editar', $sec->id) }}" class="btn btn-warning btn-sm">Editar</a>
 
-                        <form action="{{ route('navbar.secciones.eliminar', $sec->id) }}"
+                        <form action="{{ route('borrarSeccion', $sec->id) }}"
                               method="POST" class="d-inline">
                               @csrf @method('DELETE')
                               <button class="btn btn-danger btn-sm" 
-                                      onclick="return confirm('¿Eliminar sección?')">Eliminar</button>
+                                      onclick="return confirm('¿borrar sección?')">Eliminar</button>
                         </form>
                     </td>
                 </tr>

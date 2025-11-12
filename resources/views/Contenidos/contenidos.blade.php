@@ -5,8 +5,8 @@
     <h2>Crear Contenido</h2>
 
     <form action="{{ route('contenidos.guardar') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-
+         @csrf
+        @method('PUT')
       
         <div class="mb-3">
             <label class="form-label">Título</label>

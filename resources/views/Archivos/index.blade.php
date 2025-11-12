@@ -8,7 +8,6 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    {{-- Formulario de subida --}}
     <form action="{{ route('archivos.guardar', $contenido_id ?? '') }}" method="POST" enctype="multipart/form-data" class="mb-4">
         @csrf
         <div class="row g-3">
