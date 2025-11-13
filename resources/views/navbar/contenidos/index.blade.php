@@ -2,53 +2,37 @@
 
 @section('contenido')
 <div class="container mt-4">
+    <h2 class="mb-4 text-center" style="color: var(--azul-oscuro);">Listado de Contenidos Navbar</h2>
 
-    <h2 class="mb-3"><strong>Contenidos del Navbar</strong></h2>
+    <button class="fancy mb-3" onclick="window.location='{{ route('navbar.contenidos.crear') }}'">
+        + Agregar Contenido
+    </button>
 
-    <a href="{{ route('navbar.contenidos.crear') }}" class="btn btn-primary mb-3">+ Agregar Contenido</a>
-
-    <table class="table table-striped">
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>Título</th>
                 <th>Sección</th>
-                <th>Imagen</th>
                 <th>Acciones</th>
             </tr>
         </thead>
-
         <tbody>
-            @foreach($contenidos as $contenido)
-            <tr>
-                <td>{{ $contenido->titulo }}</td>
-
-                <td>{{ $contenido->seccion->nombre }}</td>
-
-                <td>
-                    @if($contenido->imagen)
-                        <img src="{{ asset('storage/' . $contenido->imagen) }}"
-                             width="60" class="rounded">
-                    @else
-                        —
-                    @endif
-                </td>
-
-                <td>
-                    <a href="{{ route('navbar.contenidos.mostrar', $contenido->id) }}" class="btn btn-info btn-sm">Ver</a>
-                    <a href="{{ route('navbar.contenidos.editar', $contenido->id) }}" class="btn btn-warning btn-sm">Editar</a>
-
-                    <form action="{{ route('navbar.contenidos.eliminar', $contenido->id) }}"
-                          method="POST" class="d-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-danger btn-sm">Borrar</button>
-                    </form>
-                </td>
-
-            </tr>
+            @foreach($navbarContenidos ?? [] as $contenido)
+                <tr>
+                    <td>{{ $contenido->nombre }}</td>
+                    <td>{{ $contenido->seccion->nombre ?? 'Sin sección' }}</td>
+                    <td class="d-flex gap-1">
+                        <a href="{{ route('navbar.contenidos.mostrar', $contenido->id) }}" class="fancy">👁</a>
+                        <a href="{{ route('navbar.contenidos.editar', $contenido->id) }}" class="fancy">✎</a>
+                        <form action="{{ route('navbar.contenidos.borrar', $contenido->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="fancy btn-borrar">🗑</button>
+                        </form>
+                    </td>
+                </tr>
             @endforeach
         </tbody>
     </table>
-
 </div>
 @endsection

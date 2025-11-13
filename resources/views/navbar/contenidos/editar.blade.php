@@ -1,112 +1,39 @@
 @extends('base.layout')
 
 @section('contenido')
-<div class="container py-4">
-    <h2>Editar Submenú</h2>
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Editar Contenido</h2>
 
-    <form action="{{ route('navbar.contenidos.actualizar', $navbar_contenido->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('navbar.contenidos.actualizar', $contenido->id) }}" method="POST" enctype="multipart/form-data" class="p-4 bg-light rounded shadow-sm">
         @csrf
-        @method('PUT')
 
         <div class="mb-3">
             <label for="titulo" class="form-label">Título</label>
-            <input type="text" name="titulo" id="titulo" class="form-control" value="{{ $navbar_contenido->titulo }}" required>
+            <input type="text" name="titulo" class="form-control" value="{{ old('titulo', $contenido->titulo) }}" required>
         </div>
 
-       <textarea name="descripcion" id="descripcion" class="form-control" rows="10">
-    {!! old('descripcion', $navbar_seccion->descripcion ?? '') !!}
-</textarea>
         <div class="mb-3">
-            <label class="form-label">Imagen principal (opcional)</label>
-            <input type="file" name="imagen" class="form-control">
-            @if($navbar_contenido->imagen)
-                <div class="mt-2">
-                    <img src="{{ asset('storage/'.$navbar_contenido->imagen) }}" alt="Imagen" style="max-width: 150px; border-radius: 6px;">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea name="descripcion" id="ckeditor" class="form-control" rows="5">{{ old('descripcion', $contenido->descripcion) }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="imagen" class="form-label">Imagen</label>
+            @if($contenido->imagen)
+                <div class="mb-2">
+                    <img src="{{ asset($contenido->imagen) }}" alt="Imagen actual" width="200" class="rounded shadow-sm">
                 </div>
             @endif
+            <input type="file" name="imagen" class="form-control">
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Archivos adicionales</label>
-            <input type="file" name="archivos[]" multiple class="form-control">
-        </div>
-
-        {{-- Cuadro tipo tabla --}}
-        <h5 class="mt-4">Cuadro tipo tabla</h5>
-<table class="table table-bordered" id="tabla-cuadro">
-    <thead>
-        <tr>
-            <th>Título</th>
-            <th>Autor</th>
-            <th>Archivo</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($navbar_contenido->cuadros as $cuadro)
-        <tr>
-            <td>{{ $cuadro->titulo }}</td>
-            <td>{{ $cuadro->autor }}</td>
-            <td>
-                @if($cuadro->archivo)
-                    @php
-                        $nombre = pathinfo($cuadro->archivo, PATHINFO_FILENAME);
-                        $ext = pathinfo($cuadro->archivo, PATHINFO_EXTENSION);
-                        $tamano = Storage::disk('public')->size($cuadro->archivo);
-                        $tamanoMB = number_format($tamano / 1024 / 1024, 2);
-                    @endphp
-                    {{ Str::limit($nombre, 20) }}.{{ $ext }} ({{ $tamanoMB }} MB)
-                @else
-                    Sin archivo
-                @endif
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
-
-
-        <button type="button" id="agregar-fila" class="btn btn-secondary mb-3">+ Agregar fila</button>
-        <br>
-        <button type="submit" class="btn btn-primary mt-1">Actualizar</button>
+        <button type="submit" class="btn btn-primary w-100">Actualizar Contenido</button>
     </form>
-</main>
+</div>
 
-{{-- Script para agregar/eliminar filas dinámicamente --}}
-@section('scripts')
+{{-- CKEditor --}}
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
-        const btnAgregar = document.getElementById('agregar-fila');
-
-        btnAgregar.addEventListener('click', function() {
-            const nuevaFila = document.createElement('tr');
-            nuevaFila.innerHTML = `
-                <td><input type="text" name="cuadro_titulo[]" class="form-control"></td>
-                <td><input type="text" name="cuadro_autor[]" class="form-control"></td>
-                <td><input type="file" name="cuadro_archivo[]" class="form-control"></td>
-                <td class="text-center"><input type="checkbox" name="mostrar_cuadro[]" value="1"></td>
-                <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
-            `;
-            tabla.appendChild(nuevaFila);
-        });
-
-        tabla.addEventListener('click', function(e) {
-            if(e.target && e.target.classList.contains('eliminar-fila')) {
-                e.target.closest('tr').remove();
-            }
-        });
-    });
+    CKEDITOR.replace('ckeditor');
 </script>
-<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
-<script>
-ClassicEditor
-    .create(document.querySelector('#descripcion'), {
-        toolbar: [ 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ]
-    })
-    .catch(error => {
-        console.error(error);
-    });
-</script>
-@endsection
-
 @endsection

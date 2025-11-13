@@ -109,29 +109,27 @@ Route::prefix('cuadros')->group(function () {
 });
 
 
-Route::prefix('navbar')->group(function() {
+// Navbar Secciones
+// =======================
+Route::get('/', [NavbarSeccionesController::class, 'panel'])->name('navbar.secciones.panel');
+Route::get('/administrador/navbar/secciones', [App\Http\Controllers\NavbarSeccionesController::class, 'index'])->name('navbar.secciones.index');
+Route::get('/administrador/navbar/secciones/crear', [App\Http\Controllers\NavbarSeccionesController::class, 'crear'])->name('navbar.secciones.crear');
+Route::post('/administrador/navbar/secciones/guardar', [App\Http\Controllers\NavbarSeccionesController::class, 'guardar'])->name('navbar.secciones.guardar');
+Route::get('/administrador/navbar/secciones/{id}', [App\Http\Controllers\NavbarSeccionesController::class, 'mostrar'])->name('navbar.secciones.mostrar');
+Route::get('/administrador/navbar/secciones/{id}/editar', [App\Http\Controllers\NavbarSeccionesController::class, 'editar'])->name('navbar.secciones.editar');
+Route::put('administrador/navbar/secciones/{id}/actualizar', [NavbarSeccionesController::class, 'actualizar'])->name('navbar.secciones.actualizar');
+Route::delete('/administrador/navbar/secciones/{id}/borrar', [App\Http\Controllers\NavbarSeccionesController::class, 'borrar'])->name('navbar.secciones.borrar');
 
-    // NAVBAR_SECCIONES
-    Route::prefix('administrador/navbar')->group(function() {
-    Route::get('secciones', [NavbarSeccionesController::class, 'index'])->name('navbar.secciones.index');
-    Route::get('secciones/crear', [NavbarSeccionesController::class, 'crear'])->name('navbar.secciones.crear');
-    Route::post('secciones', [NavbarSeccionesController::class, 'guardar'])->name('navbar.secciones.guardar');
-    Route::get('secciones/{seccion}/editar', [NavbarSeccionesController::class, 'editarSeccion'])->name('navbar.secciones.editar');
-    Route::put('secciones/{seccion}', [NavbarSeccionesController::class, 'actualizarSeccion'])->name('navbar.secciones.actualizar');
-    Route::delete('secciones/{seccion}', [NavbarSeccionesController::class, 'borrarSeccion'])->name('navbar.secciones.borrar');
-
-
-    // NAVBAR_CONTENIDOS
-Route::prefix('administrador/navbar')->group(function() {
-    Route::get('contenidos', [NavbarContenidosController::class, 'index'])->name('navbar.contenidos.index');
-    Route::get('contenidos/crear', [NavbarContenidosController::class, 'crear'])->name('navbar.contenidos.crear');
-    Route::post('contenidos/guardar', [NavbarContenidosController::class, 'guardar'])->name('navbar.contenidos.guardar');
-    Route::get('contenidos/{id}', [NavbarContenidosController::class, 'mostrar'])->name('navbar.contenidos.mostrar');
-    Route::get('contenidos/{id}/editar', [NavbarContenidosController::class, 'editar'])->name('navbar.contenidos.editar');
-    Route::put('contenidos/{contenido}', [NavbarContenidosController::class, 'actualizarContenido'])->name('navbar.contenidos.actualizar');
-    Route::delete('contenidos/{id}/borrar', [NavbarContenidosController::class, 'borrar'])->name('navbar.contenidos.borrar');
-});
-
+// =======================
+// Navbar Contenidos
+// =======================
+Route::get('/administrador/navbar/contenidos', [App\Http\Controllers\NavbarContenidosController::class, 'index'])->name('navbar.contenidos.index');
+Route::get('/administrador/navbar/contenidos/crear', [App\Http\Controllers\NavbarContenidosController::class, 'crear'])->name('navbar.contenidos.crear');
+Route::post('/administrador/navbar/contenidos/guardar', [App\Http\Controllers\NavbarContenidosController::class, 'guardar'])->name('navbar.contenidos.guardar');
+Route::get('/administrador/navbar/contenidos/{id}', [App\Http\Controllers\NavbarContenidosController::class, 'mostrar'])->name('navbar.contenidos.mostrar');
+Route::get('/administrador/navbar/contenidos/{id}/editar', [App\Http\Controllers\NavbarContenidosController::class, 'editar'])->name('navbar.contenidos.editar');
+Route::put('/administrador/navbar/contenidos/{id}/actualizar', [App\Http\Controllers\NavbarContenidosController::class, 'actualizar'])->name('navbar.contenidos.actualizar');
+Route::delete('/administrador/navbar/contenidos/{id}', [App\Http\Controllers\NavbarContenidosController::class, 'borrar'])->name('navbar.contenidos.borrar');
 
 
 
@@ -150,6 +148,5 @@ Route::get('/admin/banner/editar', [BannerController::class, 'editar'])->name('b
 Route::post('/admin/banner/actualizar', [BannerController::class, 'actualizar'])->name('banner.actualizar');
 Route::delete('/admin/banner/borrar', [BannerController::class, 'borrar'])->name('banner.borrar');
 
-});
 
-});
+

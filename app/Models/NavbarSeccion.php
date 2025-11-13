@@ -9,12 +9,13 @@ class NavbarSeccion extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nombre', 'ruta'];
+  protected $fillable = ['nombre', 'descripcion', 'imagen', 'archivos'];
 
-    public function contenidosNavbar()
-    {
-        return $this->hasMany(NavbarContenido::class, 'navbar_seccion_id');
+
+  public function contenidosNavbar() {
+        return $this->hasMany(NavbarContenido::class, 'seccion_id', 'id'); 
     }
+
     public function archivos()
 {
     return $this->morphMany(Archivo::class, 'archivable');
@@ -22,9 +23,14 @@ class NavbarSeccion extends Model
 
 public function cuadros()
 {
-    return $this->morphMany(Cuadro::class, 'cuadreable
-');
+    return $this->morphMany(Cuadro::class, 'cuadrobable');
 }
+public function panel()
+{
+    $navbarSecciones = NavbarSeccion::all();
+    return view('navbar.secciones.panel', compact('navbarSecciones'));
+}
+
 
 }
 

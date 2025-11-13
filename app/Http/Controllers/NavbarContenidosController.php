@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\NavbarContenido;
 use App\Models\Cuadro;
 use Illuminate\Http\Request;
+use App\Models\NavbarSeccion;
 
 class NavbarContenidosController extends Controller
 {
@@ -85,14 +86,31 @@ class NavbarContenidosController extends Controller
 
     public function borrar($id)
     {
-    
-        Cuadro::where('cuadrebable_id', $id)
-              ->where('cuadrebable_type', NavbarContenido::class)
-              ->delete();
+    Cuadro::where('cuadrobable_id', $id)
+      ->where('cuadrobable_type', NavbarSeccion::class)
+      ->get();
+
 
      
         NavbarContenido::where('id', $id)->delete();
 
         return back()->with('ok', 'Contenido eliminado');
     }
+    public function actualizar(Request $request, $id)
+{
+    $contenido = Contenido::findOrFail($id);
+
+    $contenido->titulo = $request->input('titulo');
+    $contenido->descripcion = $request->input('descripcion');
+
+    if ($request->hasFile('imagen')) {
+        $imagen = $request->file('imagen')->store('public/imagenes');
+        $contenido->imagen = str_replace('public/', 'storage/', $imagen);
+    }
+
+    $contenido->save();
+
+    return redirect()->back()->with('success', 'Contenido actualizado correctamente.');
+}
+
 }

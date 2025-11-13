@@ -28,7 +28,7 @@ public function archivos()
 
 public function cuadros()
 {
-    return $this->morphMany(Cuadro::class, 'cuadreable');
+    return $this->morphMany(Cuadro::class, 'cuadrobable');
 }
 
 

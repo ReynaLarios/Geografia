@@ -18,7 +18,7 @@ class Contenidos extends Model
 
    public function cuadros()
 {
-    return $this->morphMany(Cuadro::class, 'cuadreable');
+    return $this->morphMany(Cuadro::class, 'cuadrobable');
 }
 
 

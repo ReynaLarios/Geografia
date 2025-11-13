@@ -4,18 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
 class Cuadro extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
+        'titulo',
+        'autor',
+        'archivo',
+        'visible',
         'cuadrobable_id',
         'cuadrobable_type',
-        'titulo',
-        'descripcion',
-        'imagen'
     ];
-    
-public function cuadreable()
-{
-    return $this->morphTo();
-}
+
+    public function cuadrobable()
+    {
+        return $this->morphTo();
+    }
 }

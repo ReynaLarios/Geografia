@@ -2,15 +2,12 @@
 
 namespace App\Providers;
 
-
-
-use App\Models\Contenidos;
-use App\Models\secciones;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
+use App\Models\Contenidos;
+use App\Models\Seccion;
 use App\Models\NavbarSeccion;
 use App\Models\Banner;
-use App\Models\Seccion;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,22 +22,19 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    
+    public function boot(): void
+    {
+        View::composer('*', function ($view) {
+            // Todas las secciones con sus contenidos normales
+            $view->with('secciones', Seccion::with('contenidos')->get());
 
-public function boot()
-{
-  
-    view()->composer('*', function ($view) {
+            // Navbar dinámico (secciones con sus submenús)
+            $view->with('navbarSecciones', NavbarSeccion::with('contenidosNavbar')->get());
 
-    
-        $view->with('secciones', Seccion::with('contenidos')->get());
-
-       
-        $view->with('navbarSecciones', NavbarSeccion::with('contenidosNavbar')->get());
-
-      
-        $view->with('banner', Banner::latest()->first());
-    });
+            // Banner más reciente
+            $view->with('banner', Banner::latest()->first());
+        });
+    }
 }
 
 
@@ -55,4 +49,3 @@ public function boot()
 
 
 
-}

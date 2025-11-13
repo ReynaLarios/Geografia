@@ -208,52 +208,85 @@
 {{-- NAVBAR INFERIOR --}}
 <nav class="navbar-bottom">
 
+    {{-- Botón para agregar nueva sección --}}
     <div class="paste-button">
         <button class="button" onclick="window.location='{{ route('navbar.secciones.crear') }}'">
             + Agregar Sección Navbar
         </button>
     </div>
 
+    {{-- Mostrar todas las secciones --}}
     @foreach($navbarSecciones ?? [] as $sec)
-    <div class="paste-button" style="position: relative;">
-        
-        <button class="button">
-            {{ $sec->nombre }}
-            @if($sec->contenidosNavbar && $sec->contenidosNavbar->count()) ▼ @endif
-        </button>
+        <div class="paste-button">
 
-   
-        <div class="dropdown-content">
-            <div class="d-flex justify-content-between align-items-center px-2 mb-2">
-                <a href="{{ route('navbar.contenidos.editar', $sec->id) }}" class="btn btn-sm btn-warning">Editar</a>
+            {{-- Botón principal de la sección --}}
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <button class="button" onclick="window.location='{{ route('navbar.secciones.mostrar', $sec->id) }}'">
+                    {{ $sec->nombre }}
+                    @if($sec->contenidosNavbar && $sec->contenidosNavbar->count()) ▼ @endif
+                </button>
 
-                <form action="{{ route('navbar.secciones.borrar', $sec->id) }}" method="POST" class="d-inline">
+                {{-- Botones discretos --}}
+                <button title="Editar sección"
+                        style="border:none; background:none; color:#666; cursor:pointer; font-size:14px;"
+                        onclick="window.location='{{ route('navbar.secciones.editar', $sec->id) }}'">✏️</button>
+
+                <form action="{{ route('navbar.secciones.borrar', $sec->id) }}" method="POST" style="display:inline;">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="fancy btn-borrar" style="padding:2px 6px; font-size:0.8rem;">🗑 Borrar Sección</button>
+                    <button title="Eliminar sección"
+                            type="submit"
+                            style="border:none; background:none; color:#a33; cursor:pointer; font-size:14px;"
+                            onclick="return confirm('¿Seguro que deseas eliminar esta sección?')">🗑️</button>
                 </form>
             </div>
 
-            <a href="{{ route('navbar.contenidos.crear', $sec->id) }}" class="d-block mb-2">+ Agregar Submenú</a>
-
-            @foreach($sec->contenidosNavbar ?? [] as $hijo)
-            <div class="d-flex justify-content-between align-items-center px-2 mb-1">
-                <span>{{ $hijo->nombre }}</span>
-                <div class="d-flex gap-1">
-                    <a href="{{ route('navbar.contenidos.editar', $hijo->id) }}" class="fancy" style="padding:2px 6px; font-size:0.8rem;">✎</a>
-                    <form action="{{ route('navbar.contenidos.borrar', $hijo->id) }}" method="POST" class="d-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="fancy btn-borrar" style="padding:2px 6px; font-size:0.8rem;" onclick="return confirm('¿Eliminar este submenú?')">🗑</button>
-                    </form>
+            {{-- Dropdown de contenidos (submenús) --}}
+            @if($sec->contenidosNavbar && $sec->contenidosNavbar->count())
+                <div class="dropdown-content" style="margin-left: 20px;">
+                    @foreach($sec->contenidosNavbar as $contenido)
+                        <div style="display: flex; align-items: center; gap: 4px; margin: 2px 0;">
+                            <a href="{{ route('navbar.contenidos.mostrar', $contenido->id) }}">
+                                {{ $contenido->titulo }}
+                            </a>
+                            <button title="Editar contenido"
+                                    style="border:none; background:none; color:#666; cursor:pointer; font-size:13px;"
+                                    onclick="window.location='{{ route('navbar.contenidos.editar', $contenido->id) }}'">✏️</button>
+                            <form action="{{ route('navbar.contenidos.borrar', $contenido->id) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button title="Eliminar contenido"
+                                        type="submit"
+                                        style="border:none; background:none; color:#a33; cursor:pointer; font-size:13px;"
+                                        onclick="return confirm('¿Seguro que deseas eliminar este contenido?')">🗑️</button>
+                            </form>
+                        </div>
+                    @endforeach
                 </div>
-            </div>
-            @endforeach
+            @endif
+
         </div>
-    </div>
     @endforeach
 
 </nav>
+
+
+{{-- Script para abrir dropdown en móviles --}}
+<script>
+document.querySelectorAll('.paste-button > .button').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        const dropdown = this.nextElementSibling;
+        if (dropdown && dropdown.classList.contains('dropdown-content')) {
+            // Evita que cambie de página si tiene submenú
+            if (dropdown.children.length > 0) {
+                e.preventDefault();
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            }
+        }
+    });
+});
+</script>
+
 
 <div class="layout">
 
