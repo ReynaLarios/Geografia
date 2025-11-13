@@ -7,21 +7,20 @@
         <strong>{{ $contenido->titulo }}</strong>
     </h2>
 
-    {{-- Imagen principal --}}
-    @if(!empty($contenido->imagen) && file_exists(storage_path('app/public/' . $contenido->imagen)))
+    @if(!empty($contenido->imagen) && file_exists(storage('app/public/' . $contenido->imagen)))
         <div class="text-center mb-4">
             <img src="{{ asset('storage/' . $contenido->imagen) }}" alt="Imagen principal" class="img-fluid rounded shadow-sm" style="max-height: 400px;">
         </div>
     @endif
 
-    {{-- Descripción --}}
+
     @if(!empty($contenido->descripcion))
         <div class="mb-4 p-3 rounded" style="background: var(--azul-suave); color: var(--azul-oscuro);">
             {!! nl2br(e($contenido->descripcion)) !!}
         </div>
     @endif
 
-    {{-- Archivos adicionales --}}
+
     @if($contenido->archivos && count($contenido->archivos) > 0)
         <div class="mb-4">
             <h5>Archivos adjuntos:</h5>

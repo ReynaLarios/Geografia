@@ -193,17 +193,19 @@
     </div>
 </nav>
 
-{{-- BANNER --}}
 @php 
-    $banner = \App\Models\Banner::latest()->first(); 
+    use App\Models\Banner;
+    $banner = Banner::latest()->first();
 @endphp
 
 <div class="banner-container position-relative">
-    @if ($banner && file_exists(storage_path('app/public/' . $banner->imagen)))
+    @if($banner && $banner->imagen && file_exists(storage_path('app/public/banners/' . $banner->imagen)))
+        <img src="{{ asset('storage/banners/' . $banner->imagen) }}" class="banner img-fluid" alt="Banner">
+    @else
+        {{-- Imagen por defecto si no hay banner --}}
+        <img src="{{ asset('images/banner-default.jpg') }}" class="banner img-fluid" alt="Banner por defecto">
     @endif
-    <img src="{{ asset('storage/'.$banner->imagen) }}" class="banner" alt="Banner">
 </div>
-{{$banner->imagen}}
 
 {{-- NAVBAR INFERIOR --}}
 <nav class="navbar-bottom">

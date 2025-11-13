@@ -142,11 +142,11 @@ Route::delete('inicio/carrusel/{id}', [InicioController::class, 'destroyImagen']
 });
 
 // Banners
-Route::get('/admin/banner', [BannerController::class, 'index'])->name('banner.index');
-Route::post('/admin/banner/guardar', [BannerController::class, 'guardar'])->name('banner.guardar');
-Route::get('/admin/banner/editar', [BannerController::class, 'editar'])->name('banner.editar');
-Route::post('/admin/banner/actualizar', [BannerController::class, 'actualizar'])->name('banner.actualizar');
-Route::delete('/admin/banner/borrar', [BannerController::class, 'borrar'])->name('banner.borrar');
+Route::get('/administrador/banner/index', [BannerController::class, 'index'])->name('banner.index');
+Route::post('/administrador/banner/guardar', [BannerController::class, 'guardar'])->name('banner.guardar');
+Route::get('/administrador/banner/editar', [BannerController::class, 'editar'])->name('banner.editar');
+Route::post('/administrador/banner/actualizar', [BannerController::class, 'actualizar'])->name('banner.actualizar');
+Route::delete('/administrador/banner/borrar', [BannerController::class, 'borrar'])->name('banner.borrar');
 
 
 
