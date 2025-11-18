@@ -24,8 +24,8 @@
                 <td>{{ $seccion->nombre }}</td>
                 <td>{{ Str::limit($seccion->descripcion, 80) }}</td>
                 <td>
-                    <a href="{{ route('navbar.secciones.mostrar', $seccion->id) }}" class="btn btn-info btn-sm">👁️ Ver</a>
-                    <a href="{{ route('navbar.secciones.editar', $seccion->id) }}" class="btn btn-warning btn-sm">✏️ Editar</a>
+                    <a href="{{ route('navbar.secciones.mostrar', $seccion->id) }}" class="btn btn-info btn-sm">Ver</a>
+                    <a href="{{ route('navbar.secciones.editar', $seccion->id) }}" class="btn btn-warning btn-sm"> Editar</a>
                     <form action="{{ route('navbar.secciones.borrar', $seccion->id) }}" method="POST" style="display:inline-block;">
                         @csrf
                         @method('DELETE')

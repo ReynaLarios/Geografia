@@ -5,21 +5,18 @@
 
     <h2 class="mb-4 text-center">{{ $seccion->nombre }}</h2>
 
-    {{-- Descripción de la sección --}}
     @if($seccion->descripcion)
         <div class="mb-4 p-3 bg-light rounded shadow-sm">
-            {!! $seccion->descripcion !!}
+          
         </div>
     @endif
 
-    {{-- Imagen de la sección --}}
     @if($seccion->imagen)
         <div class="mb-4 text-center">
             <img src="{{ asset('storage/'.$seccion->imagen) }}" class="img-fluid rounded shadow-sm" style="max-height: 300px; object-fit: cover;">
         </div>
     @endif
 
-    {{-- Cuadros --}}
     @if($seccion->cuadros && $seccion->cuadros->count())
         <div class="mb-4">
             <h5>Cuadros</h5>
@@ -59,7 +56,6 @@
         <p class="text-center text-muted">No hay cuadros disponibles.</p>
     @endif
 
-    {{-- Archivos adicionales --}}
     @if($seccion->archivos && $seccion->archivos->count())
         <div class="mb-4">
             <h5>Archivos adicionales</h5>
@@ -80,3 +76,4 @@
 
 </div>
 @endsection
+

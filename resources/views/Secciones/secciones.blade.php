@@ -31,12 +31,12 @@
        
         <div class="mb-3">
             <label class="form-label">Archivos adicionales</label>
-            <input type="file" name="archivos[]" multiple class="form-control">
+            <input type="file" name="archivos" multiple class="form-control">
         </div>
 
 
     
-        <h5 class="mt-4">Cuadro tipo tabla</h5>
+        <h5 class="mt-4"></h5>
         <table class="table table-bordered" id="tabla-cuadro">
             <thead>
                 <tr>

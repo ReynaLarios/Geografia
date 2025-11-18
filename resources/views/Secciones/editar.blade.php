@@ -31,15 +31,6 @@
         </div>
 
 
-        {{-- Video --}}
-        <div class="mb-3">
-            <label class="form-label">Subir Video (opcional)</label>
-            <input type="file" name="video" class="form-control" accept="video/mp4,video/webm,video/ogg">
-            @if(isset($seccion->video))
-                <small>Video actual: <a href="{{ asset('storage/' . $seccion->video) }}" target="_blank">Ver</a></small>
-            @endif
-        </div>
-
         <div class="mb-3">
             <label class="form-label">O URL de YouTube (opcional)</label>
             <input type="url" name="youtube_url" class="form-control" value="{{ old('youtube_url', $seccion->youtube_url ?? '') }}" placeholder="https://www.youtube.com/watch?v=...">
@@ -50,8 +41,7 @@
             <input type="file" name="archivos[]" multiple class="form-control">
         </div>
 
-        {{-- Cuadro tipo tabla --}}
-        <h5 class="mt-4">Cuadro tipo tabla</h5>
+        <h5 class="mt-4"></h5>
         <table class="table table-bordered" id="tabla-cuadro">
             <thead>
                 <tr>

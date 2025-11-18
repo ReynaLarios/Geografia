@@ -9,17 +9,17 @@ use Illuminate\Support\Facades\Storage;
 
 class NavbarSeccionesController extends Controller
 {
-    // Listado de todas las secciones
-    public function listado()
+
+    public function index()
     {
         $secciones = NavbarSeccion::all();
-        return view('navbar.secciones.listado', [
+        return view('navbar.secciones.index', [
             'secciones' => $secciones,
             'seccionActual' => null
         ]);
     }
 
-    // Mostrar sección con contenidos, cuadros y archivos
+
     public function mostrar($id)
     {
         $secciones = NavbarSeccion::all();
@@ -32,14 +32,14 @@ class NavbarSeccionesController extends Controller
         ]);
     }
 
-    // Formulario para crear sección
+
     public function crear()
     {
         $secciones = NavbarSeccion::all();
         return view('navbar.secciones.crear', compact('secciones'));
     }
 
-    // Guardar nueva sección con imagen
+   
     public function guardar(Request $request)
     {
         $request->validate([
@@ -56,7 +56,7 @@ class NavbarSeccionesController extends Controller
 
         NavbarSeccion::create($data);
 
-        return redirect()->route('navbar.secciones.listado')
+        return redirect()->route('navbar.secciones.index')
                          ->with('success', 'Sección creada correctamente.');
     }
 
@@ -105,7 +105,7 @@ class NavbarSeccionesController extends Controller
 
         $seccion->delete();
 
-        return redirect()->route('navbar.secciones.listado')
+        return redirect()->route('navbar.secciones.index')
                          ->with('success', 'Sección eliminada correctamente.');
     }
 

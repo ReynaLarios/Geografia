@@ -63,4 +63,10 @@ class BannerController extends Controller
 
         return back()->with('success', 'Banner eliminado correctamente.');
     }
+    
+    public function editar($id)
+    {
+        $banner = banner::findOrFail($id);
+        return view('banner.editar', compact('banners'));
+    }
 }

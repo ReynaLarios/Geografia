@@ -3,7 +3,6 @@
 @section('contenido')
 <div class="container mt-4">
 
-    {{-- --- Carrousel --- --}}
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Carrusel</h2>
         <a href="{{ route('inicio.createImagen') }}" class="btn btn-success">➕ Agregar Imagen</a>
@@ -42,7 +41,7 @@
         <p class="text-center">No hay imágenes en el carrusel aún.</p>
     @endif
 
-    {{-- --- Noticias --- --}}
+
     <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
         <h2>Noticias</h2>
         <a href="{{ route('inicio.create') }}" class="btn btn-success">➕ Nueva Noticia</a>
