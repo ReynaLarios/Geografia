@@ -2,134 +2,152 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\NavbarSeccion;
 use App\Models\Cuadro;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class NavbarSeccionesController extends Controller
 {
-    // 📋 Mostrar todas las secciones del navbar
-    public function index()
+    // Listado de todas las secciones
+    public function listado()
     {
         $secciones = NavbarSeccion::all();
-        return view('navbar.secciones.index', compact('secciones'));
+        return view('navbar.secciones.listado', [
+            'secciones' => $secciones,
+            'seccionActual' => null
+        ]);
     }
 
-    // ➕ Formulario para crear nueva sección
+    // Mostrar sección con contenidos, cuadros y archivos
+    public function mostrar($id)
+    {
+        $secciones = NavbarSeccion::all();
+        $seccion = NavbarSeccion::with(['contenidosNavbar', 'cuadros', 'archivos'])->findOrFail($id);
+
+        return view('navbar.secciones.mostrar', [
+            'secciones' => $secciones,
+            'seccion' => $seccion,
+            'seccionActual' => $seccion 
+        ]);
+    }
+
+    // Formulario para crear sección
     public function crear()
     {
-        return view('navbar.secciones.crear');
+        $secciones = NavbarSeccion::all();
+        return view('navbar.secciones.crear', compact('secciones'));
     }
 
-    // 💾 Guardar nueva sección
+    // Guardar nueva sección con imagen
     public function guardar(Request $request)
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
-            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
+            'imagen' => 'nullable|image|max:5120',
         ]);
 
-        // Guardar imagen principal
-        $imagen = null;
+        $data = $request->only(['nombre', 'descripcion']);
+
         if ($request->hasFile('imagen')) {
-            $imagen = $request->file('imagen')->store('imagenes', 'public');
+            $data['imagen'] = $request->file('imagen')->store('navbar_secciones', 'public');
         }
 
-        // Archivos múltiples
-        $archivosGuardados = [];
-        if ($request->hasFile('archivos')) {
-            foreach ($request->file('archivos') as $file) {
-                $archivosGuardados[] = $file->store('archivos', 'public');
-            }
-        }
+        NavbarSeccion::create($data);
 
-        // Crear la sección
-        $seccion = NavbarSeccion::create([
-            'nombre' => $request->nombre,
-            'descripcion' => $request->descripcion,
-            'imagen' => $imagen,
-            'archivos' => $archivosGuardados
+        return redirect()->route('navbar.secciones.listado')
+                         ->with('success', 'Sección creada correctamente.');
+    }
+
+    // Formulario para editar sección
+    public function editar($id)
+    {
+        $secciones = NavbarSeccion::all();
+        $seccion = NavbarSeccion::findOrFail($id);
+        return view('navbar.secciones.editar', compact('secciones', 'seccion'));
+    }
+
+    // Actualizar sección con imagen
+    public function actualizar(Request $request, $id)
+    {
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'imagen' => 'nullable|image|max:5120',
         ]);
 
-        // Guardar cuadros si existen
-        if ($request->cuadros) {
-            foreach ($request->cuadros as $cuadro) {
-                $archivoCuadro = null;
-                if (isset($cuadro['archivo'])) {
-                    $archivoCuadro = $cuadro['archivo']->store('cuadros', 'public');
-                }
+        $seccion = NavbarSeccion::findOrFail($id);
 
-                Cuadro::create([
-                    'cuadrobable_id' => $seccion->id,
-                    'cuadrobable_type' => NavbarSeccion::class,
-                    'titulo' => $cuadro['titulo'] ?? '',
-                    'autor' => $cuadro['autor'] ?? '',
-                    'archivo' => $archivoCuadro,
-                    'mostrar' => isset($cuadro['mostrar']) ? 1 : 0
+        $data = $request->only(['nombre', 'descripcion']);
+
+        if ($request->hasFile('imagen')) {
+            if ($seccion->imagen) {
+                Storage::disk('public')->delete($seccion->imagen);
+            }
+            $data['imagen'] = $request->file('imagen')->store('navbar_secciones', 'public');
+        }
+
+        $seccion->update($data);
+
+        return redirect()->route('navbar.secciones.mostrar', $seccion->id)
+                         ->with('success', 'Sección actualizada correctamente.');
+    }
+
+    // Eliminar sección
+    public function borrar($id)
+    {
+        $seccion = NavbarSeccion::findOrFail($id);
+
+        if ($seccion->imagen) {
+            Storage::disk('public')->delete($seccion->imagen);
+        }
+
+        $seccion->delete();
+
+        return redirect()->route('navbar.secciones.listado')
+                         ->with('success', 'Sección eliminada correctamente.');
+    }
+
+    // Guardar uno o varios cuadros asociados a la sección
+    public function guardarCuadro(Request $request, $id)
+    {
+        $seccion = NavbarSeccion::findOrFail($id);
+
+        $request->validate([
+            'titulo' => 'required|string|max:255',
+            'autor' => 'nullable|string|max:255',
+            'archivo.*' => 'nullable|file|max:10240', // múltiples archivos
+        ]);
+
+        $titulo = $request->titulo;
+        $autor = $request->autor;
+
+        if ($request->hasFile('archivo')) {
+            foreach ($request->file('archivo') as $archivo) {
+                $seccion->cuadros()->create([
+                    'titulo' => $titulo,
+                    'autor' => $autor,
+                    'archivo' => $archivo->store('cuadros', 'public'),
+                    'nombre_real' => $archivo->getClientOriginalName(),
                 ]);
             }
         }
 
-        return redirect()->route('navbar.secciones.index')->with('ok', 'Sección guardada correctamente.');
+        return back()->with('success', 'Cuadro(s) agregado(s) correctamente.');
     }
 
-    // 👁️ Mostrar una sección específica
-    public function mostrar($id)
+    // Eliminar cuadro
+    public function eliminarCuadro($cuadroId)
     {
-        $seccion = NavbarSeccion::with('cuadros')->findOrFail($id);
-        return view('navbar.secciones.mostrar', compact('seccion'));
-    }
+        $cuadro = Cuadro::findOrFail($cuadroId);
 
-    // ✏️ Editar sección existente
-    public function editar($id)
-    {
-        $seccion = NavbarSeccion::with('cuadros')->findOrFail($id);
-        return view('navbar.secciones.editar', compact('seccion'));
-    }
-
-    // 🗑️ Borrar sección
-    public function borrar($id)
-    {
-        Cuadro::where('cuadrobable_id', $id)
-            ->where('cuadrobable_type', NavbarSeccion::class)
-            ->delete();
-
-        NavbarSeccion::where('id', $id)->delete();
-
-        return back()->with('ok', 'Sección eliminada correctamente.');
-    }
-
-    // ⚙️ Panel de administración
-    public function panel()
-    {
-        $navbarSecciones = NavbarSeccion::all();
-        return view('navbar.secciones.panel', compact('navbarSecciones'));
-    }
-
-    // 🔄 Actualizar sección
-    public function actualizar(Request $request, $id)
-    {
-        $seccion = NavbarSeccion::findOrFail($id);
-
-        $validated = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
-        ]);
-
-        // Si se sube una nueva imagen, reemplazar la anterior
-        if ($request->hasFile('imagen')) {
-            $path = $request->file('imagen')->store('navbar_secciones', 'public');
-            $validated['imagen'] = $path;
+        if ($cuadro->archivo) {
+            Storage::disk('public')->delete($cuadro->archivo);
         }
 
-        // Actualizar los datos
-        $seccion->update($validated);
+        $cuadro->delete();
 
-        return redirect()
-            ->route('navbar.secciones.mostrar', $seccion->id)
-            ->with('ok', 'Sección actualizada correctamente.');
+        return back()->with('success', 'Cuadro eliminado correctamente.');
     }
 }
-

@@ -9,18 +9,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('contenidos', function (Blueprint $table) {
-            $table->id();
+            $table->id(); 
             $table->string('titulo'); 
-            $table->text('descripcion'); 
-            $table->unsignedBigInteger('archivo_id')->nullable(); 
-            $table->foreign('archivo_id')->references('id')->on('archivos')->onDelete('set null');
-            $table->unsignedBigInteger('administrador_id')->nullable(); 
-            $table->foreign('administrador_id')->references('id')->on('administradores')->onDelete('set null');
+            $table->text('descripcion')->nullable(); 
+            $table->string('imagen', 100)->nullable(); 
+            $table->foreignId('seccion_id') 
+                  ->constrained('secciones')
+                  ->onDelete('cascade')
+                  ->onUpdate('cascade');
             $table->timestamps(); 
         });
     }
 
-    
     public function down(): void
     {
         Schema::dropIfExists('contenidos');

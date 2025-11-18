@@ -6,24 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-   public function up()
-{
-    Schema::table('navbar_secciones', function (Blueprint $table) {
-        $table->string('ruta')->nullable()->after('nombre');
-    });
-}
+    public function up(): void
+    {
+        Schema::table('navbar_secciones', function (Blueprint $table) {
+            $table->json('archivos')->nullable()->change();
+        });
+    }
 
-
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('navbar_secciones', function (Blueprint $table) {
-            //
+            $table->string('archivos')->nullable()->change();
         });
     }
 };

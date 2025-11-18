@@ -5,7 +5,8 @@
     <h2 class="mb-4 text-center">Editar Contenido</h2>
 
     <form action="{{ route('navbar.contenidos.actualizar', $contenido->id) }}" method="POST" enctype="multipart/form-data" class="p-4 bg-light rounded shadow-sm">
-        @csrf
+       @csrf
+        @method('PUT')
 
         <div class="mb-3">
             <label for="titulo" class="form-label">Título</label>

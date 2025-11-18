@@ -301,8 +301,8 @@ document.querySelectorAll('.paste-button > .button').forEach(btn => {
                 + Agregar Contenido
             </button>
 
-            {{-- Botón para regresar a listado de secciones --}}
-            <button class="fancy mb-3" onclick="window.location='{{ route('secciones.listado') }}'">
+           
+            <button class="fancy mb-3" onclick="window.location='{{ route('dashboard') }}'">
                 ← Regresar a Secciones
             </button>
 

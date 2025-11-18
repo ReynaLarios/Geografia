@@ -1,4 +1,6 @@
-@extends('base.layout')
+@extends('public.layout')
+
+
 
 @section('contenido')
 <div class="container mt-4">
@@ -9,11 +11,10 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    {{-- Formulario para agregar cuadros --}}
     <form action="{{ route('cuadros.guardar') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
-        <div class="row g-3 mb-4">
+        <div class="row g-3">
             <div class="col-md-4">
                 <input type="text" name="titulo" class="form-control" placeholder="Título" required>
             </div>
@@ -21,7 +22,7 @@
                 <input type="text" name="autor" class="form-control" placeholder="Autor">
             </div>
             <div class="col-md-3">
-                <input type="file" name="archivo[]" class="form-control" multiple>
+                <input type="file" name="archivo" class="form-control">
             </div>
             <div class="col-md-1 d-flex align-items-center">
                 <button type="submit" class="btn btn-primary w-100">Agregar</button>
@@ -29,15 +30,15 @@
         </div>
     </form>
 
-    {{-- Lista de cuadros existentes --}}
+
     @if($cuadros->count() > 0)
-        <div class="row">
+        <div class="row mt-4">
             @foreach($cuadros as $cuadro)
                 <div class="col-md-4 mb-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title">{{ $cuadro->titulo }}</h5>
-                            <p class="card-text"><strong>Autor:</strong> {{ $cuadro->autor ?? '-' }}</p>
+                            <p class="card-text"><strong>Autor:</strong> {{ $cuadro->autor }}</p>
 
                             @if($cuadro->archivo)
                                 <p>
@@ -54,7 +55,7 @@
 
                             <div class="d-flex justify-content-between">
                                 <a href="{{ route('cuadros.editar', $cuadro->id) }}" class="btn btn-warning w-50 me-1">Editar</a>
-                                <form action="{{ route('cuadros.borrar', $cuadro->id) }}" method="POST" class="w-50 ms-1">
+                                <form action="{{ route('cuadros.eliminar', $cuadro->id) }}" method="POST" class="w-50 ms-1">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-danger w-100" type="submit" onclick="return confirm('¿Seguro que deseas eliminar este cuadro?')">Eliminar</button>
@@ -68,6 +69,5 @@
     @else
         <p>No hay cuadros agregados.</p>
     @endif
-
 </div>
 @endsection

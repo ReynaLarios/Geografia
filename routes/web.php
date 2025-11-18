@@ -16,13 +16,53 @@ use App\Http\Controllers\NavbarContenidosController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\PublicController;
 
-//Rutas publicas
-Route::prefix('')->group(function () {
-    Route::get('/', [PublicController::class, 'inicio'])->name('public.inicio');
-    Route::get('/seccion/{id}', [PublicController::class, 'verSeccion'])->name('public.verSeccion');
-    Route::get('/contenido/{id}', [PublicController::class, 'verContenido'])->name('public.verContenido');
-    Route::get('/videoteca', [PublicController::class, 'videoteca'])->name('public.videoteca');
-});
+// ========================================================
+//                 RUTAS PÚBLICAS
+// ========================================================
+
+// ---------------- INICIO ------------------
+Route::get('/', [PublicController::class, 'inicio'])->name('public.inicio.index');
+Route::get('inicio/{id}', [InicioController::class, 'inicio'])->name('public.inicio.show');
+
+// ---------------- CARRUSEL ------------------
+Route::get('/carrusel', [PublicController::class, 'carrusel'])
+    ->name('public.carrusel');
+
+// ---------------- NAVBAR (Secciones / Contenidos) ------------------
+Route::get('/navbar/secciones', [PublicController::class, 'navbarSeccionesIndex'])
+    ->name('public.navbar.secciones.index');
+
+Route::get('/navbar/secciones/{id}', [PublicController::class, 'navbarSeccionesMostrar'])
+    ->name('public.navbar.secciones.show');
+
+Route::get('/navbar/contenidos', [PublicController::class, 'navbarContenidosIndex'])
+    ->name('public.navbar.contenidos.index');
+
+Route::get('/navbar/contenido/{id}', [PublicController::class, 'navbarContenidoMostrar'])
+    ->name('public.navbar.contenido.show');
+
+// ---------------- SECCIONES ------------------
+Route::get('/secciones', [PublicController::class, 'seccionesIndex'])
+    ->name('public.secciones.index');
+
+Route::get('/secciones/{id}', [PublicController::class, 'seccionesMostrar'])
+    ->name('public.secciones.show');
+
+// ---------------- CONTENIDOS ------------------
+Route::get('/contenidos', [PublicController::class, 'contenidosIndex'])
+    ->name('public.contenidos.index');
+
+Route::get('/contenidos/{id}', [PublicController::class, 'contenidosMostrar'])
+    ->name('public.contenidos.show');
+
+// ---------------- CUADROS ------------------
+Route::get('/cuadros', [PublicController::class, 'cuadrosIndex'])
+    ->name('public.cuadros.index');
+
+// ---------------- VIDEOTECA ------------------
+Route::get('/videoteca', [PublicController::class, 'videotecaIndex'])
+    ->name('public.videoteca.index');
+
 
 //Login
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login.form');
@@ -65,6 +105,13 @@ Route::get('/secciones/{id}/editar', [SeccionesController::class, 'editar'])->na
 Route::put('/secciones/{id}/actualizar', [SeccionesController::class, 'actualizar'])->name('secciones.actualizar');
 Route::delete('/secciones/{id}/borrar', [SeccionesController::class, 'borrar'])->name('secciones.borrar');
 Route::get('/secciones/{id}', [SeccionesController::class, 'mostrar'])->name('secciones.mostrar');
+//cuadros dentro de secciones 
+Route::post('secciones/{id}/cuadro/guardar', [SeccionesController::class, 'guardarCuadro'])->name('secciones.cuadro.guardar');
+Route::delete('cuadros/{id}/eliminar', [SeccionesController::class, 'eliminarCuadro'])->name('cuadros.eliminar');
+//archivos dentro de seccciones 
+Route::post('secciones/{id}/archivo', [SeccionesController::class, 'guardarArchivo'])->name('secciones.archivo.guardar');
+Route::delete('archivos/{id}/eliminar', [SeccionesController::class, 'eliminarArchivo'])->name('archivos.eliminar');
+
 
 
     // Contenidos
@@ -119,6 +166,9 @@ Route::get('/administrador/navbar/secciones/{id}', [App\Http\Controllers\NavbarS
 Route::get('/administrador/navbar/secciones/{id}/editar', [App\Http\Controllers\NavbarSeccionesController::class, 'editar'])->name('navbar.secciones.editar');
 Route::put('administrador/navbar/secciones/{id}/actualizar', [NavbarSeccionesController::class, 'actualizar'])->name('navbar.secciones.actualizar');
 Route::delete('/administrador/navbar/secciones/{id}/borrar', [App\Http\Controllers\NavbarSeccionesController::class, 'borrar'])->name('navbar.secciones.borrar');
+//cuadros dentro de navbar_secciones
+Route::post('/guardar-cuadro/{id}', [NavbarSeccionesController::class, 'guardarCuadro'])->name('navbar.secciones.guardarCuadro');
+Route::delete('/eliminar-cuadro/{id}', [NavbarSeccionesController::class, 'eliminarCuadro'])->name('navbar.secciones.eliminarCuadro');
 
 // =======================
 // Navbar Contenidos

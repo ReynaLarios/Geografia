@@ -9,30 +9,35 @@ class NavbarSeccion extends Model
 {
     use HasFactory;
 
-  protected $fillable = ['nombre', 'descripcion', 'imagen', 'archivos'];
+    protected $table = 'navbar_secciones';
 
+    protected $fillable = [
+        'nombre',
+        'descripcion',
+        'imagen',
+        'archivos'
+    ];
 
-  public function contenidosNavbar() {
+    // 👇 ESTO ES LO QUE NECESITAS PARA EVITAR EL ERROR DE "Array to string conversion"
+    protected $casts = [
+        'archivos' => 'array',
+    ];
+
+    public function contenidosNavbar()
+    {
         return $this->hasMany(NavbarContenido::class, 'seccion_id', 'id'); 
     }
 
     public function archivos()
-{
-    return $this->morphMany(Archivo::class, 'archivable');
-}
+    {
+        return $this->morphMany(Archivo::class, 'archivable');
+    }
 
-public function cuadros()
-{
-    return $this->morphMany(Cuadro::class, 'cuadrobable');
-}
-public function panel()
-{
-    $navbarSecciones = NavbarSeccion::all();
-    return view('navbar.secciones.panel', compact('navbarSecciones'));
-}
-
+    public function cuadros()
+    {
+        return $this->morphMany(Cuadro::class, 'cuadrobable');
+    }
 
 }
-
 
 

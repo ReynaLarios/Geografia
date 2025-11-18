@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contenidos;
 use App\Models\NavbarContenido;
 use App\Models\Cuadro;
 use Illuminate\Http\Request;
@@ -98,7 +99,7 @@ class NavbarContenidosController extends Controller
     }
     public function actualizar(Request $request, $id)
 {
-    $contenido = Contenido::findOrFail($id);
+    $contenido = Contenidos::findOrFail($id);
 
     $contenido->titulo = $request->input('titulo');
     $contenido->descripcion = $request->input('descripcion');

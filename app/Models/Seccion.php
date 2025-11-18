@@ -11,7 +11,8 @@ class Seccion extends Model
 
     protected $table = 'secciones';
 
-    protected $fillable = ['nombre', 'descripcion'];
+    protected $fillable = ['nombre', 'descripcion', 'imagen', 'archivos'];
+
 
    
     protected $casts = [

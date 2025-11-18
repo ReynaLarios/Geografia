@@ -13,7 +13,7 @@ class Cuadro extends Model
         'titulo',
         'autor',
         'archivo',
-        'visible',
+        'mostrar',
         'cuadrobable_id',
         'cuadrobable_type',
     ];

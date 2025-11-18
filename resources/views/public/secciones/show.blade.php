@@ -3,10 +3,10 @@
 @section('contenido')
 <main class="container mt-4">
 
-    {{-- Nombre de la sección --}}
+    {{-- Nombre --}}
     <h2 class="mb-4 text-center">{{ $seccion->nombre }}</h2>
 
-    {{-- Imagen principal --}}
+    {{-- Imagen --}}
     @if($seccion->imagen)
         <div class="mb-4 text-center">
             <img src="{{ asset('storage/'.$seccion->imagen) }}" class="img-fluid rounded shadow-sm" style="max-height: 300px; object-fit: cover;">
@@ -24,14 +24,16 @@
     @endif
 
     {{-- Archivos --}}
-    @if($seccion->archivos && $seccion->archivos->count())
+    @if($seccion->archivos && count($seccion->archivos))
         <div class="mb-4">
             <h5>Archivos adicionales</h5>
             <ul class="list-group">
                 @foreach($seccion->archivos as $archivo)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <a href="{{ asset('storage/' . $archivo->archivo) }}" target="_blank">{{ $archivo->nombre_real }}</a>
-                        <small class="text-muted">{{ number_format(Storage::disk('public')->size($archivo->archivo)/1024/1024,2) }} MB</small>
+                        <a href="{{ asset('storage/' . $archivo) }}" target="_blank">{{ basename($archivo) }}</a>
+                        <small class="text-muted">
+                            {{ number_format(Storage::disk('public')->size($archivo)/1024/1024, 2) }} MB
+                        </small>
                     </li>
                 @endforeach
             </ul>
@@ -49,7 +51,6 @@
                         <th>Autor</th>
                         <th>Archivo</th>
                         <th>Mostrar</th>
-                        <th>Eliminar</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,20 +60,15 @@
                             <td>{{ $cuadro->autor ?? '-' }}</td>
                             <td>
                                 @if($cuadro->archivo)
-                                    <a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">Ver archivo</a>
-                                    <small class="text-muted">{{ number_format(Storage::disk('public')->size($cuadro->archivo)/1024/1024,2) }} MB</small>
+                                    <a href="{{ asset('storage/' . $cuadro->archivo) }}" target="_blank">Ver archivo</a>
+                                    <small class="text-muted">
+                                        {{ number_format(Storage::disk('public')->size($cuadro->archivo)/1024/1024, 2) }} MB
+                                    </small>
                                 @else
                                     <span class="text-muted">Sin archivo</span>
                                 @endif
                             </td>
                             <td class="text-center">{{ $cuadro->mostrar ? 'Sí' : 'No' }}</td>
-                            <td class="text-center">
-                                <form action="{{ route('navbar.secciones.eliminarCuadro', $cuadro->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Deseas eliminar este cuadro?')">Eliminar</button>
-                                </form>
-                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -80,7 +76,7 @@
         </div>
     @endif
 
-    {{-- Contenidos asociados --}}
+    {{-- Contenidos --}}
     @if($seccion->contenidosNavbar && $seccion->contenidosNavbar->count())
         <div class="mb-4">
             <h5>Contenidos asociados</h5>
@@ -92,11 +88,9 @@
         </div>
     @endif
 
-    {{-- Botón regresar --}}
     <div class="mt-3 text-center">
         <button class="btn btn-secondary" onclick="window.history.back()">← Regresar</button>
     </div>
 
 </main>
 @endsection
-

@@ -9,13 +9,45 @@ use Illuminate\Support\Facades\Storage;
 
 class InicioController extends Controller
 {
+    public function index()
+    {
+        $noticias = Inicio::all();              // Todas las noticias
+        $imagenesCarrousel = Carrusel::all();   // Todas las imágenes del carrousel
+
+        return view('Inicio.index', compact('noticias', 'imagenesCarrousel'));
+    }
+
     public function show($id)
     {
-        // Busca el registro en la base de datos
         $inicio = Inicio::findOrFail($id);
-
-        // Retorna la vista con la variable $inicio
         return view('Inicio.show', compact('inicio'));
+    }
+
+    public function create()
+    {
+        return view('Inicio.create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'titulo' => 'required|string',
+            'imagen' => 'required|image',
+            'descripcion' => 'nullable|string',
+        ]);
+
+        $inicio = new Inicio();
+        $inicio->titulo = $request->titulo;
+        $inicio->descripcion = $request->descripcion ?? '';
+
+        if ($request->hasFile('imagen')) {
+            $path = $request->file('imagen')->store('public/inicio');
+            $inicio->imagen = basename($path);
+        }
+
+        $inicio->save();
+
+        return redirect()->route('inicio.index')->with('success', 'Imagen agregada correctamente');
     }
 
     public function edit($id)
@@ -45,6 +77,8 @@ class InicioController extends Controller
         $noticia->delete();
         return redirect()->route('inicio.index')->with('success', 'Noticia eliminada correctamente.');
     }
+
+    // --- Métodos del Carrousel ---
 
     public function createImagen()
     {
@@ -101,24 +135,4 @@ class InicioController extends Controller
 
         return back()->with('success', 'Imagen eliminada correctamente.');
     }
-
-public function index()
-{
-    // Trae todas las noticias o registros de la tabla 'inicios'
-    $noticias = Inicio::all();
-
-    // Trae también las imágenes del carrusel (opcional)
-    $imagenes = \App\Models\Carrusel::all();
-
-    // Retorna la vista principal con ambas colecciones
-    return view('Inicio.index', compact('noticias', 'imagenes'));
 }
-public function create()
-{
-    // Solo muestra el formulario para crear una nueva noticia
-    return view('Inicio.create');
-}
-
-
-}
-
