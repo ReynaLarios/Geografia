@@ -2,50 +2,48 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Archivo;
-use App\Models\Contenidos;
 use Illuminate\Http\Request;
+use App\Models\Archivo;
 use Illuminate\Support\Facades\Storage;
 
 class ArchivoController extends Controller
 {
-    // Mostrar todos los archivos
+
     public function index()
     {
-        $archivos = Archivo::with('contenido')->latest()->get();
-        $contenidos = Contenidos::all();
-        return view('archivos.index', compact('archivos', 'contenidos'));
+        $archivos = Archivo::latest()->get();
+        return view('archivos.index', compact('archivos'));
     }
 
-    // Guardar archivo
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'nullable|string|max:255', // puede ser null
-            'archivo' => 'required|file|max:10240', // max 10MB
-            'contenido_id' => 'nullable|exists:contenidos,id',
+            'archivos.*' => 'required|file|max:10240', // max 10MB
+            'archivable_type' => 'nullable|string',     // nombre del modelo
+            'archivable_id' => 'nullable|integer',      // id del modelo
         ]);
 
-        $file = $request->file('archivo');
-        $ruta = $file->store('archivos', 'public'); // se guarda en storage/app/public/archivos
+        if ($request->hasFile('archivos')) {
+            foreach ($request->file('archivos') as $file) {
+                $ruta = $file->store('archivos', 'public');
 
-        Archivo::create([
-            'nombre' => $request->nombre,                  // opcional
-            'ruta' => $ruta,                               // obligatorio
-            'tipo' => $file->getClientOriginalExtension(), // obligatorio
-            'contenido_id' => $request->contenido_id,
-        ]);
+                Archivo::create([
+                    'nombre_real' => $file->getClientOriginalName(),
+                    'archivo' => basename($ruta),
+                    'archivable_type' => $request->archivable_type,
+                    'archivable_id' => $request->archivable_id,
+                ]);
+            }
+        }
 
-        return back()->with('success', 'Archivo subido correctamente.');
+        return back()->with('success', 'Archivos subidos correctamente.');
     }
 
-    // Borrar archivo
-    public function borrar($id)
+    // Eliminar archivo individual
+    public function destroy(Archivo $archivo)
     {
-        $archivo = Archivo::findOrFail($id);
-
-        if ($archivo->ruta && Storage::disk('public')->exists($archivo->ruta)) {
-            Storage::disk('public')->delete($archivo->ruta);
+        if ($archivo->archivo && Storage::disk('public')->exists('archivos/' . $archivo->archivo)) {
+            Storage::disk('public')->delete('archivos/' . $archivo->archivo);
         }
 
         $archivo->delete();
@@ -57,24 +55,24 @@ class ArchivoController extends Controller
     public function guardarBannerAdmin(Request $request)
     {
         $request->validate([
-            'archivo' => 'required|image|max:10240',
+            'archivo' => 'required|image|max:10240', // 10MB
         ]);
 
         // Eliminar banner anterior si existe
         $bannerExistente = Archivo::where('ubicacion', 'banner_admin')->latest()->first();
-        if ($bannerExistente && $bannerExistente->ruta) {
-            if (Storage::disk('public')->exists($bannerExistente->ruta)) {
-                Storage::disk('public')->delete($bannerExistente->ruta);
+        if ($bannerExistente && $bannerExistente->archivo) {
+            if (Storage::disk('public')->exists('archivos/' . $bannerExistente->archivo)) {
+                Storage::disk('public')->delete('archivos/' . $bannerExistente->archivo);
             }
             $bannerExistente->delete();
         }
 
         $file = $request->file('archivo');
-        $ruta = $file->store('banners', 'public');
+        $ruta = $file->store('archivos', 'public');
 
         Archivo::create([
-            'nombre' => $file->getClientOriginalName(),
-            'ruta' => $ruta,
+            'nombre_real' => $file->getClientOriginalName(),
+            'archivo' => basename($ruta),
             'tipo' => $file->getClientOriginalExtension(),
             'ubicacion' => 'banner_admin',
         ]);

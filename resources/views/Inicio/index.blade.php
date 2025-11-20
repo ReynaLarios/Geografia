@@ -4,14 +4,13 @@
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Carrusel</h2>
         <a href="{{ route('inicio.createImagen') }}" class="btn btn-success">➕ Agregar Imagen</a>
     </div>
 
-    @if($imagenesCarrousel->count())
+    @if($imagenesCarrusel->count())
     <div id="carouselInicio" class="carousel slide mb-4" data-bs-ride="carousel">
         <div class="carousel-inner text-center">
-            @foreach($imagenesCarrousel as $index => $img)
+            @foreach($imagenesCarrusel as $index => $img)
                 <div class="carousel-item @if($index==0) active @endif">
                     <img src="{{ asset('storage/'.$img->imagen) }}" class="d-block mx-auto" 
                          style="width:100%; height:400px; object-fit:cover;" 

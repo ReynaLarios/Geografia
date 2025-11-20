@@ -31,26 +31,31 @@
             <input type="file" name="archivos[]" multiple class="form-control">
         </div>
 
-        {{-- TABLA CUADROS --}}
-        <h5 class="mt-4"></h5>
+        {{-- Cuadros --}}
+        <h5 class="mt-4">Cuadros</h5>
         <table class="table table-bordered table-cuadros" id="tabla-cuadro">
-    <thead>
-        <tr>
-            <th>Título</th>
-            <th>Autor</th>
-            <th>Archivo</th>
-            <th>Acción</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><input type="text" name="cuadro_titulo[]" class="form-control"></td>
-            <td><input type="text" name="cuadro_autor[]" class="form-control"></td>
-            <td><input type="file" name="cuadro_archivo[]" class="form-control"></td>
-            <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
-        </tr>
-    </tbody>
-</table>
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Archivo</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="hidden" name="cuadro_id[]" value="0">
+                        <input type="text" name="cuadro_titulo[]" class="form-control">
+                    </td>
+                    <td><input type="text" name="cuadro_autor[]" class="form-control"></td>
+                    <td><input type="file" name="cuadro_archivo[]" class="form-control"></td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
         <button type="button" id="agregar-fila" class="btn btn-secondary mb-3">+ Agregar fila</button>
         <br>
@@ -62,19 +67,18 @@
 @endsection
 
 @section('scripts')
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const tabla = document
-        .getElementById('tabla-cuadro')
-        .getElementsByTagName('tbody')[0];
-
+    const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
     const btnAgregar = document.getElementById('agregar-fila');
 
     btnAgregar.addEventListener('click', function() {
         const nuevaFila = document.createElement('tr');
         nuevaFila.innerHTML = `
-            <td><input type="text" name="cuadro_titulo[]" class="form-control"></td>
+            <td>
+                <input type="hidden" name="cuadro_id[]" value="0">
+                <input type="text" name="cuadro_titulo[]" class="form-control">
+            </td>
             <td><input type="text" name="cuadro_autor[]" class="form-control"></td>
             <td><input type="file" name="cuadro_archivo[]" class="form-control"></td>
             <td class="text-center">
@@ -103,6 +107,4 @@ ClassicEditor.create(document.querySelector('#descripcion'), {
     ]
 });
 </script>
-
 @endsection
-

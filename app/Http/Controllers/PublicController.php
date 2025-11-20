@@ -10,20 +10,22 @@ use App\Models\Videoteca;
 use App\Models\NavbarSeccion;
 use App\Models\NavbarContenido;
 use App\Models\Inicio;
+use App\Models\Carrusel;
 
 class PublicController extends Controller
 {
     // ============================
     // PÁGINA PRINCIPAL
     // ============================
-    public function inicio()
-    {
-        $imagenes = Inicio::orderBy('id', 'desc')->get();
-        $noticias = Inicio::whereNotNull('titulo')->orderBy('created_at', 'desc')->get();
-        $secciones = Seccion::where('oculto_publico', false)->get();
+public function inicio()
+{
+    $imagenesCarrusel = Carrusel::all();  // <-- carrusel separado
+    $noticias = Inicio::orderBy('created_at', 'desc')->get();
+    $secciones = Seccion::where('oculto_publico', false)->get();
 
-        return view('public.inicios.index', compact('imagenes', 'noticias', 'secciones'));
-    }
+    return view('public.inicios.index', compact('imagenesCarrusel', 'noticias', 'secciones'));
+}
+
 
     public function inicioShow($id)
     {
@@ -38,11 +40,13 @@ class PublicController extends Controller
     // ============================
     public function carrusel()
     {
-        $imagenes = Inicio::orderBy('id','desc')->get();
-        $secciones = Seccion::where('oculto_publico', false)->get();
+       $imagenesCarrusel = Carrusel::all();
+$noticias = Inicio::with('archivos')->get();
 
-        return view('public.inicios.index', compact('imagenes', 'secciones'));
+return view('public.inicio', compact('imagenesCarrusel', 'noticias'));
+
     }
+
 
     // ============================
     // NAVBAR SECCIONES

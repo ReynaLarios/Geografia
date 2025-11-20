@@ -2,17 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Archivo extends Model
 {
-    protected $fillable = [
-        'archivable_id',
-        'archivable_type',
-        'nombre_real',
-        'archivo',
-    ];
+    protected $fillable = ['nombre_real', 'archivo', 'archivable_id', 'archivable_type'];
 
     public function archivable()
     {

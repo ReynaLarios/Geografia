@@ -4,82 +4,131 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Inicio;
+use App\Models\Archivo;
 use App\Models\Carrusel;
 use Illuminate\Support\Facades\Storage;
 
+
 class InicioController extends Controller
 {
-    public function index()
-    {
-        $noticias = Inicio::all();              // Todas las noticias
-        $imagenesCarrousel = Carrusel::all();   // Todas las imágenes del carrousel
+  public function index()
+{
+    $noticias = Inicio::with('archivos')->get();
+   $imagenesCarrusel = Carrusel::all(); // así siempre
+return view('Inicio.index', compact('noticias', 'imagenesCarrusel'));
 
-        return view('Inicio.index', compact('noticias', 'imagenesCarrousel'));
-    }
+}
 
-    public function show($id)
-    {
-        $inicio = Inicio::findOrFail($id);
-        return view('Inicio.show', compact('inicio'));
-    }
 
+
+    // Formulario de creación
     public function create()
     {
         return view('Inicio.create');
     }
 
+    // Guardar noticia
     public function store(Request $request)
     {
         $request->validate([
-            'titulo' => 'required|string',
-            'imagen' => 'required|image',
+            'titulo' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'archivos.*' => 'nullable|file|max:5120',
         ]);
 
         $inicio = new Inicio();
         $inicio->titulo = $request->titulo;
         $inicio->descripcion = $request->descripcion ?? '';
 
+        // Imagen principal
         if ($request->hasFile('imagen')) {
-            $path = $request->file('imagen')->store('public/inicio');
-            $inicio->imagen = basename($path);
+            $inicio->imagen = $request->file('imagen')->store('inicio', 'public');
         }
 
         $inicio->save();
 
-        return redirect()->route('inicio.index')->with('success', 'Imagen agregada correctamente');
+        // Archivos polimórficos
+        if ($request->hasFile('archivos')) {
+            foreach ($request->file('archivos') as $archivo) {
+                $inicio->archivos()->create([
+                    'nombre_real' => $archivo->getClientOriginalName(),
+                    'archivo' => $archivo->store('archivos', 'public'),
+                ]);
+            }
+        }
+
+        return redirect()->route('inicio.index')->with('success', 'Noticia creada correctamente.');
     }
 
+    // Formulario de edición
     public function edit($id)
     {
-        $noticia = Inicio::findOrFail($id);
+        $noticia = Inicio::with('archivos')->findOrFail($id);
         return view('Inicio.edit', compact('noticia'));
     }
 
+    // Actualizar noticia
     public function update(Request $request, $id)
     {
         $request->validate([
             'titulo' => 'required|string|max:255',
             'descripcion' => 'required|string',
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'archivos.*' => 'nullable|file|max:5120',
         ]);
 
         $noticia = Inicio::findOrFail($id);
         $noticia->titulo = $request->titulo;
         $noticia->descripcion = $request->descripcion;
+
+        // Imagen principal
+        if ($request->hasFile('imagen')) {
+            if ($noticia->imagen && Storage::disk('public')->exists($noticia->imagen)) {
+                Storage::disk('public')->delete($noticia->imagen);
+            }
+            $noticia->imagen = $request->file('imagen')->store('inicio', 'public');
+        }
+
         $noticia->save();
+
+        // Archivos nuevos
+        if ($request->hasFile('archivos')) {
+            foreach ($request->file('archivos') as $archivo) {
+                $noticia->archivos()->create([
+                    'nombre_real' => $archivo->getClientOriginalName(),
+                    'archivo' => $archivo->store('archivos', 'public'),
+                ]);
+            }
+        }
 
         return redirect()->route('inicio.index')->with('success', 'Noticia actualizada correctamente.');
     }
 
+    // Eliminar noticia y archivos
     public function destroy($id)
     {
-        $noticia = Inicio::findOrFail($id);
+        $noticia = Inicio::with('archivos')->findOrFail($id);
+
+        // Borrar imagen principal
+        if ($noticia->imagen && Storage::disk('public')->exists($noticia->imagen)) {
+            Storage::disk('public')->delete($noticia->imagen);
+        }
+
+        // Borrar archivos relacionados
+        foreach ($noticia->archivos as $archivo) {
+            if ($archivo->archivo && Storage::disk('public')->exists($archivo->archivo)) {
+                Storage::disk('public')->delete($archivo->archivo);
+            }
+            $archivo->delete();
+        }
+
         $noticia->delete();
+
         return redirect()->route('inicio.index')->with('success', 'Noticia eliminada correctamente.');
     }
 
-    // --- Métodos del Carrousel ---
-
+    // --- Métodos del Carrusel ---
     public function createImagen()
     {
         return view('Inicio.createImagen');

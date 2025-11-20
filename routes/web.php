@@ -17,8 +17,14 @@ use App\Http\Controllers\BannerController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\VisibilityController;
 use App\Http\Controllers\BusquedaController;
+use App\Http\Controllers\PersonaController;
+
 //------------------------------------------------------------------------RUTAS PÚBLICAS-------------------------------------------------------------------------------------------
 
+
+    //PERSONAS
+    Route::get('/personas', [PersonaController::class, 'publicIndex'])->name('public.personas.index');
+    Route::get('/personas/{persona}', [PersonaController::class, 'publicShow'])->name('public.personas.show');
 
     // INICIO
     Route::get('/', [PublicController::class, 'inicio'])->name('public.inicio.index');
@@ -136,7 +142,7 @@ Route::delete('cuadros/{id}/eliminar', [SeccionesController::class, 'eliminarCua
 Route::post('secciones/{id}/archivo', [SeccionesController::class, 'guardarArchivo'])->name('secciones.archivo.guardar');
 Route::delete('archivos/{id}/eliminar', [SeccionesController::class, 'eliminarArchivo'])->name('archivos.eliminar');
 //VIDEOTECA
-Route::get('/videoteca', [VideotecaController::class, 'index'])->name('videoteca');
+Route::get('/videoteca/index', [VideotecaController::class, 'index'])->name('videoteca.index');
 Route::post('/videoteca/guardar', [VideotecaController::class, 'guardar'])->name('videoteca.guardar');
 Route::get('/videoteca/editar/{id}', [VideotecaController::class, 'editar'])->name('videoteca.editar');
 Route::put('/videoteca/actualizar/{id}', [VideotecaController::class, 'actualizar'])->name('videoteca.actualizar');
@@ -162,13 +168,11 @@ Route::get('/archivos/{id}/descargar', [ArchivoController::class, 'descargar'])-
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //BANNER
-Route::post('/administrador/banner/guardar', [ArchivoController::class, 'guardarBannerAdmin'])->name('archivos.guardarBannerAdmin');
-//BANNERS
-Route::get('/administrador/banner/index', [BannerController::class, 'index'])->name('banner.index');
-Route::post('/administrador/banner/guardar', [BannerController::class, 'guardar'])->name('banner.guardar');
-Route::get('/administrador/banner/editar', [BannerController::class, 'editar'])->name('banner.editar');
-Route::post('/administrador/banner/actualizar', [BannerController::class, 'actualizar'])->name('banner.actualizar');
-Route::delete('/administrador/banner/borrar', [BannerController::class, 'borrar'])->name('banner.borrar');
+Route::get('/banners', [BannerController::class, 'index'])->name('banner.index');
+Route::get('/banners/editar', [BannerController::class, 'editar'])->name('banner.editar');
+Route::post('/banners/actualizar', [BannerController::class, 'actualizar'])->name('banner.actualizar');
+Route::post('/banners/guardar', [BannerController::class, 'guardar'])->name('banner.guardar');
+Route::delete('/banners/borrar', [BannerController::class, 'borrar'])->name('banner.borrar');
 
 
 //CUADRO
@@ -180,13 +184,20 @@ Route::get('/editar/{cuadro}', [CuadroController::class, 'editar'])->name('cuadr
 Route::put('/actualizar/{cuadro}', [CuadroController::class, 'actualizar'])->name('cuadros.actualizar');
 Route::delete('/borrar/{cuadro}', [CuadroController::class, 'borrar'])->name('cuadros.borrar');
 
-
-
 Route::post('/toggle-visibility', [VisibilityController::class, 'toggle'])->name('toggle-visibility');
 
 Route::get('/buscar', [BusquedaController::class, 'buscarAdmin'])->name('admin.buscar');
-});
 
+Route::prefix('admin/personas')->name('admin.personas.')->group(function () {
+    Route::get('/index', [PersonaController::class, 'index'])->name('index');
+    Route::get('/crear', [PersonaController::class, 'crear'])->name('crear');
+    Route::post('/guardar', [PersonaController::class, 'guardar'])->name('guardar');
+    Route::get('/{persona}/editar', [PersonaController::class, 'editar'])->name('editar');
+    Route::put('/{persona}', [PersonaController::class, 'actualizar'])->name('actualizar');
+    Route::delete('/{persona}', [PersonaController::class, 'borrar'])->name('borrar');
+    Route::get('/{persona}', [PersonaController::class, 'mostrar'])->name('mostrar');
+});
+});
 });
 
 

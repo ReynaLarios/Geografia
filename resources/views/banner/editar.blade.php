@@ -12,32 +12,29 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-    @if($banner && $banner->imagen)
-        <div class="mb-3">
-            <label>Imagen actual:</label><br>
-            <img src="{{ asset('storage/banners/' . $banner->imagen) }}" alt="Banner" class="img-fluid" style="max-width: 300px;">
+    @if($banner?->imagen)
+        <div class="mb-4">
+            <p>Imagen actual: {{ $banner->imagen }}</p>
+            <img src="{{ asset('storage/banners/' . $banner->imagen) }}" class="img-fluid mb-3" alt="Banner">
+            
+            <form action="{{ route('banner.borrar') }}" method="POST" onsubmit="return confirm('¿Eliminar banner actual?')">
+                @csrf
+                @method('DELETE')
+                <button class="btn btn-danger">🗑 Eliminar Banner</button>
+            </form>
         </div>
     @endif
 
-    <form action="{{ route('banner.actualizar') }}" method="POST" enctype="multipart/form-data" class="mb-3">
+    <form action="{{ route('banner.actualizar') }}" method="POST" enctype="multipart/form-data" class="border p-4 rounded bg-white shadow-sm">
         @csrf
         <div class="mb-3">
-            <label>Nueva imagen:</label>
+            <label class="form-label">Subir nueva imagen</label>
             <input type="file" name="imagen" class="form-control" required>
             @error('imagen')
                 <small class="text-danger">{{ $message }}</small>
             @enderror
         </div>
-        <button type="submit" class="btn btn-primary">Actualizar</button>
-    </form>
-
-    <form action="{{ route('banner.borrar') }}" method="POST">
-        @csrf
-        @method('DELETE')
-        <button type="submit" class="btn btn-danger"
-            onclick="return confirm('¿Seguro que quieres borrar el banner?')">
-            Eliminar Banner
-        </button>
+        <button type="submit" class="btn btn-primary">💾 Actualizar Banner</button>
     </form>
 </div>
 @endsection

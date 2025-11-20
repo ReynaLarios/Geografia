@@ -13,7 +13,6 @@ return new class extends Migration
             $table->foreignId('navbar_contenido_id')->constrained('navbar_contenidos')->onDelete('cascade'); // relación con navbar_contenidos
             $table->string('nombre');
             $table->string('email')->unique();
-            $table->string('telefono')->nullable();
             $table->text('datos_adicionales')->nullable();
             $table->string('foto')->nullable();
             $table->timestamps();

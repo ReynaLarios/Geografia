@@ -108,11 +108,11 @@ $banner = Banner::latest()->first();
     <!-- Botones de acción sobre el banner -->
     <div style="position:absolute; top:10px; right:10px; display:flex; gap:5px;">
         <!-- Editar -->
-        <button class="small-btn" title="Editar banner" onclick="window.location='{{ route('banner.editar', $banner->id ?? 0) }}'">✏️</button>
+        <a href="{{ route('banner.index') }}" class="small-btn" title="Administrar banner">✏️</a>
 
         <!-- Borrar -->
         @if($banner)
-        <form action="{{ route('banner.borrar', $banner->id) }}" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar este banner?');">
+        <form action="{{ route('banner.borrar') }}" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar este banner?');">
             @csrf
             @method('DELETE')
             <button type="submit" class="small-btn btn-borrar">🗑️</button>

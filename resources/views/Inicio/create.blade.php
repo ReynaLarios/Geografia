@@ -9,12 +9,12 @@
 
         <div class="mb-3">
             <label for="titulo" class="form-label">Título</label>
-            <input type="text" name="titulo" id="titulo" class="form-control" placeholder="Ingresa el título" required>
+            <input type="text" name="titulo" id="titulo" class="form-control" required>
         </div>
 
         <div class="mb-3">
             <label for="descripcion" class="form-label">Descripción</label>
-            <textarea name="descripcion" id="descripcion" class="form-control" rows="4" placeholder="Escribe la descripción" required></textarea>
+            <textarea name="descripcion" id="descripcion" class="form-control" rows="4"></textarea>
         </div>
 
         <div class="mb-3">
@@ -22,8 +22,18 @@
             <input type="file" name="imagen" class="form-control">
         </div>
 
+        <div class="mb-3">
+            <label class="form-label">Archivos adjuntos (opcional)</label>
+            <input type="file" name="archivos[]" multiple class="form-control">
+        </div>
+
         <button type="submit" class="btn btn-success">Guardar</button>
         <a href="{{ route('inicio.index') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor.create(document.querySelector('#descripcion'));
+</script>
 @endsection

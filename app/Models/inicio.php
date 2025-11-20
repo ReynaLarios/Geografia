@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class inicio extends Model
+class Inicio extends Model
 {
     use HasFactory;
 
@@ -14,6 +14,11 @@ class inicio extends Model
         'descripcion',
         'imagen',
     ];
-}
 
+    // Relación polimórfica con archivos
+    public function archivos()
+    {
+        return $this->morphMany(Archivo::class, 'archivable');
+    }
+}
 
