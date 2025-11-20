@@ -42,41 +42,39 @@
         </div>
 
         <h5 class="mt-4"></h5>
-        <table class="table table-bordered" id="tabla-cuadro">
-            <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Autor</th>
-                    <th>Archivo</th>
-                    <th>Mostrar</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($seccion->cuadros ?? [] as $cuadro)
-                <tr>
-                    <td><input type="text" name="cuadro_titulo[]" class="form-control" value="{{ $cuadro->titulo }}"></td>
-                    <td><input type="text" name="cuadro_autor[]" class="form-control" value="{{ $cuadro->autor }}"></td>
-                    <td>
-                        <input type="file" name="cuadro_archivo[]" class="form-control">
-                        @if($cuadro->archivo)
-                        <small>Archivo actual: <a href="{{ asset('storage/' . $cuadro->archivo) }}" target="_blank">Ver</a></small>
-                        @endif
-                    </td>
-                    <td class="text-center"><input type="checkbox" name="mostrar_cuadro[]" value="1" {{ $cuadro->mostrar ? 'checked' : '' }}></td>
-                    <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
-                </tr>
-                @empty
-                <tr>
-                    <td><input type="text" name="cuadro_titulo[]" class="form-control"></td>
-                    <td><input type="text" name="cuadro_autor[]" class="form-control"></td>
-                    <td><input type="file" name="cuadro_archivo[]" class="form-control"></td>
-                    <td class="text-center"><input type="checkbox" name="mostrar_cuadro[]" value="1"></td>
-                    <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+        <table class="table table-bordered table-cuadros" id="tabla-cuadro">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Autor</th>
+            <th>Archivo</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        @forelse($seccion->cuadros ?? [] as $cuadro)
+        <tr>
+            <td><input type="text" name="cuadro_titulo[]" class="form-control" value="{{ $cuadro->titulo }}"></td>
+            <td><input type="text" name="cuadro_autor[]" class="form-control" value="{{ $cuadro->autor }}"></td>
+            <td>
+                <input type="file" name="cuadro_archivo[]" class="form-control">
+                @if($cuadro->archivo)
+                    <small>Archivo actual: <a href="{{ asset('storage/' . $cuadro->archivo) }}" target="_blank">Ver</a></small>
+                @endif
+            </td>
+            <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
+        </tr>
+        @empty
+        <tr>
+            <td><input type="text" name="cuadro_titulo[]" class="form-control"></td>
+            <td><input type="text" name="cuadro_autor[]" class="form-control"></td>
+            <td><input type="file" name="cuadro_archivo[]" class="form-control"></td>
+            <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
+        </tr>
+        @endforelse
+    </tbody>
+</table>
+
 
         <button type="button" id="agregar-fila" class="btn btn-secondary mb-3">+ Agregar fila</button>
         <br>
@@ -101,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
             <td><input type="text" name="cuadro_titulo[]" class="form-control"></td>
             <td><input type="text" name="cuadro_autor[]" class="form-control"></td>
             <td><input type="file" name="cuadro_archivo[]" class="form-control"></td>
-            <td class="text-center"><input type="checkbox" name="mostrar_cuadro[]" value="1"></td>
             <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
         `;
         tabla.appendChild(nuevaFila);

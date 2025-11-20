@@ -4,68 +4,52 @@
 <div class="container mt-4">
     <h2 class="mb-4 text-center">Editar Sección del Navbar</h2>
 
-    <form action="{{ route('navbar.secciones.actualizar', $seccion->id) }}" method="POST" class="p-4 bg-light rounded shadow-sm" enctype="multipart/form-data">
+    <form action="{{ route('navbar.secciones.actualizar', $seccion->id) }}" method="POST" enctype="multipart/form-data" class="p-4 bg-light rounded shadow-sm">
         @csrf
         @method('PUT')
 
-        {{-- Nombre --}}
         <div class="mb-3">
             <label class="form-label">Nombre de la Sección</label>
-            <input type="text" name="nombre" class="form-control" value="{{ old('nombre', $seccion->nombre) }}" required>
+            <input type="text" name="nombre" class="form-control" value="{{ old('nombre',$seccion->nombre) }}" required>
         </div>
 
-        {{-- Descripción con CKEditor --}}
         <div class="mb-3">
             <label class="form-label">Descripción</label>
-            <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion', $seccion->descripcion) }}</textarea>
+            <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion',$seccion->descripcion) }}</textarea>
         </div>
 
-        {{-- Imagen principal --}}
         <div class="mb-3">
             <label class="form-label">Imagen principal (opcional)</label>
             <input type="file" name="imagen" class="form-control">
             @if($seccion->imagen)
-                <img src="{{ asset('storage/' . $seccion->imagen) }}" class="img-fluid mt-2 rounded shadow-sm" style="max-height: 200px;">
+                <img src="{{ asset('storage/'.$seccion->imagen) }}" class="img-fluid mt-2 rounded" style="max-height:200px;">
             @endif
         </div>
 
-        {{-- Archivos adicionales --}}
-        <div class="mb-3">
-            <label class="form-label">Archivos adicionales</label>
-            <input type="file" name="archivos[]" multiple class="form-control">
-            @if($seccion->archivos && $seccion->archivos->count())
-                <ul class="mt-2">
-                    @foreach($seccion->archivos as $archivo)
-                        <li>
-                            <a href="{{ asset('storage/'.$archivo->archivo) }}" target="_blank">
-                                {{ basename($archivo->archivo) }}
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
-        </div>
-
-        {{-- Cuadros tipo tabla --}}
-        <h5 class="mt-4">Cuadro tipo tabla</h5>
+        {{-- Cuadros --}}
+        <h5 class="mt-4">Cuadros</h5>
         <table class="table table-bordered" id="tabla-cuadro">
             <thead>
                 <tr>
                     <th>Título</th>
                     <th>Autor</th>
                     <th>Archivo</th>
-                    <th>Mostrar</th>
                     <th>Acción</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($seccion->cuadros as $index => $cuadro)
                     <tr>
-                        <td><input type="text" name="cuadros[{{ $index }}][titulo]" class="form-control" value="{{ $cuadro->titulo }}"></td>
+                        <td>
+                            <input type="text" name="cuadros[{{ $index }}][titulo]" class="form-control" value="{{ $cuadro->titulo }}">
+                            <input type="hidden" name="cuadros[{{ $index }}][id]" value="{{ $cuadro->id }}">
+                        </td>
                         <td><input type="text" name="cuadros[{{ $index }}][autor]" class="form-control" value="{{ $cuadro->autor }}"></td>
-                        <td><input type="file" name="cuadros[{{ $index }}][archivo]" class="form-control"></td>
-                        <td class="text-center">
-                            <input type="checkbox" name="cuadros[{{ $index }}][mostrar]" value="1" {{ $cuadro->mostrar ? 'checked' : '' }}>
+                        <td>
+                            <input type="file" name="cuadros[{{ $index }}][archivo]" class="form-control">
+                            @if($cuadro->archivo)
+                                <small class="d-block mt-1"><a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">Archivo actual</a></small>
+                            @endif
                         </td>
                         <td class="text-center">
                             <button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button>
@@ -91,7 +75,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
     const btnAgregar = document.getElementById('agregar-fila');
 
-    // Agregar nueva fila
     btnAgregar.addEventListener('click', function() {
         index++;
         const nuevaFila = document.createElement('tr');
@@ -99,22 +82,18 @@ document.addEventListener('DOMContentLoaded', function() {
             <td><input type="text" name="cuadros[${index}][titulo]" class="form-control"></td>
             <td><input type="text" name="cuadros[${index}][autor]" class="form-control"></td>
             <td><input type="file" name="cuadros[${index}][archivo]" class="form-control"></td>
-            <td class="text-center"><input type="checkbox" name="cuadros[${index}][mostrar]" value="1"></td>
             <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
         `;
         tabla.appendChild(nuevaFila);
     });
 
-    // Eliminar fila
     tabla.addEventListener('click', function(e){
         if(e.target && e.target.classList.contains('eliminar-fila')){
             e.target.closest('tr').remove();
         }
     });
 
-    // Inicializar CKEditor
-    ClassicEditor
-        .create(document.querySelector('#descripcion'))
+    ClassicEditor.create(document.querySelector('#descripcion'))
         .catch(error => console.error(error));
 });
 </script>

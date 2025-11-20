@@ -23,9 +23,10 @@
                         <td>{{ $contenido->titulo }}</td>
                         <td>{{ $contenido->seccion->nombre ?? 'Sin sección' }}</td>
                         <td>
-                            <a href="{{ route('publica.contenidos.mostrar', $contenido->id) }}" class="btn btn-sm btn-primary">
-                                Ver
-                            </a>
+                            <a href="{{ route('public.contenidos.show', $contenido->id) }}" class="btn btn-sm btn-primary">
+    Ver
+</a>
+
                         </td>
                     </tr>
                 @endforeach

@@ -1,65 +1,139 @@
 @extends('public.layout')
 
-
 @section('contenido')
-<main class="p-4"
-      style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+<style>
+/* 🎨 Estilo público para contenidos */
+.cuadros-box {
+    background: #f8faff;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #d0e1ff;
+    margin-top: 20px;
+}
 
-    <h2 class="mb-3">{{ $contenido->titulo }}</h2>
+.cuadros-box h5 {
+    color: #0d3b66;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
 
-    <div class="mb-3">
-        {!! $contenido->descripcion !!}
-    </div>
+/* Tabla limpia */
+.table-cuadros thead {
+    background: #dce9ff;
+    color: #0b2f58;
+}
+
+.table-cuadros thead th {
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table-cuadros tbody td {
+    padding: 10px;
+    color: #1a1a1a;
+}
+
+.table-cuadros tbody tr:nth-child(even) {
+    background: #edf5ff;
+}
+
+/* Links de archivos */
+.table-cuadros a {
+    color: #0d47a1;
+    font-weight: 500;
+}
+
+.table-cuadros a:hover {
+    text-decoration: underline;
+}
+
+/* Dropdown filtro */
+#filter-dropdown {
+    max-width: 180px;
+    margin-bottom: 15px;
+    background-color: #ffffff;
+    color: #0d3b66;
+    border: 1px solid #0d3b66;
+}
+</style>
+
+<div class="container mt-4">
+
+    <h2 class="mb-4 text-center">{{ $contenido->titulo }}</h2>
+    @if($contenido->descripcion)
+        <p>{!! $contenido->descripcion !!}</p>
+    @endif
 
     @if($contenido->imagen)
-        <div class="mb-4">
-            <img src="{{ asset('storage/'.$contenido->imagen) }}" class="img-fluid rounded">
+        <div class="mb-3 text-center">
+            <img src="{{ asset('storage/'.$contenido->imagen) }}" class="img-fluid rounded" style="max-height: 300px; object-fit: cover;">
         </div>
     @endif
 
-    {{-- Cuadros asociados como tabla --}}
+    {{-- Cuadros con filtro --}}
     @if($contenido->cuadros->isNotEmpty())
-        <h4 class="mt-4 mb-3">Archivos relacionados</h4>
+        <div class="cuadros-box">
+            <h5>Cuadros</h5>
 
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Autor</th>
-                    <th>Archivo</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($contenido->cuadros as $cuadro)
-                    <tr>
-                        <td>{{ $cuadro->titulo }}</td>
-                        <td>{{ $cuadro->autor }}</td>
-
-                        <td>
-                            @if($cuadro->archivo)
-                                @php
-                                    $tamano = Storage::disk('public')->size($cuadro->archivo);
-                                    $tamanoMB = number_format($tamano / 1024 / 1024, 2);
-                                    $nombreArchivo = basename($cuadro->archivo);
-                                @endphp
-
-                                <a href="{{ asset('storage/'.$cuadro->archivo) }}" download>
-                                    {{ $nombreArchivo }}
-                                </a>
-
-                                <small class="text-muted">
-                                    ({{ $tamanoMB }} MB)
-                                </small>
-                            @else
-                                —
-                            @endif
-                        </td>
-
-                    </tr>
+            {{-- Dropdown filtro --}}
+            <select id="filter-dropdown" class="form-select form-select-sm">
+                <option value="all">Todos</option>
+                @foreach(range('A','Z') as $letter)
+                    <option value="{{ $letter }}">{{ $letter }}</option>
                 @endforeach
-            </tbody>
-        </table>
+            </select>
+
+            <table class="table table-cuadros">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th>Archivo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($contenido->cuadros->sortBy('titulo') as $cuadro)
+                        <tr class="cuadro-item" data-letter="{{ strtoupper(substr($cuadro->titulo,0,1)) }}">
+                            <td>{{ $cuadro->titulo }}</td>
+                            <td>{{ $cuadro->autor ?? '-' }}</td>
+                            <td>
+                                @if($cuadro->archivo)
+                                    @php
+                                        $tamano = Storage::disk('public')->size($cuadro->archivo);
+                                        $tamanoMB = number_format($tamano / 1024 / 1024, 2);
+                                    @endphp
+                                    <a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">{{ basename($cuadro->archivo) }}</a>
+                                    <small class="text-muted d-block">({{ $tamanoMB }} MB)</small>
+                                @else
+                                    <span class="text-muted">Sin archivo</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     @endif
 
-</main>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdown = document.getElementById('filter-dropdown');
+    const cuadros = document.querySelectorAll('.cuadro-item');
+
+    dropdown.addEventListener('change', function() {
+        const val = this.value;
+        cuadros.forEach(c => {
+            if(val === 'all' || c.dataset.letter === val) {
+                c.style.display = 'table-row';
+            } else {
+                c.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
 @endsection

@@ -3,98 +3,139 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Inicio;
-use App\Models\NavbarSeccion;
-use App\Models\NavbarContenido;
 use App\Models\Seccion;
 use App\Models\Contenidos;
 use App\Models\Cuadro;
 use App\Models\Videoteca;
+use App\Models\NavbarSeccion;
+use App\Models\NavbarContenido;
+use App\Models\Inicio;
 
 class PublicController extends Controller
 {
-    // Página principal (inicio) — carrusel y noticias
+    // ============================
+    // PÁGINA PRINCIPAL
+    // ============================
     public function inicio()
     {
-        $imagenes = Inicio::orderBy('id', 'desc')->get(); // Carrusel / imágenes
-        $noticias = Inicio::whereNotNull('titulo')->orderBy('created_at', 'desc')->get(); // Noticias
-        return view('public.inicios.index', compact('imagenes', 'noticias'));
+        $imagenes = Inicio::orderBy('id', 'desc')->get();
+        $noticias = Inicio::whereNotNull('titulo')->orderBy('created_at', 'desc')->get();
+        $secciones = Seccion::where('oculto_publico', false)->get();
+
+        return view('public.inicios.index', compact('imagenes', 'noticias', 'secciones'));
     }
 
-    // Carrusel independiente
+    public function inicioShow($id)
+    {
+        $noticia = Inicio::findOrFail($id);
+        $secciones = Seccion::where('oculto_publico', false)->get();
+
+        return view('public.inicios.show', compact('noticia', 'secciones'));
+    }
+
+    // ============================
+    // CARRUSEL
+    // ============================
     public function carrusel()
     {
-        $imagenes = Inicio::orderBy('id', 'desc')->get();
-        return view('public.inicios.index', compact('imagenes'));
+        $imagenes = Inicio::orderBy('id','desc')->get();
+        $secciones = Seccion::where('oculto_publico', false)->get();
+
+        return view('public.inicios.index', compact('imagenes', 'secciones'));
     }
 
-    // NAVBAR - secciones (listado)
+    // ============================
+    // NAVBAR SECCIONES
+    // ============================
     public function navbarSeccionesIndex()
     {
         $secciones = NavbarSeccion::with('contenidosNavbar')->get();
+
         return view('public.navbar_secciones.index', compact('secciones'));
     }
 
-    // NAVBAR - mostrar sección individual
     public function navbarSeccionesMostrar($id)
     {
         $seccion = NavbarSeccion::with('contenidosNavbar')->findOrFail($id);
+
         return view('public.navbar_secciones.show', compact('seccion'));
     }
 
-    // NAVBAR - contenidos (listado)
+    // ============================
+    // NAVBAR CONTENIDOS
+    // ============================
     public function navbarContenidosIndex()
     {
         $navbarContenidos = NavbarContenido::with('seccion')->get();
+
         return view('public.navbar_contenidos.index', compact('navbarContenidos'));
     }
 
-    // NAVBAR - mostrar contenido individual
     public function navbarContenidoMostrar($id)
     {
         $contenido = NavbarContenido::with(['seccion','cuadros'])->findOrFail($id);
+
         return view('public.navbar_contenidos.show', compact('contenido'));
     }
 
-    // Secciones públicas (página con secciones normales)
+    // ============================
+    // SECCIONES NORMALES
+    // ============================
     public function seccionesIndex()
     {
-        $secciones = Seccion::with(['cuadros','contenidos'])->get();
+        $secciones = Seccion::with(['cuadros','contenidos'])
+            ->where('oculto_publico', false)
+            ->get();
+
         return view('public.secciones.index', compact('secciones'));
     }
 
-    // Mostrar sección normal
     public function seccionesMostrar($id)
     {
         $seccion = Seccion::with(['cuadros','contenidos'])->findOrFail($id);
-        return view('public.secciones.show', compact('seccion'));
+        $secciones = Seccion::where('oculto_publico', false)->get();
+
+        return view('public.secciones.show', compact('seccion', 'secciones'));
     }
 
-    // Contenidos públicos (listado)
+    // ============================
+    // CONTENIDOS
+    // ============================
     public function contenidosIndex()
     {
         $contenidos = Contenidos::with('seccion','cuadros')->get();
-        return view('public.contenidos.show', compact('contenidos'));
+        $secciones = Seccion::where('oculto_publico', false)->get();
+
+        return view('public.contenidos.index', compact('contenidos', 'secciones'));
     }
 
-    // Mostrar contenido individual
     public function contenidosMostrar($id)
     {
         $contenido = Contenidos::with(['seccion','cuadros'])->findOrFail($id);
-        return view('public.contenidos.show', compact('contenido'));
+        $secciones = Seccion::where('oculto_publico', false)->get();
+
+        return view('public.contenidos.show', compact('contenido', 'secciones'));
     }
 
-    // Cuadros (solo mostrar)
+    // ============================
+    // CUADROS
+    // ============================
     public function cuadrosIndex()
     {
         $cuadros = Cuadro::all();
-        return view('public.cuadros.index', compact('cuadros'));
+        $secciones = Seccion::where('oculto_publico', false)->get();
+
+        return view('public.cuadros.index', compact('cuadros', 'secciones'));
     }
 
-    // Videoteca
+    // ============================
+    // VIDEOTECA
+    // ============================
     public function videotecaIndex()
     {
         $videos = Videoteca::orderBy('created_at','desc')->get();
-        return view('public.videoteca.index', compact('videos'));
+        $secciones = Seccion::where('oculto_publico', false)->get();
+
+        return view('public.videoteca.index', compact('videos', 'secciones'));
     }
 }

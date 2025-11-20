@@ -12,7 +12,7 @@
       <h3>{{ $inicio->titulo }}</h3>
       <p>{{ $inicio->descripcion }}</p>
 
-      <a href="{{ route('public.inicio.index') }}" class="btn btn-secondary">Volver</a>
+      <a href="{{ route('inicio.index') }}" class="btn btn-secondary">Volver</a>
     </div>
   </div>
 </div>

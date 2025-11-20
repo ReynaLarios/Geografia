@@ -21,7 +21,7 @@
                     <td>{{ $contenido->nombre }}</td>
                     <td>{{ $contenido->seccion->nombre ?? 'Sin sección' }}</td>
                     <td class="text-center">
-                        <a href="{{ route('public.navbar.contenidos.mostrar', $contenido->id) }}" class="fancy">
+                        <a href="{{ route('public.navbar.contenidos.show', $contenido->id) }}" class="fancy">
                             👁 Ver
                         </a>
                     </td>

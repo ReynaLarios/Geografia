@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Licenciatura en Geografía</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
@@ -51,11 +50,10 @@
             color: var(--blanco);
             border: none;
             border-radius: 25px;
-            padding: 12px 25px;
+            padding: 10px 20px;
             font-weight: 500;
             text-transform: uppercase;
             cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
         .navbar-bottom .button:hover { background-color: var(--azul-suave); color: var(--azul-oscuro); }
 
@@ -100,27 +98,25 @@
         .fancy {
             background-color: var(--azul-suave);
             border: none;
-            border-radius: 25px;
+            border-radius: 20px;
             color: var(--azul-oscuro);
             font-weight: 500;
             text-transform: uppercase;
-            padding: 10px 15px;
-            margin: 8px 0;
+            padding: 8px 12px;
+            margin: 6px 0;
             width: 100%;
             text-align: center;
             text-decoration: none;
             display: block;
-            transition: background 0.3s, transform 0.2s;
         }
         .fancy:hover {
             background-color: var(--azul-medio);
             color: var(--blanco);
-            transform: translateY(-2px);
         }
 
         .content {
             flex: 1;
-            padding: 30px;
+            padding: 20px;
             background: var(--gris-claro);
         }
 
@@ -132,15 +128,6 @@
             text-align: center;
             overflow:hidden;
         }
-        .wave {
-            position: absolute;
-            top: -30px;
-            left: 0;
-            width:100%;
-            overflow:hidden;
-            line-height:0;
-        }
-        .wave svg { width: 100%; height: 80px; }
 
         @media (max-width:768px){
             .layout{ flex-direction: column; }
@@ -157,12 +144,38 @@
         <img src="{{ asset('/logo.png') }}" alt="Logo">
     </a>
 </nav>
+<div class="mb-3">
+    <input type="text" id="buscador" placeholder="Buscar..." style="padding:5px 10px; width:300px; border-radius:25px; border:1px solid #60a5fa;">
+</div>
+
+<ul id="resultados"></ul>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function(){
+    $('#buscador').on('keyup', function(){
+        let query = $(this).val();
+        $.ajax({
+            url: "{{ route('public.buscar') }}",
+            type: "GET",
+            data: { query: query },
+            success: function(data){
+                $('#resultados').html(data.html);
+            }
+        });
+    });
+});
+</script>
+
 
 @php
     use App\Models\Banner;
     use App\Models\NavbarSeccion;
+
     $banner = Banner::latest()->first();
-    $navbarSecciones = NavbarSeccion::with('contenidosNavbar')->get();
+    $navbarSecciones = NavbarSeccion::with('contenidosNavbar')
+                            ->where('oculto_publico', false)
+                            ->get();
 @endphp
 
 {{-- BANNER --}}
@@ -180,13 +193,15 @@
         <div class="paste-button">
             <button class="button" onclick="window.location='{{ route('public.navbar.secciones.show', $sec->id) }}'">
                 {{ $sec->nombre }}
-                @if($sec->contenidosNavbar->count()) ▼ @endif
+                @if($sec->contenidosNavbar->where('oculto_publico', false)->count()) ▼ @endif
             </button>
 
-            @if($sec->contenidosNavbar->count())
+            @if($sec->contenidosNavbar->where('oculto_publico', false)->count())
                 <div class="dropdown-content">
-                    @foreach($sec->contenidosNavbar as $contenido)
-                        <a href="{{ route('public.navbar.contenidos.show', $contenido->id) }}">{{ $contenido->titulo }}</a>
+                    @foreach($sec->contenidosNavbar->where('oculto_publico', false) as $contenido)
+                        <a href="{{ route('public.navbar.contenido.show', $contenido->id) }}">
+                            {{ $contenido->titulo }}
+                        </a>
                     @endforeach
                 </div>
             @endif
@@ -194,17 +209,20 @@
     @endforeach
 </nav>
 
+{{-- LAYOUT PRINCIPAL --}}
 <div class="layout">
     {{-- SIDEBAR --}}
     <aside class="sidebar">
+        <h4>Secciones</h4>
         <ul class="nav flex-column">
             @foreach($secciones ?? [] as $sec)
-                <li class="mb-2">
-                    <a href="{{ route('public.secciones.show', $sec->id) }}" class="fancy">
-                        {{ $sec->nombre }}
-                        
-                    </a>
-                </li>
+                @if(!$sec->oculto_publico)
+                    <li class="mb-2">
+                        <a href="{{ route('public.secciones.show', $sec->id) }}" class="fancy">
+                            {{ $sec->nombre }}
+                        </a>
+                    </li>
+                @endif
             @endforeach
         </ul>
     </aside>
@@ -216,19 +234,12 @@
 </div>
 
 <footer>
-    <div class="wave">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28..." fill="#ffffff" opacity="0.25"></path>
-        </svg>
-    </div>
-
     <p class="fw-bold">CENTRO UNIVERSITARIO DE CIENCIAS SOCIALES Y HUMANIDADES</p>
     <p>Los Belenes. Av. José Parres Arias #150, Zapopan, Jalisco, México.</p>
     <p>© 1997 - 2025 Universidad de Guadalajara</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 @yield('scripts')
 
 </body>

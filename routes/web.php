@@ -15,42 +15,42 @@ use App\Http\Controllers\NavbarSeccionesController;
 use App\Http\Controllers\NavbarContenidosController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\PublicController;
-
-
+use App\Http\Controllers\VisibilityController;
+use App\Http\Controllers\BusquedaController;
 //------------------------------------------------------------------------RUTAS PÚBLICAS-------------------------------------------------------------------------------------------
 
-// INICIO 
-Route::get('/', [PublicController::class, 'inicio'])->name('public.inicio.index');
-Route::get('inicio/{id}', [InicioController::class, 'inicio'])->name('public.inicio.show');
 
-// CARRUSEL
-Route::get('/carrusel', [PublicController::class, 'carrusel'])->name('public.carrusel');
+    // INICIO
+    Route::get('/', [PublicController::class, 'inicio'])->name('public.inicio.index');
+    Route::get('/inicio/{id}', [PublicController::class, 'inicioShow'])->name('public.inicio.show');
 
-//NAVBAR_SECCIONES
-Route::get('/navbar/secciones', [PublicController::class, 'navbarSeccionesIndex'])->name('public.navbar.secciones.index');
+    // CARRUSEL
+    Route::get('/carrusel', [PublicController::class, 'carrusel'])->name('public.carrusel');
 
-Route::get('/navbar/secciones/{id}', [PublicController::class, 'navbarSeccionesMostrar'])->name('public.navbar.secciones.show');
+    // NAVBAR - Secciones
+    Route::get('/navbar/secciones', [PublicController::class, 'navbarSeccionesIndex'])->name('public.navbar.secciones.index');
+    Route::get('/navbar/secciones/{id}', [PublicController::class, 'navbarSeccionesMostrar'])->name('public.navbar.secciones.show');
 
-    //NAVBAR_CONTENIDOS
-Route::get('/navbar/contenidos', [PublicController::class, 'navbarContenidosIndex'])->name('public.navbar.contenidos.index');
+    // NAVBAR - Contenidos
+    Route::get('/navbar/contenidos', [PublicController::class, 'navbarContenidosIndex'])->name('public.navbar.contenidos.index');
+    Route::get('/navbar/contenido/{id}', [PublicController::class, 'navbarContenidoMostrar'])->name('public.navbar.contenido.show');
 
-Route::get('/navbar/contenido/{id}', [PublicController::class, 'navbarContenidoMostrar'])->name('public.navbar.contenido.show');
+    // SECCIONES públicas
+    Route::get('/secciones', [PublicController::class, 'seccionesIndex'])->name('public.secciones.index');
+    Route::get('/secciones/{id}', [PublicController::class, 'seccionesMostrar'])->name('public.secciones.show');
 
-//SECCIONES
-Route::get('/secciones', [PublicController::class, 'seccionesIndex'])->name('public.secciones.index');
+    // CONTENIDOS públicos
+    Route::get('/contenidos', [PublicController::class, 'contenidosIndex'])->name('public.contenidos.index');
+    Route::get('/contenidos/{id}', [PublicController::class, 'contenidosMostrar'])->name('public.contenidos.show');
 
-Route::get('/secciones/{id}', [PublicController::class, 'seccionesMostrar'])->name('public.secciones.show');
+    // CUADROS
+    Route::get('/cuadros', [PublicController::class, 'cuadrosIndex'])->name('public.cuadros.index');
 
-//CONTENIDOS
-Route::get('/contenidos', [PublicController::class, 'contenidosIndex'])->name('public.contenidos.index');
+    // VIDEOTECA
+    Route::get('/videoteca', [PublicController::class, 'videotecaIndex'])->name('public.videoteca.index');
 
-Route::get('/contenidos/{id}', [PublicController::class, 'contenidosMostrar'])->name('public.contenidos.show');
 
-// CUADROS 
-Route::get('/cuadros', [PublicController::class, 'cuadrosIndex'])->name('public.cuadros.index');
-
-// VIDEOTECA 
-Route::get('/videoteca', [PublicController::class, 'videotecaIndex'])->name('public.videoteca.index');
+    Route::get('/buscar', [BusquedaController::class, 'buscarPublico'])->name('public.buscar');
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -114,7 +114,7 @@ Route::get('/navbar/contenidos', [NavbarContenidosController::class, 'index'])->
 Route::get('/navbar/contenidos/crear', [NavbarContenidosController::class, 'crear'])->name('navbar.contenidos.crear');
 Route::post('/navbar/contenidos/guardar', [NavbarContenidosController::class, 'guardar'])->name('navbar.contenidos.guardar');
 Route::get('/navbar/contenidos/{id}', [NavbarContenidosController::class, 'mostrar'])->name('navbar.contenidos.mostrar');
-Route::get('/contenidos/{id}/editar', [NavbarContenidosController::class, 'editar'])->name('navbar.contenidos.editar');
+Route::get('/navbar/contenidos/{id}/editar', [NavbarContenidosController::class, 'editar'])->name('navbar.contenidos.editar');
 Route::put('/navbar/contenidos/{id}/actualizar', [NavbarContenidosController::class, 'actualizar'])->name('navbar.contenidos.actualizar');
 Route::delete('navbar/contenidos/{id}', [NavbarContenidosController::class, 'borrar'])->name('navbar.contenidos.borrar');
 
@@ -147,7 +147,7 @@ Route::delete('/videoteca/eliminar/{id}', [VideotecaController::class, 'eliminar
 //CONTENIDOS
 Route::get('/contenidos/listado', [ContenidosController::class, 'listado'])->name('contenidos.listado');
 Route::get('/contenidos/crear', [ContenidosController::class, 'crear'])->name('contenidos.crear');
-Route::put('/contenidos/guardar', [ContenidosController::class, 'guardar'])->name('contenidos.guardar');
+Route::post('/contenidos/guardar', [ContenidosController::class, 'guardar'])->name('contenidos.guardar');
 Route::get('/contenidos/{id}/editar', [ContenidosController::class, 'editar'])->name('contenidos.editar');
 Route::put('/contenidos/{id}/actualizar', [ContenidosController::class, 'actualizar'])->name('contenidos.actualizar');
 Route::get('/contenidos/{id}/mostrar', [ContenidosController::class, 'mostrar'])->name('contenidos.mostrar');
@@ -155,7 +155,7 @@ Route::delete('/contenidos/{id}/borrar', [ContenidosController::class, 'borrar']
 //ARCHIVOS DENTRO DE CONTENIDOS
 Route::get('/contenidos/{contenido_id}/archivos', [ArchivoController::class, 'listar'])->name('archivos.listar');
 Route::get('/contenidos/{contenido_id}/archivos/crear', [ArchivoController::class, 'crear'])->name('archivos.crear');
-Route::post('/contenidos/{contenido_id}/archivos/guardar', [ArchivoController::class, 'guardar'])->name('archivos.guardar');
+Route::put('/contenidos/{contenido_id}/archivos/guardar', [ArchivoController::class, 'guardar'])->name('archivos.guardar');
 Route::delete('/archivos/{id}/borrar', [ArchivoController::class, 'borrar'])->name('archivos.borrar');
 Route::get('/archivos/{id}/descargar', [ArchivoController::class, 'descargar'])->name('archivos.descargar');
 
@@ -181,9 +181,14 @@ Route::put('/actualizar/{cuadro}', [CuadroController::class, 'actualizar'])->nam
 Route::delete('/borrar/{cuadro}', [CuadroController::class, 'borrar'])->name('cuadros.borrar');
 
 
+
+Route::post('/toggle-visibility', [VisibilityController::class, 'toggle'])->name('toggle-visibility');
+
+Route::get('/buscar', [BusquedaController::class, 'buscarAdmin'])->name('admin.buscar');
 });
 
 });
+
 
 
 

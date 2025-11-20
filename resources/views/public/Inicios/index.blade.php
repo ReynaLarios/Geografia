@@ -44,9 +44,6 @@
                     <strong>{{ $noticia->titulo }}</strong><br>
                     <small>{{ \Illuminate\Support\Str::limit($noticia->descripcion, 80) }}</small>
                 </div>
-                <div>
-                    <a href="{{ route('public.inicio.show', $noticia->id) }}" class="btn btn-sm btn-info">Ver</a>
-                </div>
             </li>
         @endforeach
     </ul>

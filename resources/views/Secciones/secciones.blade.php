@@ -5,63 +5,56 @@
     <h2>Crear Sección</h2>
 
     <form action="{{ route('secciones.guardar') }}" method="POST" enctype="multipart/form-data">
-          @csrf
+        @csrf
 
+        {{-- Nombre --}}
         <div class="mb-3">
             <label class="form-label">Nombre de la sección</label>
             <input type="text" name="nombre" class="form-control" value="{{ old('nombre') }}" required>
         </div>
 
+        {{-- Descripción --}}
         <div class="mb-3">
             <label class="form-label">Descripción</label>
             <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion') }}</textarea>
         </div>
 
-        
+        {{-- Imagen principal --}}
         <div class="mb-3">
             <label class="form-label">Imagen principal (opcional)</label>
             <input type="file" name="imagen" class="form-control">
         </div>
 
-   
-        <div class="mb-3">
-            <label class="form-label">Subir Video (opcional)</label>
-            <input type="file" name="video" class="form-control" accept="video/mp4,video/webm,video/ogg">
-        </div>
-       
+        {{-- Archivos adicionales --}}
         <div class="mb-3">
             <label class="form-label">Archivos adicionales</label>
-            <input type="file" name="archivos" multiple class="form-control">
+            <input type="file" name="archivos[]" multiple class="form-control">
         </div>
 
-
-    
+        {{-- TABLA CUADROS --}}
         <h5 class="mt-4"></h5>
-        <table class="table table-bordered" id="tabla-cuadro">
-            <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Autor</th>
-                    <th>Archivo</th>
-                    <th>Mostrar</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><input type="text" name="cuadro_titulo[]" class="form-control"></td>
-                    <td><input type="text" name="cuadro_autor[]" class="form-control"></td>
-                    <td><input type="file" name="cuadro_archivo[]" class="form-control"></td>
-                    <td class="text-center"><input type="checkbox" name="mostrar_cuadro[]" value="1"></td>
-                    <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
-                </tr>
-            </tbody>
-        </table>
+        <table class="table table-bordered table-cuadros" id="tabla-cuadro">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Autor</th>
+            <th>Archivo</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><input type="text" name="cuadro_titulo[]" class="form-control"></td>
+            <td><input type="text" name="cuadro_autor[]" class="form-control"></td>
+            <td><input type="file" name="cuadro_archivo[]" class="form-control"></td>
+            <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
+        </tr>
+    </tbody>
+</table>
 
         <button type="button" id="agregar-fila" class="btn btn-secondary mb-3">+ Agregar fila</button>
         <br>
 
-       
         <button type="submit" class="btn btn-primary mt-1">Guardar</button>
         <a href="{{ route('secciones.listado') }}" class="btn btn-outline-secondary mt-1">← Regresar a Secciones</a>
     </form>
@@ -72,7 +65,10 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
+    const tabla = document
+        .getElementById('tabla-cuadro')
+        .getElementsByTagName('tbody')[0];
+
     const btnAgregar = document.getElementById('agregar-fila');
 
     btnAgregar.addEventListener('click', function() {
@@ -81,28 +77,32 @@ document.addEventListener('DOMContentLoaded', function() {
             <td><input type="text" name="cuadro_titulo[]" class="form-control"></td>
             <td><input type="text" name="cuadro_autor[]" class="form-control"></td>
             <td><input type="file" name="cuadro_archivo[]" class="form-control"></td>
-            <td class="text-center"><input type="checkbox" name="mostrar_cuadro[]" value="1"></td>
-            <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
+            <td class="text-center">
+                <button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button>
+            </td>
         `;
         tabla.appendChild(nuevaFila);
     });
 
     tabla.addEventListener('click', function(e) {
-        if(e.target && e.target.classList.contains('eliminar-fila')) {
+        if (e.target && e.target.classList.contains('eliminar-fila')) {
             e.target.closest('tr').remove();
         }
     });
 });
 </script>
 
+{{-- CKEditor --}}
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 <script>
-ClassicEditor
-    .create(document.querySelector('#descripcion'), {
-        toolbar: [ 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ]
-    })
-    .catch(error => {
-        console.error(error);
-    });
+ClassicEditor.create(document.querySelector('#descripcion'), {
+    toolbar: [
+        'bold', 'italic', 'link',
+        'bulletedList', 'numberedList',
+        'blockQuote'
+    ]
+});
 </script>
+
 @endsection
+

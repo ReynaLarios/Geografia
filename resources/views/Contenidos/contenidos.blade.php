@@ -49,7 +49,6 @@
                     <th>Título</th>
                     <th>Autor</th>
                     <th>Archivo</th>
-                    <th>Mostrar</th>
                     <th>Acción</th>
                 </tr>
             </thead>
@@ -58,7 +57,6 @@
                     <td><input type="text" name="cuadros[0][titulo]" class="form-control"></td>
                     <td><input type="text" name="cuadros[0][autor]" class="form-control"></td>
                     <td><input type="file" name="cuadros[0][archivo]" class="form-control"></td>
-                    <td class="text-center"><input type="checkbox" name="cuadros[0][mostrar]" value="1"></td>
                     <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
                 </tr>
             </tbody>
@@ -86,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
             <td><input type="text" name="cuadros[${index}][titulo]" class="form-control"></td>
             <td><input type="text" name="cuadros[${index}][autor]" class="form-control"></td>
             <td><input type="file" name="cuadros[${index}][archivo]" class="form-control"></td>
-            <td class="text-center"><input type="checkbox" name="cuadros[${index}][mostrar]" value="1"></td>
             <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
         `;
         tabla.appendChild(nuevaFila);
