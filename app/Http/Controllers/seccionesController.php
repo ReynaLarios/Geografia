@@ -24,7 +24,7 @@ class SeccionesController extends Controller
     // ---------------------------------------------------------
     public function crear()
     {
-        return view('secciones.secciones');
+        return view('secciones.secciones'); // vista de crear
     }
 
     // ---------------------------------------------------------
@@ -39,19 +39,12 @@ class SeccionesController extends Controller
             'video' => 'nullable|file',
         ]);
 
-        $seccion = new Seccion();
-        $seccion->nombre = $request->nombre;
-        $seccion->descripcion = $request->descripcion;
-
-        if ($request->hasFile('imagen')) {
-            $seccion->imagen = $request->imagen->store('secciones', 'public');
-        }
-
-        if ($request->hasFile('video')) {
-            $seccion->video = $request->video->store('videos', 'public');
-        }
-
-        $seccion->save();
+        $seccion = Seccion::create([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'imagen' => $request->hasFile('imagen') ? $request->imagen->store('secciones', 'public') : null,
+            'video' => $request->hasFile('video') ? $request->video->store('videos', 'public') : null,
+        ]);
 
         $this->guardarArchivos($request, $seccion);
         $this->guardarCuadros($request, $seccion);
@@ -64,11 +57,12 @@ class SeccionesController extends Controller
     // ---------------------------------------------------------
     public function mostrar($id)
     {
-        if ($id == 13) { 
+        $seccion = Seccion::with(['archivos', 'cuadros.archivos'])->findOrFail($id);
+
+        if ($id == 13) {
             return redirect()->route('videoteca.index');
         }
 
-        $seccion = Seccion::with(['archivos', 'cuadros', 'contenidos'])->findOrFail($id);
         return view('secciones.mostrar', compact('seccion'));
     }
 
@@ -77,7 +71,7 @@ class SeccionesController extends Controller
     // ---------------------------------------------------------
     public function editar($id)
     {
-        $seccion = Seccion::with(['archivos', 'cuadros'])->findOrFail($id);
+        $seccion = Seccion::with(['archivos', 'cuadros.archivos'])->findOrFail($id);
         return view('secciones.editar', compact('seccion'));
     }
 
@@ -85,58 +79,97 @@ class SeccionesController extends Controller
     // ACTUALIZAR
     // ---------------------------------------------------------
     public function actualizar(Request $request, $id)
-    {
-        $seccion = Seccion::findOrFail($id);
+{
+    $seccion = Seccion::with(['archivos', 'cuadros.archivos'])->findOrFail($id);
 
-        $seccion->nombre = $request->nombre;
-        $seccion->descripcion = $request->descripcion;
+    // Actualizar datos básicos
+    $seccion->update([
+        'nombre' => $request->nombre,
+        'descripcion' => $request->descripcion,
+    ]);
 
-        if ($request->hasFile('imagen')) {
-            if ($seccion->imagen && Storage::disk('public')->exists($seccion->imagen)) {
-                Storage::disk('public')->delete($seccion->imagen);
-            }
-            $seccion->imagen = $request->imagen->store('secciones', 'public');
+    // ---------------------------
+    // Imagen y video principal
+    // ---------------------------
+    if ($request->eliminar_imagen && $seccion->imagen && Storage::disk('public')->exists($seccion->imagen)) {
+        Storage::disk('public')->delete($seccion->imagen);
+        $seccion->imagen = null;
+    }
+    if ($request->hasFile('imagen')) {
+        if ($seccion->imagen && Storage::disk('public')->exists($seccion->imagen)) {
+            Storage::disk('public')->delete($seccion->imagen);
         }
-
-        if ($request->hasFile('video')) {
-            if ($seccion->video && Storage::disk('public')->exists($seccion->video)) {
-                Storage::disk('public')->delete($seccion->video);
-            }
-            $seccion->video = $request->video->store('videos', 'public');
-        }
-
-        $seccion->save();
-
-        $this->guardarArchivos($request, $seccion);
-        $this->guardarCuadros($request, $seccion);
-
-        return redirect()->route('secciones.listado')->with('success', 'Sección actualizada correctamente');
+        $seccion->imagen = $request->imagen->store('secciones', 'public');
     }
 
+    if ($request->eliminar_video && $seccion->video && Storage::disk('public')->exists($seccion->video)) {
+        Storage::disk('public')->delete($seccion->video);
+        $seccion->video = null;
+    }
+    if ($request->hasFile('video')) {
+        if ($seccion->video && Storage::disk('public')->exists($seccion->video)) {
+            Storage::disk('public')->delete($seccion->video);
+        }
+        $seccion->video = $request->video->store('videos', 'public');
+    }
+
+    $seccion->save();
+
+    // ---------------------------
+    // Archivos eliminados
+    // ---------------------------
+    if ($request->archivos_eliminados) {
+        // Convierte a array seguro
+        $ids = is_array($request->archivos_eliminados)
+            ? $request->archivos_eliminados
+            : json_decode($request->archivos_eliminados, true);
+
+        if (is_array($ids)) {
+            foreach ($id as $archivoId) {
+                $archivo = Archivo::find($archivoId);
+                if ($archivo && $archivo->ruta && Storage::disk('storage')->exists($archivo->ruta)) {
+                    Storage::disk('storage')->delete($archivo->ruta);
+                    $archivo->delete();
+                }
+            }
+        }
+    }
+
+    // ---------------------------
+    // Guardar nuevos archivos
+    // ---------------------------
+    $this->guardarArchivos($request, $seccion);
+
+    // ---------------------------
+    // Guardar cuadros y sus archivos
+    // ---------------------------
+    $this->guardarCuadros($request, $seccion);
+
+    return redirect()->route('secciones.listado')->with('success', 'Sección actualizada correctamente');
+}
+
     // ---------------------------------------------------------
-    // ELIMINAR / BORRAR
+    // ELIMINAR SECCIÓN
     // ---------------------------------------------------------
     public function borrar($id)
     {
-        $seccion = Seccion::with(['archivos', 'cuadros'])->find($id);
+        $seccion = Seccion::with(['archivos', 'cuadros.archivos'])->findOrFail($id);
 
-        if (!$seccion) {
-            return redirect()->back()->with('error', 'Sección no encontrada');
-        }
+        $this->eliminarArchivoFisico($seccion->imagen);
+        $this->eliminarArchivoFisico($seccion->video);
 
-        // Borrar imagen y video de la sección
-        if ($seccion->imagen) Storage::disk('public')->delete($seccion->imagen);
-        if ($seccion->video) Storage::disk('public')->delete($seccion->video);
-
-        // Borrar archivos relacionados
+        // Archivos de la sección
         foreach ($seccion->archivos as $archivo) {
-            if ($archivo->ruta) Storage::disk('public')->delete($archivo->ruta);
+            $this->eliminarArchivoFisico($archivo->ruta);
             $archivo->delete();
         }
 
-        // Borrar cuadros relacionados
+        // Cuadros y sus archivos
         foreach ($seccion->cuadros as $cuadro) {
-            if ($cuadro->ruta) Storage::disk('public')->delete($cuadro->ruta);
+            foreach ($cuadro->archivos as $archivo) {
+                $this->eliminarArchivoFisico($archivo->ruta);
+                $archivo->delete();
+            }
             $cuadro->delete();
         }
 
@@ -162,8 +195,6 @@ class SeccionesController extends Controller
                 'nombre' => $archivo->getClientOriginalName() ?: 'sin_nombre',
                 'ruta' => $ruta,
                 'tipo' => $archivo->getClientOriginalExtension() ?: 'desconocido',
-                'archivable_id' => $seccion->id,
-                'archivable_type' => Seccion::class,
             ]);
         }
     }
@@ -193,39 +224,58 @@ class SeccionesController extends Controller
                 $cuadro = Cuadro::find($id);
                 if (!$cuadro) continue;
 
-                $cuadro->titulo = $tituloLimpio;
-                $cuadro->autor = $autorLimpio;
+                $cuadro->update([
+                    'titulo' => $tituloLimpio,
+                    'autor' => $autorLimpio,
+                ]);
 
                 if ($hayArchivo) {
-                    if ($cuadro->ruta) Storage::disk('public')->delete($cuadro->ruta);
-
-                    $cuadro->ruta = $archivo->store('cuadros', 'public');
-                    $cuadro->nombre = $archivo->getClientOriginalName();
-                    $cuadro->tipo = $archivo->getClientOriginalExtension();
+                    $cuadro->archivos()->create([
+                        'nombre' => $archivo->getClientOriginalName(),
+                        'ruta' => $archivo->store('cuadros', 'public'),
+                        'tipo' => $archivo->getClientOriginalExtension(),
+                    ]);
                 }
 
-                $cuadro->save();
                 continue;
             }
 
-            $nuevo = [
-                'titulo' => $tituloLimpio,
-                'autor' => $autorLimpio,
-                'ruta' => $hayArchivo ? $archivo->store('cuadros', 'public') : null,
-                'nombre' => $hayArchivo ? $archivo->getClientOriginalName() : null,
-                'tipo' => $hayArchivo ? $archivo->getClientOriginalExtension() : null,
-            ];
+            // Nuevo cuadro
+            $cuadro = $seccion->cuadros()->create([
+                'titulo' => $titulo,
+                'autor' => $autor,
+            ]);
 
-            $seccion->cuadros()->create($nuevo);
+            if ($Archivo) {
+                $cuadro->archivos()->create([
+                    'nombre' => $archivo->getClientOriginalName(),
+                    'ruta' => $archivo->store('cuadros', 'public'),
+                    'tipo' => $archivo->getClientOriginalExtension(),
+                ]);
+            }
         }
 
+        // Borrar cuadros eliminados
         $paraBorrar = array_diff($idsExistentes, $idsRecibidos);
         foreach ($paraBorrar as $idBorrar) {
             $cuadro = Cuadro::find($idBorrar);
             if ($cuadro) {
-                if ($cuadro->ruta) Storage::disk('public')->delete($cuadro->ruta);
+                foreach ($cuadro->archivos as $archivo) {
+                    $this->eliminarArchivoFisico($archivo->ruta);
+                    $archivo->delete();
+                }
                 $cuadro->delete();
             }
+        }
+    }
+
+    // ---------------------------------------------------------
+    // ELIMINA UN ARCHIVO FÍSICO SI EXISTE
+    // ---------------------------------------------------------
+    private function eliminarArchivoFisico($ruta)
+    {
+        if ($ruta && Storage::disk('public')->exists($ruta)) {
+            Storage::disk('public')->delete($ruta);
         }
     }
 }

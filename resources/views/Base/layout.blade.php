@@ -203,6 +203,12 @@ $banner = Banner::latest()->first();
             </button>
         </div>
 
+        <div class="contenido-fixed">
+            <button class="fancy" onclick="window.location='{{ route('contenidos.crear') }}'">
+             Crear contenido
+            </button>
+        </div>
+
 
         @if(isset($seccion))
         <button class="fancy mb-2" onclick="window.location='{{ route('contenidos.crear') }}?seccion_id={{ $seccion->id }}'">+ Agregar Contenido</button>
@@ -223,7 +229,7 @@ $banner = Banner::latest()->first();
             @endforeach
         </ul>
         @else
-        <button class="fancy mb-2" onclick="window.location='{{ route('secciones.crear') }}'">+ Agregar Sección</button>
+        <button class="fancy mb-2" onclick="window.location='{{ route('secciones.crear') }}'">Crear Sección</button>
 
         <ul class="nav flex-column">
             @foreach($secciones ?? [] as $sec)
@@ -238,7 +244,7 @@ $banner = Banner::latest()->first();
                 </div>
             </li>
             @endforeach
-        </ul>
+        </ul> 
         @endif
     </aside>
 

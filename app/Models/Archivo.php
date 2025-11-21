@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Archivo extends Model
 {
-    protected $fillable = ['nombre_real', 'archivo', 'archivable_id', 'archivable_type'];
+    protected $fillable = ['nombre', 'ruta', 'tipo', 'archivable_id', 'archivable_type'];
 
     public function archivable()
     {

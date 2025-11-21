@@ -61,11 +61,37 @@
 
 <main class="p-4" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
     <h2>{{ $contenido->titulo }}</h2>
-    <p>{!! $contenido->descripcion !!}</p>
 
-    @if($contenido->imagen)
+    @if($contenido->descripcion)
+        <div class="mb-3">
+            {!! $contenido->descripcion !!}
+        </div>
+    @endif
+
+    @if($contenido->imagen && Storage::disk('public')->exists($contenido->imagen))
         <div class="mb-3">
             <img src="{{ asset('storage/'.$contenido->imagen) }}" class="img-fluid rounded">
+        </div>
+    @endif
+
+    {{-- Archivos adicionales --}}
+    @if($contenido->archivos && $contenido->archivos->count())
+        <div class="mb-4">
+            <h5>Archivos adicionales</h5>
+            <ul class="list-group">
+                @foreach($contenido->archivos as $archivo)
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        @if($archivo->ruta )
+                            <a href="{{ asset('storage/archivos/Lb2bi0evKNrr6fctv4ZSN0tUD0aUK2MTSHLVLJMn.pdf') }}" target="_blank">{{ $archivo->nombre }}</a>
+                            <small class="text-muted">
+                                {{ number_format(Storage::disk('public')->size($archivo->ruta)/1024/1024, 2) }} MB
+                            </small>
+                        @else
+                            <span class="text-muted">{{ $archivo->nombre }} (archivo no disponible)</span>
+                        @endif
+                    </li>
+                @endforeach
+            </ul>
         </div>
     @endif
 
@@ -74,7 +100,6 @@
         <div class="cuadros-box">
             <h5>Cuadros</h5>
 
-            {{-- Dropdown filtro --}}
             <select id="filter-dropdown" class="form-select form-select-sm mb-3">
                 <option value="all">Todos</option>
                 @foreach(range('A','Z') as $letter)
@@ -96,10 +121,9 @@
                             <td>{{ $cuadro->titulo ?? '-' }}</td>
                             <td>{{ $cuadro->autor ?? '-' }}</td>
                             <td>
-                                @if($cuadro->archivo)
+                                @if($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo))
                                     @php
-                                        $tamano = Storage::disk('public')->size($cuadro->archivo);
-                                        $tamanoMB = number_format($tamano / 1024 / 1024, 2);
+                                        $tamanoMB = number_format(Storage::disk('public')->size($cuadro->archivo)/1024/1024, 2);
                                     @endphp
                                     <a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">{{ basename($cuadro->archivo) }}</a>
                                     <small class="text-muted d-block">({{ $tamanoMB }} MB)</small>
@@ -112,8 +136,6 @@
                 </tbody>
             </table>
         </div>
-    @else
-        <p class="text-center text-muted">No hay cuadros disponibles.</p>
     @endif
 </main>
 @endsection

@@ -56,7 +56,8 @@ use App\Http\Controllers\PersonaController;
     Route::get('/cuadros', [PublicController::class, 'cuadrosIndex'])->name('public.cuadros.index');
 
     // VIDEOTECA
-    Route::get('/videoteca', [PublicController::class, 'videotecaIndex'])->name('public.videoteca.index');
+  Route::get('/videoteca', [VideotecaController::class, 'publicIndex'])->name('videoteca');
+
 
 
     Route::get('/buscar', [BusquedaController::class, 'buscarPublico'])->name('public.buscar');

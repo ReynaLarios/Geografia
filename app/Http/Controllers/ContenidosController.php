@@ -163,8 +163,8 @@ class ContenidosController extends Controller
             $ruta = $archivo->store('archivos', 'public');
 
             $contenido->archivos()->create([
-                'nombre_real' => $archivo->getClientOriginalName() ?: 'sin_nombre',
-                'archivo' => $ruta,
+                'nombre' => $archivo->getClientOriginalName() ?: 'sin_nombre',
+                'ruta' => $ruta,
                 'tipo' => $archivo->getClientOriginalExtension() ?: 'desconocido',
                 'archivable_id' => $contenido->id,
                 'archivable_type' => Contenidos::class,

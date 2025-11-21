@@ -212,10 +212,13 @@ $(document).ready(function(){
 {{-- LAYOUT PRINCIPAL --}}
 <div class="layout">
     {{-- SIDEBAR --}}
-    <aside class="sidebar">
-        <h4>Secciones</h4>
-        <ul class="nav flex-column">
-            @foreach($secciones ?? [] as $sec)
+<aside class="sidebar">
+
+  
+    {{-- LISTA DE SECCIONES --}}
+    <ul class="list-unstyled">
+        @if(!empty($secciones))
+            @foreach($secciones as $sec)
                 @if(!$sec->oculto_publico)
                     <li class="mb-2">
                         <a href="{{ route('public.secciones.show', $sec->id) }}" class="fancy">
@@ -224,8 +227,21 @@ $(document).ready(function(){
                     </li>
                 @endif
             @endforeach
-        </ul>
-    </aside>
+        @else
+            <li>No hay secciones disponibles</li>
+        @endif
+
+          {{-- BOTÓN VIDEOTECA --}}
+    <div class="mb-3">
+        <a href="{{ route('videoteca') }}" class="fancy d-block text-center py-2">
+            Videoteca
+        </a>
+    </div>
+    </ul>
+
+</aside>
+
+
 
     {{-- CONTENIDO --}}
     <main class="content">
