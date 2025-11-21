@@ -1,16 +1,40 @@
 @extends('base.layout')
 
 @section('contenido')
-<div class="container mt-4">
-    <h2>Detalles de Persona</h2>
-    <div class="card p-3">
-        @if($persona->foto)
-            <img src="{{ asset('storage/' . $persona->foto) }}" width="150" class="mb-3">
-        @endif
-        <p><strong>Nombre:</strong> {{ $persona->nombre }}</p>
-        <p><strong>Email:</strong> {{ $persona->email }}</p>
-        <p><strong>Datos Adicionales:</strong> {{ $persona->datos_adicionales }}</p>
-        <a href="{{ route('personas.index') }}" class="btn btn-secondary">Volver</a>
+<div class="container mt-5">
+
+    <a href="{{ route('public.personas.index') }}" class="btn btn-secondary mb-4">← Volver al listado</a>
+
+    <div class="card mx-auto" style="max-width: 500px; background-color: #dbeafe; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+        <div class="card-body text-center p-4">
+
+            {{-- Foto redonda --}}
+            @if($persona->foto)
+                <img src="{{ asset('storage/' . $persona->foto) }}" 
+                     alt="Foto de {{ $persona->nombre }}" 
+                     class="rounded-circle mb-3"
+                     style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #90caf9;">
+            @else
+                <div class="rounded-circle mb-3 d-flex align-items-center justify-content-center" 
+                     style="width: 150px; height: 150px; background-color: #bbdefb; color: #1565c0; font-size: 48px;">
+                    {{ strtoupper(substr($persona->nombre, 0, 1)) }}
+                </div>
+            @endif
+
+            {{-- Nombre --}}
+            <h3 class="card-title fw-bold">{{ $persona->nombre }}</h3>
+
+            {{-- Email --}}
+            <p class="text-muted mb-2">{{ $persona->email }}</p>
+
+            {{-- Datos personales --}}
+            @if($persona->datos_personales)
+                <div class="card-text text-start mt-3 p-3" style="background-color: #bbdefb; border-radius: 10px;">
+                    {!! $persona->datos_personales !!}
+                </div>
+            @endif
+
+        </div>
     </div>
 </div>
 @endsection

@@ -66,9 +66,18 @@
 </main>
 @endsection
 
+
 @section('scripts')
+
+{{-- CKEDITOR --}}
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+
+    // -----------------------------------------------------
+    // AGREGAR FILAS A LA TABLA
+    // -----------------------------------------------------
     const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
     const btnAgregar = document.getElementById('agregar-fila');
 
@@ -88,23 +97,22 @@ document.addEventListener('DOMContentLoaded', function() {
         tabla.appendChild(nuevaFila);
     });
 
+    // ELIMINAR FILAS
     tabla.addEventListener('click', function(e) {
         if (e.target && e.target.classList.contains('eliminar-fila')) {
             e.target.closest('tr').remove();
         }
     });
+
+
+    // -----------------------------------------------------
+    // CKEDITOR (MISMO QUE EN EL FORMULARIO DE CONTENIDOS)
+    // -----------------------------------------------------
+    ClassicEditor
+        .create(document.querySelector('#descripcion'))
+        .catch(error => { console.error(error); });
+
 });
 </script>
 
-{{-- CKEditor --}}
-<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
-<script>
-ClassicEditor.create(document.querySelector('#descripcion'), {
-    toolbar: [
-        'bold', 'italic', 'link',
-        'bulletedList', 'numberedList',
-        'blockQuote'
-    ]
-});
-</script>
 @endsection

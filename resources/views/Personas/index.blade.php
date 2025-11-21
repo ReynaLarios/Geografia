@@ -1,48 +1,76 @@
 @extends('base.layout')
 
 @section('contenido')
-<div class="container mt-4">
-    <h2>Listado de Personas</h2>
-    <a href="{{ route('personas.create') }}" class="btn btn-primary mb-3">Crear Persona</a>
+<div class="container mt-5">
+    <h2 class="mb-4 text-center" style="color: #1565c0;">Profesores</h2>
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+    <div class="d-flex flex-wrap justify-content-center gap-4">
+        @foreach($personas as $persona)
+            <a href="{{ route('public.personas.show', $persona->id) }}" 
+               class="card shadow-sm text-center text-decoration-none persona-card">
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Foto</th>
-                <th>Nombre</th>
-                <th>Email</th>
-                <th>Datos Adicionales</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($personas as $persona)
-            <tr>
-                <td>
+                <div class="d-flex justify-content-center mb-2 p-3">
                     @if($persona->foto)
-                        <img src="{{ asset('storage/' . $persona->foto) }}" width="50">
+                        <img src="{{ asset('storage/' . $persona->foto) }}" 
+                             class="persona-foto">
+                    @else
+                        <div class="persona-foto placeholder">
+                            {{ strtoupper(substr($persona->nombre, 0, 1)) }}
+                        </div>
                     @endif
-                </td>
-                <td>{{ $persona->nombre }}</td>
-                <td>{{ $persona->email }}</td>
-                <td>{{ $persona->datos_adicionales }}</td>
-                <td>
-                    <a href="{{ route('personas.show', $persona->id) }}" class="btn btn-info btn-sm">Ver</a>
-                    <a href="{{ route('personas.edit', $persona->id) }}" class="btn btn-warning btn-sm">Editar</a>
-                    <form action="{{ route('personas.destroy', $persona->id) }}" method="POST" style="display:inline-block">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm"
-                        onclick="return confirm('¿Seguro que quieres eliminar esta persona?')">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+                </div>
+
+                <div class="fw-bold persona-nombre">
+                   {{ $persona->nombre }}
+                </div>
+
+            </a>
+        @endforeach
+    </div>
+
+    <!-- Paginación -->
+    <div class="d-flex justify-content-center mt-4">
+        {{ $personas->links('pagination::bootstrap-5') }}
+    </div>
 </div>
+
+<style>
+.persona-card {
+    width: 180px;
+    min-height: 210px; /* más compacto que antes */
+    border-radius: 15px;
+    background-color: #dbeafe;
+    color: inherit;
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+.persona-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    border-color: #42a5f5;
+}
+.persona-foto {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #90caf9;
+}
+.persona-foto.placeholder {
+    background-color: #90caf9;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+.persona-nombre {
+    font-size: 1rem;
+    margin: 0 10px 10px 10px;
+    word-wrap: break-word;
+}
+</style>
 @endsection

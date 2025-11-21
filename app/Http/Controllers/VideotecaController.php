@@ -25,7 +25,7 @@ class VideotecaController extends Controller
         $video->url = $request->url;
         $video->save();
 
-        return redirect()->route('videoteca')->with('exito', 'Video guardado correctamente.');
+        return redirect()->route('videoteca.index')->with('exito', 'Video guardado correctamente.');
     }
 
     public function editar($id)
@@ -46,7 +46,7 @@ class VideotecaController extends Controller
         $video->url = $request->url;
         $video->save();
 
-        return redirect()->route('videoteca')->with('exito', 'Video actualizado correctamente.');
+        return redirect()->route('videoteca.actualizar')->with('exito', 'Video actualizado correctamente.');
     }
 
     public function eliminar($id)
@@ -54,6 +54,6 @@ class VideotecaController extends Controller
         $video = Videoteca::findOrFail($id);
         $video->delete();
 
-        return redirect()->route('videoteca')->with('exito', 'Video eliminado correctamente.');
+        return redirect()->route('videoteca.eliminar')->with('exito', 'Video eliminado correctamente.');
     }
 }

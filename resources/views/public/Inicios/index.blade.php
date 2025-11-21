@@ -82,8 +82,8 @@
     color: #03045e;
 }
 .list-group-item {
-    background-color: #FFF3E6;
-    border-color: #FFD5B8;
+    background-color: #dbeafe;
+    border-color:#dbeafe;
 }
 </style>
 @endsection

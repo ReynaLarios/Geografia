@@ -102,7 +102,7 @@ $banner = Banner::latest()->first();
     @if($banner && $banner->imagen && file_exists(storage_path('app/public/banners/' . $banner->imagen)))
         <img src="{{ asset('storage/banners/' . $banner->imagen) }}" class="banner img-fluid" alt="Banner">
     @else
-        <img src="{{ asset('images/banner-default.jpg') }}" class="banner img-fluid" alt="Banner por defecto">
+        <img src="{{ asset('Geo.jpg') }}" class="banner img-fluid" alt="Banner por defecto">
     @endif
 
     <!-- Botones de acción sobre el banner -->
@@ -126,6 +126,11 @@ $banner = Banner::latest()->first();
 {{-- NAVBAR INFERIOR --}}
 <nav class="navbar-bottom">
 
+    <!-- Botón de Inicio -->
+    <div class="paste-button">
+        <button class="button" onclick="window.location='{{ route('dashboard') }}'">Inicio</button>
+    </div>
+
     <!-- Botón para agregar nueva sección -->
     <div class="paste-button">
         <button class="button" onclick="window.location='{{ route('navbar.secciones.crear') }}'">+ Agregar Sección Navbar</button>
@@ -140,32 +145,32 @@ $banner = Banner::latest()->first();
         </button>
 
         <!-- Botones de acción de la sección -->
-        <div class="section-actions" style="margin-top:5px;">
-            <div style="display:flex; gap:2px; flex-wrap:wrap; margin-bottom:4px;">
-                <button title="Editar sección" class="small-btn" onclick="window.location='{{ route('navbar.secciones.editar', $sec->id) }}'">✏️</button>
+    <div class="section-actions" style="margin-top:5px;">
+    <div style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px; width:92px;"> <!-- ancho = 2 botones + gap -->
+        <button title="Editar sección" class="small-btn" 
+                style="width:40px; height:40px; font-size:18px;"
+                onclick="window.location='{{ route('navbar.secciones.editar', $sec->id) }}'">✏️</button>
 
-                <form action="{{ route('navbar.secciones.borrar', $sec->id) }}" method="POST">@csrf @method('DELETE')
-                    <button type="submit" class="small-btn btn-borrar">🗑️</button>
-                </form>
+        <form action="{{ route('navbar.secciones.borrar', $sec->id) }}" method="POST" style="margin:0;">
+            @csrf @method('DELETE')
+            <button type="submit" class="small-btn btn-borrar" style="width:40px; height:40px; font-size:18px;">🗑️</button>
+        </form>
 
-                <button class="small-btn toggle-visibility" data-id="{{ $sec->id }}" data-model="NavbarSeccion"
-                        style="{{ $sec->oculto_publico ? 'opacity:0.4;' : '' }}">👁</button>
+        <button class="small-btn toggle-visibility" data-id="{{ $sec->id }}" data-model="NavbarSeccion"
+                style="width:40px; height:40px; font-size:18px; {{ $sec->oculto_publico ? 'opacity:0.4;' : '' }}">👁</button>
+            <a href="{{ route('navbar.contenidos.crear') }}?seccion_id={{ $sec->id }}" 
+   class="small-btn" 
+   style="width:40px; height:40px; font-size:18px;">+</a>
 
-                <a href="{{ route('navbar.contenidos.crear') }}?seccion_id={{ $sec->id }}" class="small-btn">+</a>
-            </div>
 
             <!-- Submenu de contenidos -->
             @if($sec->contenidosNavbar && $sec->contenidosNavbar->count())
             <div class="dropdown-content" style="position:relative; display:block; margin-top:4px; padding:5px 10px; border-radius:8px; background-color: #60a5fa;">
                 @foreach($sec->contenidosNavbar as $contenido)
                 <div style="display:flex; align-items:center; justify-content:space-between; gap:2px; margin:2px 0; padding:3px 6px; border-radius:6px; background: rgba(255,255,255,0.15);">
-                    
-                    <!-- Título del contenido -->
                     <a href="{{ route('navbar.contenidos.mostrar', $contenido->id) }}" style="flex-grow:1; color:white; text-decoration:none;">
                         {{ $contenido->titulo }}
                     </a>
-
-                    <!-- Botones del contenido -->
                     <div style="display:flex; gap:2px;">
                         <button title="Editar contenido" class="small-btn" onclick="window.location='{{ route('navbar.contenidos.editar', $contenido->id) }}'">✏️</button>
 
@@ -176,7 +181,6 @@ $banner = Banner::latest()->first();
                         <button class="small-btn toggle-visibility" data-id="{{ $contenido->id }}" data-model="NavbarContenido"
                                 style="{{ $contenido->oculto_publico ? 'opacity:0.4;' : '' }}">👁</button>
                     </div>
-
                 </div>
                 @endforeach
             </div>
@@ -191,7 +195,15 @@ $banner = Banner::latest()->first();
 
 <div class="layout">
     <aside class="sidebar">
-        <h4>Secciones</h4>
+
+        <!-- BOTÓN FIJO DE VIDEOTECA -->
+        <div class="videoteca-fixed">
+            <button class="fancy" onclick="window.location='{{ route('videoteca.index') }}'">
+                Videoteca
+            </button>
+        </div>
+
+
         @if(isset($seccion))
         <button class="fancy mb-2" onclick="window.location='{{ route('contenidos.crear') }}?seccion_id={{ $seccion->id }}'">+ Agregar Contenido</button>
         <button class="fancy mb-2" onclick="window.location='{{ route('dashboard') }}'">← Regresar a Secciones</button>
@@ -230,21 +242,40 @@ $banner = Banner::latest()->first();
         @endif
     </aside>
 
+
+
     <main class="content">
         @yield('contenido')
     </main>
 </div>
 
-<footer>
-    <div class="wave">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28..." fill="#ffffff" opacity="0.25"></path>
+<footer style="position: relative; background-color:#60a5fa; color:white; text-align:center; padding-top:80px; padding-bottom:30px; overflow:hidden; font-family:sans-serif;">
+
+    <!-- Ondas múltiples -->
+    <div class="wave" style="position:absolute; top:0; left:0; width:100%; height:100px; overflow:hidden; line-height:0;">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none" style="width:100%; height:100%;">
+            <!-- Capa 1 -->
+            <path d="M0,0V35c150,20,300,25,450,10s300-25,450,10s300,25,450,0V0Z" fill="#ffffff" opacity="0.08"></path>
+            <!-- Capa 2 -->
+            <path d="M0,0V30c150,18,300,20,450,5s300-20,450,5s300,18,450,0V0Z" fill="#ffffff" opacity="0.12"></path>
+            <!-- Capa 3 -->
+            <path d="M0,0V25c150,15,300,15,450,0s300-15,450,0s300,15,450,0V0Z" fill="#ffffff" opacity="0.16"></path>
+            <!-- Capa 4 -->
+            <path d="M0,0V20c150,12,300,12,450,0s300-12,450,0s300,12,450,0V0Z" fill="#ffffff" opacity="0.20"></path>
+            <!-- Capa 5 -->
+            <path d="M0,0V15c150,10,300,10,450,0s300-10,450,0s300,10,450,0V0Z" fill="#ffffff" opacity="0.25"></path>
         </svg>
     </div>
-    <p class="fw-bold">CENTRO UNIVERSITARIO DE CIENCIAS SOCIALES Y HUMANIDADES</p>
-    <p>Los Belenes. Av. José Parres Arias #150, Zapopan, Jalisco, México.</p>
-    <p>© 1997 - 2025 Universidad de Guadalajara</p>
+
+    <!-- Contenido del footer -->
+    <div style="position: relative; z-index: 1; max-width:800px; margin:0 auto; line-height:1.5;">
+        <p class="fw-bold mb-1" style="font-size:1rem; letter-spacing:1px;">CENTRO UNIVERSITARIO DE CIENCIAS SOCIALES Y HUMANIDADES</p>
+        <p class="mb-1" style="font-size:0.9rem;">Los Belenes. Av. José Parres Arias #150, Zapopan, Jalisco, México.</p>
+        <p style="font-size:0.85rem;">© 1997 - 2025 Universidad de Guadalajara</p>
+    </div>
+
 </footer>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

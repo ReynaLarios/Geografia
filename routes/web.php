@@ -23,8 +23,11 @@ use App\Http\Controllers\PersonaController;
 
 
     //PERSONAS
+ Route::prefix('public')->group(function () {
     Route::get('/personas', [PersonaController::class, 'publicIndex'])->name('public.personas.index');
     Route::get('/personas/{persona}', [PersonaController::class, 'publicShow'])->name('public.personas.show');
+});
+
 
     // INICIO
     Route::get('/', [PublicController::class, 'inicio'])->name('public.inicio.index');
@@ -167,12 +170,33 @@ Route::get('/archivos/{id}/descargar', [ArchivoController::class, 'descargar'])-
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+
 //BANNER
 Route::get('/banners', [BannerController::class, 'index'])->name('banner.index');
 Route::get('/banners/editar', [BannerController::class, 'editar'])->name('banner.editar');
 Route::post('/banners/actualizar', [BannerController::class, 'actualizar'])->name('banner.actualizar');
 Route::post('/banners/guardar', [BannerController::class, 'guardar'])->name('banner.guardar');
 Route::delete('/banners/borrar', [BannerController::class, 'borrar'])->name('banner.borrar');
+
+
+// PERSONAS - ADMIN
+Route::prefix('personas')->name('personas.')->group(function () {
+
+    Route::get('/index', [PersonaController::class, 'index'])->name('index');
+    Route::get('/crear', [PersonaController::class, 'crear'])->name('crear');
+    Route::post('/guardar', [PersonaController::class, 'guardar'])->name('guardar');
+    
+    Route::get('/{persona}/editar', [PersonaController::class, 'editar'])->name('editar');
+    Route::put('/{persona}', [PersonaController::class, 'actualizar'])->name('actualizar');
+    
+    Route::delete('/{persona}', [PersonaController::class, 'borrar'])->name('borrar');
+    Route::get('/{persona}', [PersonaController::class, 'mostrar'])->name('mostrar');
+});
+
+Route::post('/toggle-visibility', [VisibilityController::class, 'toggle'])->name('toggle-visibility');
+
+Route::get('/buscar', [BusquedaController::class, 'buscarAdmin'])->name('admin.buscar');
 
 
 //CUADRO
@@ -184,19 +208,7 @@ Route::get('/editar/{cuadro}', [CuadroController::class, 'editar'])->name('cuadr
 Route::put('/actualizar/{cuadro}', [CuadroController::class, 'actualizar'])->name('cuadros.actualizar');
 Route::delete('/borrar/{cuadro}', [CuadroController::class, 'borrar'])->name('cuadros.borrar');
 
-Route::post('/toggle-visibility', [VisibilityController::class, 'toggle'])->name('toggle-visibility');
 
-Route::get('/buscar', [BusquedaController::class, 'buscarAdmin'])->name('admin.buscar');
-
-Route::prefix('admin/personas')->name('admin.personas.')->group(function () {
-    Route::get('/index', [PersonaController::class, 'index'])->name('index');
-    Route::get('/crear', [PersonaController::class, 'crear'])->name('crear');
-    Route::post('/guardar', [PersonaController::class, 'guardar'])->name('guardar');
-    Route::get('/{persona}/editar', [PersonaController::class, 'editar'])->name('editar');
-    Route::put('/{persona}', [PersonaController::class, 'actualizar'])->name('actualizar');
-    Route::delete('/{persona}', [PersonaController::class, 'borrar'])->name('borrar');
-    Route::get('/{persona}', [PersonaController::class, 'mostrar'])->name('mostrar');
-});
 });
 });
 

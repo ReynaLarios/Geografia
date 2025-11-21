@@ -8,52 +8,59 @@ use Illuminate\Support\Facades\Storage;
 
 class PersonaController extends Controller
 {
-    public function index()
+    // LISTADO
+public function index()
+{
+    // Paginación de 12 personas por página
+    $personas = Persona::paginate(12);
+    return view('personas.index', compact('personas'));
+}
+
+
+    // FORMULARIO CREAR
+    public function crear()
     {
-        $personas = Persona::with('navbarContenido')->get();
-        return view('personas.index', compact('personas'));
+        return view('personas.crear');
     }
 
-    public function create()
-    {
-        return view('personas.create');
+    // GUARDAR
+    public function guardar(Request $request)
+{
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'email' => 'required|email|unique:personas,email',
+        'datos_personales' => 'nullable|string',
+        'foto' => 'nullable|image|max:2048',
+    ]);
+
+    $data = $request->only(['nombre', 'email', 'datos_personales']);
+
+    if ($request->hasFile('foto')) {
+        $data['foto'] = $request->file('foto')->store('fotos', 'public');
     }
 
-    public function store(Request $request)
+    Persona::create($data);
+
+    return redirect()->route('personas.index')->with('success', 'Persona creada correctamente');
+}
+
+    // FORMULARIO EDITAR
+    public function editar(Persona $persona)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'email' => 'required|email|unique:personas,email',
-            'datos_adicionales' => 'nullable|string',
-            'foto' => 'nullable|image|max:2048',
-        ]);
-
-        $data = $request->all();
-
-        if($request->hasFile('foto')){
-            $data['foto'] = $request->file('foto')->store('fotos', 'public');
-        }
-
-        Persona::create($data);
-
-        return redirect()->route('personas.index')->with('success', 'Persona creada correctamente');
+        return view('personas.editar', compact('persona'));
     }
 
-    public function edit(Persona $persona)
-    {
-        return view('personas.edit', compact('persona'));
-    }
-
-    public function update(Request $request, Persona $persona)
+    // ACTUALIZAR
+    public function actualizar(Request $request, Persona $persona)
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
             'email' => 'required|email|unique:personas,email,' . $persona->id,
-            'datos_adicionales' => 'nullable|string',
+            'datos_personales' => 'nullable|string',
             'foto' => 'nullable|image|max:2048',
         ]);
 
-        $data = $request->all();
+        $data = $request->except('foto');
 
         if($request->hasFile('foto')){
             if($persona->foto){
@@ -67,18 +74,36 @@ class PersonaController extends Controller
         return redirect()->route('personas.index')->with('success', 'Persona actualizada correctamente');
     }
 
-    public function destroy(Persona $persona)
+    // BORRAR
+    public function borrar(Persona $persona)
     {
         if($persona->foto){
             Storage::disk('public')->delete($persona->foto);
         }
 
         $persona->delete();
+
         return redirect()->route('personas.index')->with('success', 'Persona eliminada correctamente');
     }
 
-    public function show(Persona $persona)
+    // MOSTRAR INFORMACIÓN INDIVIDUAL
+    public function mostrar(Persona $persona)
     {
-        return view('personas.show', compact('persona'));
+        return view('personas.mostrar', compact('persona'));
     }
+
+// PersonaController.php
+
+// LISTADO PÚBLICO
+// LISTADO PÚBLICO
+public function publicIndex()
+{
+    $personas = Persona::paginate(12); // Importante: usar paginate para que la paginación funcione
+    return view('public.personas.index', compact('personas'));
+}
+
+public function publicShow(Persona $persona)
+{
+    return view('public.personas.show', compact('persona'));
+}
 }
