@@ -81,11 +81,8 @@
             <ul class="list-group">
                 @foreach($contenido->archivos as $archivo)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        @if($archivo->ruta )
-                            <a href="{{ asset('storage/archivos/Lb2bi0evKNrr6fctv4ZSN0tUD0aUK2MTSHLVLJMn.pdf') }}" target="_blank">{{ $archivo->nombre }}</a>
-                            <small class="text-muted">
-                                {{ number_format(Storage::disk('public')->size($archivo->ruta)/1024/1024, 2) }} MB
-                            </small>
+                        @if($archivo->ruta && Storage::disk('public')->exists($archivo->ruta))
+                            <a href="{{ asset('storage/'.$archivo->ruta) }}" target="_blank">{{ $archivo->nombre }}</a>
                         @else
                             <span class="text-muted">{{ $archivo->nombre }} (archivo no disponible)</span>
                         @endif
@@ -122,11 +119,7 @@
                             <td>{{ $cuadro->autor ?? '-' }}</td>
                             <td>
                                 @if($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo))
-                                    @php
-                                        $tamanoMB = number_format(Storage::disk('public')->size($cuadro->archivo)/1024/1024, 2);
-                                    @endphp
-                                    <a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">{{ basename($cuadro->archivo) }}</a>
-                                    <small class="text-muted d-block">({{ $tamanoMB }} MB)</small>
+                                    <a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">Ver archivo</a>
                                 @else
                                     <span class="text-muted">Sin archivo</span>
                                 @endif
@@ -144,7 +137,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const dropdown = document.getElementById('filter-dropdown');
-    if(!dropdown) return; // evita error si no hay cuadros
+    if(!dropdown) return;
 
     const cuadros = document.querySelectorAll('.cuadro-item');
     dropdown.addEventListener('change', function() {

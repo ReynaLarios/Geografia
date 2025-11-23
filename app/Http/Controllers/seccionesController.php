@@ -239,14 +239,15 @@ class SeccionesController extends Controller
 
                 continue;
             }
-
+            $titulo = $request->titulo;
+            $autor = $request->autor; 
             // Nuevo cuadro
             $cuadro = $seccion->cuadros()->create([
                 'titulo' => $titulo,
                 'autor' => $autor,
             ]);
 
-            if ($Archivo) {
+            if ($archivo) {
                 $cuadro->archivos()->create([
                     'nombre' => $archivo->getClientOriginalName(),
                     'ruta' => $archivo->store('cuadros', 'public'),

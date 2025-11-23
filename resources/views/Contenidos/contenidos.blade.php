@@ -16,13 +16,19 @@
         {{-- Sección --}}
         <div class="mb-3">
             <label class="form-label">Sección</label>
-            <select name="seccion_id" class="form-select" required>
-                @foreach($secciones as $sec)
-                    <option value="{{ $sec->id }}" {{ old('seccion_id') == $sec->id ? 'selected' : '' }}>
-                        {{ $sec->nombre }}
-                    </option>
-                @endforeach
-            </select>
+         <select name="seccion_id" class="form-select" required>
+    @foreach($secciones as $sec)
+        <option value="{{ $sec->id }}"
+            @if(old('seccion_id') == $sec->id)
+                selected
+            @elseif(isset($seccionId) && $seccionId == $sec->id)
+                selected
+            @endif>
+            {{ $sec->nombre }}
+        </option>
+    @endforeach
+</select>
+
         </div>
 
         {{-- Descripción --}}

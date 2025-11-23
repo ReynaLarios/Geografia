@@ -56,6 +56,14 @@ footer { position:relative; background:linear-gradient(135deg, #60a5fa, #1e3a8a)
 
 .section-hover .section-actions { display:none; margin-top:4px; }
 .section-hover:hover .section-actions { display:block; }
+
+.navbar-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px; /* 🔥 separa TODOS los botones principales */
+}
+
+
 </style>
 </head>
 <body>
@@ -133,64 +141,127 @@ $banner = Banner::latest()->first();
 
     <!-- Botón para agregar nueva sección -->
     <div class="paste-button">
-        <button class="button" onclick="window.location='{{ route('navbar.secciones.crear') }}'">+ Agregar Sección Navbar</button>
+        <button class="button" onclick="window.location='{{ route('navbar.secciones.crear') }}'">
+            + Agregar Sección Navbar
+        </button>
     </div>
 
     @foreach($navbarSecciones ?? [] as $sec)
-    <div class="paste-button section-hover" style="position: relative; margin-bottom:5px;">
+        <div class="paste-button section-hover" style="position: relative;">
 
-        <!-- Botón principal de la sección -->
-        <button class="button" onclick="window.location='{{ route('navbar.secciones.mostrar', $sec->id) }}'">
-            {{ $sec->nombre }} @if($sec->contenidosNavbar && $sec->contenidosNavbar->count()) ▼ @endif
-        </button>
+            <!-- Botón principal de la sección -->
+            <button class="button" onclick="window.location='{{ route('navbar.secciones.mostrar', $sec->id) }}'">
+                {{ $sec->nombre }}
+                @if($sec->contenidosNavbar && $sec->contenidosNavbar->count())
+                    ▼
+                @endif
+            </button>
 
-        <!-- Botones de acción de la sección -->
-    <div class="section-actions" style="margin-top:5px;">
-    <div style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px; width:92px;"> <!-- ancho = 2 botones + gap -->
-        <button title="Editar sección" class="small-btn" 
-                style="width:40px; height:40px; font-size:18px;"
-                onclick="window.location='{{ route('navbar.secciones.editar', $sec->id) }}'">✏️</button>
+            <!-- Contenedor de botones 2x2 -->
+            <div class="section-actions" style="margin-top:5px;">
+                
+                <div style="display:flex; flex-wrap:wrap; gap:4px; width:92px; margin-bottom:4px;">
 
-        <form action="{{ route('navbar.secciones.borrar', $sec->id) }}" method="POST" style="margin:0;">
-            @csrf @method('DELETE')
-            <button type="submit" class="small-btn btn-borrar" style="width:40px; height:40px; font-size:18px;">🗑️</button>
-        </form>
+                    <!-- Editar -->
+                    <button title="Editar sección" class="small-btn"
+                            style="width:40px; height:40px; font-size:18px;"
+                            onclick="window.location='{{ route('navbar.secciones.editar', $sec->id) }}'">✏️</button>
 
-        <button class="small-btn toggle-visibility" data-id="{{ $sec->id }}" data-model="NavbarSeccion"
-                style="width:40px; height:40px; font-size:18px; {{ $sec->oculto_publico ? 'opacity:0.4;' : '' }}">👁</button>
-            <a href="{{ route('navbar.contenidos.crear') }}?seccion_id={{ $sec->id }}" 
-   class="small-btn" 
-   style="width:40px; height:40px; font-size:18px;">+</a>
+                    <!-- Borrar -->
+                    <form action="{{ route('navbar.secciones.borrar', $sec->id) }}" 
+                          method="POST" style="margin:0;">
+                        @csrf @method('DELETE')
+                        <button type="submit" class="small-btn btn-borrar"
+                                style="width:40px; height:40px; font-size:18px;">🗑️</button>
+                    </form>
 
+                    <!-- Visibilidad -->
+                    <button class="small-btn toggle-visibility"
+                            data-id="{{ $sec->id }}" data-model="NavbarSeccion"
+                            style="width:40px; height:40px; font-size:18px; {{ $sec->oculto_publico ? 'opacity:0.4;' : '' }}">
+                        👁
+                    </button>
 
-            <!-- Submenu de contenidos -->
-            @if($sec->contenidosNavbar && $sec->contenidosNavbar->count())
-            <div class="dropdown-content" style="position:relative; display:block; margin-top:4px; padding:5px 10px; border-radius:8px; background-color: #60a5fa;">
-                @foreach($sec->contenidosNavbar as $contenido)
-                <div style="display:flex; align-items:center; justify-content:space-between; gap:2px; margin:2px 0; padding:3px 6px; border-radius:6px; background: rgba(255,255,255,0.15);">
-                    <a href="{{ route('navbar.contenidos.mostrar', $contenido->id) }}" style="flex-grow:1; color:white; text-decoration:none;">
-                        {{ $contenido->titulo }}
+                    <!-- Agregar contenido -->
+                    <a href="{{ route('navbar.contenidos.crear') }}?seccion_id={{ $sec->id }}"
+                       class="small-btn"
+                       style="width:40px; height:40px; font-size:18px;">+
                     </a>
-                    <div style="display:flex; gap:2px;">
-                        <button title="Editar contenido" class="small-btn" onclick="window.location='{{ route('navbar.contenidos.editar', $contenido->id) }}'">✏️</button>
 
-                        <form action="{{ route('navbar.contenidos.borrar', $contenido->id) }}" method="POST">@csrf @method('DELETE')
-                            <button type="submit" class="small-btn btn-borrar">🗑️</button>
-                        </form>
-
-                        <button class="small-btn toggle-visibility" data-id="{{ $contenido->id }}" data-model="NavbarContenido"
-                                style="{{ $contenido->oculto_publico ? 'opacity:0.4;' : '' }}">👁</button>
-                    </div>
                 </div>
-                @endforeach
+
+                <!-- Dropdown de contenidos -->
+                @if($sec->contenidosNavbar && $sec->contenidosNavbar->count())
+                    <div class="dropdown-content"
+                         style="position:relative; display:block; margin-top:4px;
+                                padding:5px 10px; border-radius:8px; background-color:#60a5fa;">
+
+                        @foreach($sec->contenidosNavbar as $contenido)
+                            <div style="display:flex; align-items:center; justify-content:space-between;
+                                        gap:2px; margin:2px 0; padding:3px 6px; border-radius:6px;
+                                        background: rgba(255,255,255,0.15);">
+
+                                <a href="{{ route('navbar.contenidos.mostrar', $contenido->id) }}"
+                                   style="flex-grow:1; color:white; text-decoration:none;">
+                                   {{ $contenido->titulo }}
+                                </a>
+
+                                <div style="display:flex; gap:2px;">
+
+                                    <!-- Editar contenido -->
+                                    <button title="Editar contenido" class="small-btn"
+                                            onclick="window.location='{{ route('navbar.contenidos.editar', $contenido->id) }}'">
+                                        ✏️
+                                    </button>
+
+                                    <!-- Borrar contenido -->
+                                    <form action="{{ route('navbar.contenidos.borrar', $contenido->id) }}"
+                                          method="POST">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="small-btn btn-borrar">🗑️</button>
+                                    </form>
+
+                                    <!-- Visibilidad contenido -->
+                                    <button class="small-btn toggle-visibility"
+                                            data-id="{{ $contenido->id }}"
+                                            data-model="NavbarContenido"
+                                            style="{{ $contenido->oculto_publico ? 'opacity:0.4;' : '' }}">
+                                        👁
+                                    </button>
+                                </div>
+
+                            </div>
+                        @endforeach
+
+                    </div>
+                @endif
+
             </div>
-            @endif
 
         </div>
-    </div>
     @endforeach
 
+    <!-- Directorio -->
+ <div class="paste-button dropdown">
+    <button class="button">DIRECTORIO ▼</button>
+
+    <div class="dropdown-content">
+
+        <!-- Enlaces reales -->
+        <a href="{{ route('personas.index') }}">Académicos</a>
+
+        <!-- Botón + dentro del menú -->
+        <a href="{{ route('navbar.contenidos.crear') }}" 
+           style="font-weight:bold; text-align:center; background:rgba(255,255,255,0.2); border-radius:6px;">
+            +
+        </a>
+
+    </div>
+</div>
+
+
 </nav>
+
 
 
 <div class="layout">
@@ -200,6 +271,12 @@ $banner = Banner::latest()->first();
         <div class="videoteca-fixed">
             <button class="fancy" onclick="window.location='{{ route('videoteca.index') }}'">
                 Videoteca
+            </button>
+        </div>
+
+          <div class="contenido-fixed">
+            <button class="fancy" onclick="window.location='{{ route('personas.crear') }}'">
+             Agregar academico
             </button>
         </div>
 
@@ -282,8 +359,12 @@ $banner = Banner::latest()->first();
 
 </footer>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
 
 <script>
 document.querySelectorAll('.toggle-visibility').forEach(btn=>{
@@ -310,6 +391,5 @@ document.querySelectorAll('.toggle-visibility').forEach(btn=>{
 </script>
 
 @yield('scripts')
-
 </body>
 </html>

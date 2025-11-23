@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,9 +33,17 @@
             box-shadow: 0 2px 4px var(--sombra);
             padding: 0.5rem 1rem;
         }
-        .navbar-top img { max-height: 90px; }
 
-        .banner { width: 100%; height: 350px; object-fit: cover; display: block; }
+        .navbar-top img {
+            max-height: 90px;
+        }
+
+        .banner {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+        }
 
         .navbar-bottom {
             background-color: var(--azul-oscuro);
@@ -44,7 +53,12 @@
             gap: 10px;
             justify-content: center;
         }
-        .navbar-bottom .paste-button { position: relative; display: inline-block; }
+
+        .navbar-bottom .paste-button {
+            position: relative;
+            display: inline-block;
+        }
+
         .navbar-bottom .button {
             background-color: var(--azul-oscuro);
             color: var(--blanco);
@@ -55,7 +69,11 @@
             text-transform: uppercase;
             cursor: pointer;
         }
-        .navbar-bottom .button:hover { background-color: var(--azul-suave); color: var(--azul-oscuro); }
+
+        .navbar-bottom .button:hover {
+            background-color: var(--azul-suave);
+            color: var(--azul-oscuro);
+        }
 
         .dropdown-content {
             display: none;
@@ -68,13 +86,17 @@
             left: 50%;
             transform: translateX(-50%);
         }
+
         .dropdown-content a {
             color: var(--blanco);
             padding: 10px 15px;
             display: block;
             text-decoration: none;
         }
-        .paste-button:hover .dropdown-content { display: block; }
+
+        .paste-button:hover .dropdown-content {
+            display: block;
+        }
 
         .layout {
             display: flex;
@@ -88,6 +110,7 @@
             border-right: 1px solid var(--gris-medio);
             padding: 20px;
         }
+
         .sidebar h4 {
             color: var(--azul-oscuro);
             font-weight: 600;
@@ -95,6 +118,7 @@
             border-bottom: 2px solid var(--azul-medio);
             padding-bottom: 5px;
         }
+
         .fancy {
             background-color: var(--azul-suave);
             border: none;
@@ -109,6 +133,7 @@
             text-decoration: none;
             display: block;
         }
+
         .fancy:hover {
             background-color: var(--azul-medio);
             color: var(--blanco);
@@ -126,16 +151,37 @@
             color: white;
             padding: 40px 10px 20px 10px;
             text-align: center;
-            overflow:hidden;
+            overflow: hidden;
         }
 
-        @media (max-width:768px){
-            .layout{ flex-direction: column; }
-            .sidebar{ width:100%; border-right:none; border-bottom:1px solid var(--gris-medio); }
-            .navbar-bottom{ flex-direction: column; gap:8px; }
+        @media (max-width:768px) {
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--gris-medio);
+            }
+
+            .navbar-bottom {
+                flex-direction: column;
+                gap: 8px;
+            }
         }
+        .navbar-bottom .dropdown-content {
+    position: absolute;
+    z-index: 9999; /* el dropdown queda arriba de todo */
+}
+
+.navbar-bottom .paste-button {
+    position: relative; /* necesario para que el submenu se posicione bien */
+}
+
     </style>
 </head>
+
 <body>
 
 {{-- NAVBAR SUPERIOR --}}
@@ -183,22 +229,38 @@ $(document).ready(function(){
     @if($banner && $banner->imagen && file_exists(storage_path('app/public/banners/' . $banner->imagen)))
         <img src="{{ asset('storage/banners/' . $banner->imagen) }}" class="banner img-fluid" alt="Banner">
     @else
-        <img src="{{ asset('images/banner-default.jpg') }}" class="banner img-fluid" alt="Banner por defecto">
+       <img src="{{ asset('Geo.jpg') }}" class="banner img-fluid" alt="Banner por defecto">
     @endif
 </div>
 
-{{-- NAVBAR INFERIOR --}}
+
+    {{-- NAVBAR SUPERIOR --}}
+    {{-- NAVBAR INFERIOR --}}
 <nav class="navbar-bottom">
-    @foreach($navbarSecciones as $sec)
+
+    <!-- Botón de Inicio -->
+    <div class="paste-button">
+        <button class="button" onclick="window.location='{{ route('public.inicio.index') }}'">
+            Inicio
+        </button>
+    </div>
+
+
+    <!-- SECCIONES DEL NAVBAR -->
+    @foreach ($navbarSecciones as $sec)
         <div class="paste-button">
-            <button class="button" onclick="window.location='{{ route('public.navbar.secciones.show', $sec->id) }}'">
+            <button class="button"
+                onclick="window.location='{{ route('public.navbar.secciones.show', $sec->id) }}'">
                 {{ $sec->nombre }}
-                @if($sec->contenidosNavbar->where('oculto_publico', false)->count()) ▼ @endif
+                @if ($sec->contenidosNavbar->where('oculto_publico', false)->count())
+                    ▼
+                @endif
             </button>
 
-            @if($sec->contenidosNavbar->where('oculto_publico', false)->count())
+            {{-- Dropdown interno --}}
+            @if ($sec->contenidosNavbar->where('oculto_publico', false)->count())
                 <div class="dropdown-content">
-                    @foreach($sec->contenidosNavbar->where('oculto_publico', false) as $contenido)
+                    @foreach ($sec->contenidosNavbar->where('oculto_publico', false) as $contenido)
                         <a href="{{ route('public.navbar.contenido.show', $contenido->id) }}">
                             {{ $contenido->titulo }}
                         </a>
@@ -207,56 +269,67 @@ $(document).ready(function(){
             @endif
         </div>
     @endforeach
+
+
+    <!-- DIRECTORIO (Dropdown) -->
+    <div class="paste-button dropdown">
+        <button class="button">DIRECTORIO ▼</button>
+        <div class="dropdown-content">
+            <a href="{{ route('public.personas.index') }}">Academicos</a>
+        </div>
+    </div>
+
 </nav>
 
-{{-- LAYOUT PRINCIPAL --}}
-<div class="layout">
-    {{-- SIDEBAR --}}
-<aside class="sidebar">
+    {{-- LAYOUT PRINCIPAL --}}
+    <div class="layout">
+        {{-- SIDEBAR --}}
+        <aside class="sidebar">
 
-  
-    {{-- LISTA DE SECCIONES --}}
-    <ul class="list-unstyled">
-        @if(!empty($secciones))
-            @foreach($secciones as $sec)
-                @if(!$sec->oculto_publico)
-                    <li class="mb-2">
-                        <a href="{{ route('public.secciones.show', $sec->id) }}" class="fancy">
-                            {{ $sec->nombre }}
-                        </a>
-                    </li>
+
+            {{-- LISTA DE SECCIONES --}}
+            <ul class="list-unstyled">
+                @if (!empty($secciones))
+                    @foreach ($secciones as $sec)
+                        @if (!$sec->oculto_publico)
+                            <li class="mb-2">
+                                <a href="{{ route('public.secciones.show', $sec->id) }}" class="fancy">
+                                    {{ $sec->nombre }}
+                                </a>
+                            </li>
+                        @endif
+                    @endforeach
+                @else
+                    <li>No hay secciones disponibles</li>
                 @endif
-            @endforeach
-        @else
-            <li>No hay secciones disponibles</li>
-        @endif
 
-          {{-- BOTÓN VIDEOTECA --}}
-    <div class="mb-3">
-        <a href="{{ route('videoteca') }}" class="fancy d-block text-center py-2">
-            Videoteca
-        </a>
+                {{-- BOTÓN VIDEOTECA --}}
+                <div class="mb-3">
+                    <a href="{{ route('videoteca') }}" class="fancy d-block text-center py-2">
+                        Videoteca
+                    </a>
+                </div>
+            </ul>
+
+        </aside>
+
+
+
+        {{-- CONTENIDO --}}
+        <main class="content">
+            @yield('contenido')
+        </main>
     </div>
-    </ul>
 
-</aside>
+    <footer>
+        <p class="fw-bold">CENTRO UNIVERSITARIO DE CIENCIAS SOCIALES Y HUMANIDADES</p>
+        <p>Los Belenes. Av. José Parres Arias #150, Zapopan, Jalisco, México.</p>
+        <p>© 1997 - 2025 Universidad de Guadalajara</p>
+    </footer>
 
-
-
-    {{-- CONTENIDO --}}
-    <main class="content">
-        @yield('contenido')
-    </main>
-</div>
-
-<footer>
-    <p class="fw-bold">CENTRO UNIVERSITARIO DE CIENCIAS SOCIALES Y HUMANIDADES</p>
-    <p>Los Belenes. Av. José Parres Arias #150, Zapopan, Jalisco, México.</p>
-    <p>© 1997 - 2025 Universidad de Guadalajara</p>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-@yield('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @yield('scripts')
 
 </body>
+
 </html>

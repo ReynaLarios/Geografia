@@ -2,7 +2,7 @@
 
 @section('contenido')
 <div class="container mt-5">
-    <h2 class="mb-4 text-center" style="color: #1565c0;">Profesores</h2>
+    <h2 class="mb-4 text-center" style="color: #1565c0;">ACADEMICOS</h2>
 
     <div class="d-flex flex-wrap justify-content-center gap-4">
         @foreach($personas as $persona)

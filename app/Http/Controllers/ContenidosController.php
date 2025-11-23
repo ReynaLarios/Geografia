@@ -30,7 +30,7 @@ class ContenidosController extends Controller
     }
 
     // ---------------------------------------------------------
-    // GUARDAR NUEVO CONTENIDO
+    // GUARDAR
     // ---------------------------------------------------------
     public function guardar(Request $request)
     {
@@ -43,11 +43,12 @@ class ContenidosController extends Controller
             'cuadro_titulo.*' => 'nullable|string|max:255',
             'cuadro_autor.*' => 'nullable|string|max:255',
             'cuadro_archivo.*' => 'nullable|file|max:5120',
-            'cuadro_id.*' => 'nullable|integer'
+            'cuadro_id.*' => 'nullable|integer',
         ]);
 
         $datos = $request->only(['titulo', 'descripcion', 'seccion_id']);
 
+        // Imagen principal
         if ($request->hasFile('imagen')) {
             $datos['imagen'] = $request->file('imagen')->store('contenidos', 'public');
         }
@@ -71,7 +72,7 @@ class ContenidosController extends Controller
     }
 
     // ---------------------------------------------------------
-    // ACTUALIZAR CONTENIDO
+    // ACTUALIZAR
     // ---------------------------------------------------------
     public function actualizar(Request $request, $id)
     {
@@ -79,68 +80,96 @@ class ContenidosController extends Controller
 
         $request->validate([
             'titulo' => 'required|string|max:255',
-            'seccion_id' => 'required|exists:secciones,id',
+            // ❗ NO ponemos seccion_id porque NO debe cambiar
             'descripcion' => 'nullable|string',
             'imagen' => 'nullable|image|max:2048',
             'archivos.*' => 'nullable|file|max:10240',
             'cuadro_titulo.*' => 'nullable|string|max:255',
             'cuadro_autor.*' => 'nullable|string|max:255',
             'cuadro_archivo.*' => 'nullable|file|max:5120',
-            'cuadro_id.*' => 'nullable|integer'
+            'cuadro_id.*' => 'nullable|integer',
         ]);
 
-        $datos = $request->only(['titulo', 'descripcion', 'seccion_id']);
+        // No permitimos que cambien la sección
+        $datos = [
+            'titulo' => $request->titulo,
+            'descripcion' => $request->descripcion,
+        ];
 
+        // Imagen principal
         if ($request->hasFile('imagen')) {
-            if ($contenido->imagen && Storage::disk('public')->exists($contenido->imagen)) {
-                Storage::disk('public')->delete($contenido->imagen);
-            }
+            if ($contenido->imagen) Storage::disk('public')->delete($contenido->imagen);
+
             $datos['imagen'] = $request->file('imagen')->store('contenidos', 'public');
+        } elseif ($request->eliminar_imagen) {
+            if ($contenido->imagen) Storage::disk('public')->delete($contenido->imagen);
+
+            $datos['imagen'] = null;
         }
 
         $contenido->update($datos);
 
+        // Archivos adicionales eliminados
+        if ($request->archivos_eliminados) {
+            foreach ($request->archivos_eliminados as $archivoId) {
+                $archivo = Archivo::find($archivoId);
+                if ($archivo) {
+                    if ($archivo->ruta) Storage::disk('public')->delete($archivo->ruta);
+                    $archivo->delete();
+                }
+            }
+        }
+
+        // Nuevos archivos adicionales
         $this->guardarArchivos($request, $contenido);
+
+        // Eliminar archivo del cuadro SIN borrar el cuadro
+        if ($request->cuadro_archivo_eliminado) {
+            foreach ($request->cuadro_archivo_eliminado as $cuadroId) {
+                $cuadro = Cuadro::find($cuadroId);
+                if ($cuadro && $cuadro->archivo) {
+                    Storage::disk('public')->delete($cuadro->archivo);
+                    $cuadro->archivo = null;
+                    $cuadro->save();
+                }
+            }
+        }
+
+        // Actualizar y agregar cuadros
         $this->guardarCuadros($request, $contenido);
 
         return redirect()->route('contenidos.listado')->with('success', 'Contenido actualizado correctamente.');
     }
 
     // ---------------------------------------------------------
-    // ELIMINAR CONTENIDO
+    // ELIMINAR
     // ---------------------------------------------------------
     public function borrar($id)
     {
         $contenido = Contenidos::with(['archivos', 'cuadros'])->findOrFail($id);
 
-        // PROTEGER RELACIONES NULL
-        $archivos = $contenido->archivos ?? collect();
-        $cuadros  = $contenido->cuadros ?? collect();
-
-        // BORRAR ARCHIVOS
-        foreach ($archivos as $archivo) {
-            if ($archivo->archivo && Storage::disk('public')->exists($archivo->archivo)) {
-                Storage::disk('public')->delete($archivo->archivo);
-            }
+        // Borrar archivos adicionales
+        foreach ($contenido->archivos as $archivo) {
+            if ($archivo->ruta) Storage::disk('public')->delete($archivo->ruta);
             $archivo->delete();
         }
 
-        // BORRAR CUADROS
-        foreach ($cuadros as $cuadro) {
-            if ($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo)) {
-                Storage::disk('public')->delete($cuadro->archivo);
-            }
+        // Borrar cuadros completos
+        foreach ($contenido->cuadros as $cuadro) {
+            if ($cuadro->archivo) Storage::disk('public')->delete($cuadro->archivo);
             $cuadro->delete();
         }
 
-        // BORRAR CONTENIDO
+        // Borrar imagen principal
+        if ($contenido->imagen) Storage::disk('public')->delete($contenido->imagen);
+
         $contenido->delete();
 
         return redirect()->route('contenidos.listado')->with('success', 'Contenido eliminado correctamente.');
     }
 
     // ---------------------------------------------------------
-    // MOSTRAR CONTENIDO
+    // MOSTRAR
     // ---------------------------------------------------------
     public function mostrar($id)
     {
@@ -149,13 +178,11 @@ class ContenidosController extends Controller
     }
 
     // ---------------------------------------------------------
-    // FUNCIONES PRIVADAS
+    // MÉTODOS PRIVADOS
     // ---------------------------------------------------------
     private function guardarArchivos(Request $request, $contenido)
     {
-        $archivos = $request->file('archivos');
-
-        if (!is_iterable($archivos)) return;
+        $archivos = $request->file('archivos') ?? [];
 
         foreach ($archivos as $archivo) {
             if (!$archivo || !$archivo->isValid()) continue;
@@ -163,11 +190,9 @@ class ContenidosController extends Controller
             $ruta = $archivo->store('archivos', 'public');
 
             $contenido->archivos()->create([
-                'nombre' => $archivo->getClientOriginalName() ?: 'sin_nombre',
+                'nombre' => $archivo->getClientOriginalName(),
                 'ruta' => $ruta,
-                'tipo' => $archivo->getClientOriginalExtension() ?: 'desconocido',
-                'archivable_id' => $contenido->id,
-                'archivable_type' => Contenidos::class,
+                'tipo' => $archivo->getClientOriginalExtension(),
             ]);
         }
     }
@@ -177,7 +202,7 @@ class ContenidosController extends Controller
         $ids = $request->cuadro_id ?? [];
         $titulos = $request->cuadro_titulo ?? [];
         $autores = $request->cuadro_autor ?? [];
-        $archivos = $request->file('cuadro_archivo', []);
+        $archivos = $request->file('cuadro_archivo') ?? [];
 
         $idsExistentes = $contenido->cuadros()->pluck('id')->toArray();
         $idsRecibidos = [];
@@ -188,10 +213,13 @@ class ContenidosController extends Controller
 
             $tituloLimpio = trim($titulo ?? '');
             $autorLimpio = trim($autores[$i] ?? '');
-            $hayArchivo = isset($archivos[$i]) && $archivos[$i] && $archivos[$i]->isValid();
+            $archivo = $archivos[$i] ?? null;
+            $hayArchivo = $archivo && $archivo->isValid();
 
-            if ($id === 0 && $tituloLimpio === '' && $autorLimpio === '' && !$hayArchivo) continue;
+            // No llenar si todos los campos están vacíos
+            if (!$id && empty($tituloLimpio) && empty($autorLimpio) && !$hayArchivo) continue;
 
+            // Actualizar
             if ($id > 0) {
                 $cuadro = Cuadro::find($id);
                 if (!$cuadro) continue;
@@ -201,28 +229,29 @@ class ContenidosController extends Controller
 
                 if ($hayArchivo) {
                     if ($cuadro->archivo) Storage::disk('public')->delete($cuadro->archivo);
-                    $cuadro->archivo = $archivos[$i]->store('cuadros', 'public');
+                    $cuadro->archivo = $archivo->store('cuadros', 'public');
                 }
 
                 $cuadro->save();
                 continue;
             }
 
-            // Crear nuevo
+            // Nuevo cuadro
             $nuevo = [
                 'titulo' => $tituloLimpio,
                 'autor' => $autorLimpio,
             ];
 
             if ($hayArchivo) {
-                $nuevo['archivo'] = $archivos[$i]->store('cuadros', 'public');
+                $nuevo['archivo'] = $archivo->store('cuadros', 'public');
             }
 
             $contenido->cuadros()->create($nuevo);
         }
 
-        // Eliminar cuadros que se quitaron del formulario
+        // Eliminar cuadros borrados manualmente
         $paraBorrar = array_diff($idsExistentes, $idsRecibidos);
+
         foreach ($paraBorrar as $idBorrar) {
             $cuadro = Cuadro::find($idBorrar);
             if ($cuadro) {
