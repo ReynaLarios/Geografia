@@ -2,51 +2,50 @@
 
 @section('contenido')
 <div class="container mt-4">
-    <h2 class="mb-4 text-center">Agregar Nuevo Contenido</h2>
+    <h2 class="mb-4 text-center">Agregar Nuevo Contenido al Navbar</h2>
 
     <form action="{{ route('navbar.contenidos.guardar') }}" method="POST" enctype="multipart/form-data" class="p-4 bg-light rounded shadow-sm">
         @csrf
 
-        {{-- SELECCIONAR SECCIÓN --}}
+        {{-- SELECCIÓN DE SECCIÓN --}}
         <div class="mb-3">
             <label class="form-label">Sección del Navbar</label>
             <select name="navbar_seccion_id" class="form-control" required>
                 <option value="">Selecciona una sección…</option>
                 @foreach($navbarSecciones as $seccion)
-                    <option value="{{ $seccion->id }}" 
-                        {{ (isset($seccionId) && $seccionId == $seccion->id) ? 'selected' : '' }}>
+                    <option value="{{ $seccion->id }}" {{ (isset($seccionId) && $seccionId == $seccion->id) ? 'selected' : '' }}>
                         {{ $seccion->nombre }}
                     </option>
                 @endforeach
             </select>
         </div>
 
-        {{-- TITULO --}}
+        {{-- TÍTULO --}}
         <div class="mb-3">
             <label class="form-label">Título</label>
             <input type="text" name="titulo" class="form-control" value="{{ old('titulo') }}" required>
         </div>
 
-        {{-- DESCRIPCION --}}
+        {{-- DESCRIPCIÓN --}}
         <div class="mb-3">
             <label class="form-label">Descripción</label>
             <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion') }}</textarea>
         </div>
 
-        {{-- IMAGEN --}}
+        {{-- IMAGEN PRINCIPAL --}}
         <div class="mb-3">
             <label class="form-label">Imagen principal (opcional)</label>
             <input type="file" name="imagen" class="form-control">
         </div>
 
-        {{-- ARCHIVOS --}}
+        {{-- ARCHIVOS ADICIONALES --}}
         <div class="mb-3">
             <label class="form-label">Archivos adicionales</label>
             <input type="file" name="archivos[]" multiple class="form-control">
         </div>
 
         {{-- CUADROS --}}
-        <h5 class="mt-4">Cuadro tipo tabla</h5>
+        <h5 class="mt-4">Cuadros tipo tabla</h5>
         <table class="table table-bordered" id="tabla-cuadro">
             <thead>
                 <tr>
@@ -75,6 +74,7 @@
 @endsection
 
 @section('scripts')
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     let index = 0;
@@ -99,11 +99,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    ClassicEditor
-        .create(document.querySelector('#descripcion'))
-        .catch(error => { console.error(error); });
+    ClassicEditor.create(document.querySelector('#descripcion'))
+        .catch(error => console.error(error));
 });
 </script>
-
-<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 @endsection

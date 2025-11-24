@@ -18,25 +18,20 @@ class NavbarSeccion extends Model
         'nombre',
         'descripcion',
         'imagen',
-        'archivos'
-    ];
-
-    // 👇 Evita errores al guardar/reconocer archivos en formato array
-    protected $casts = [
-        'archivos' => 'array',
     ];
 
     /**
-     * Relación con los contenidos de navbar
+     * Relación con NavbarContenido
+     * Una sección tiene muchos contenidos.
      */
     public function contenidosNavbar()
     {
-        // columna correcta 'navbar_seccion_id' en navbar_contenidos
-        return $this->hasMany(NavbarContenido::class, 'navbar_seccion_id', 'id'); 
+        return $this->hasMany(NavbarContenido::class, 'navbar_seccion_id', 'id');
     }
 
     /**
-     * Archivos relacionados (morph)
+     * Archivos adicionales de la sección (Polymorphic)
+     * Se guarda en `archivos.archivable_id` y `archivos.archivable_type`
      */
     public function archivos()
     {
@@ -44,7 +39,8 @@ class NavbarSeccion extends Model
     }
 
     /**
-     * Cuadros relacionados (morph)
+     * Cuadros relacionados (Polymorphic)
+     * Se guarda en `cuadros.cuadrobable_id` y `cuadros.cuadrobable_type`
      */
     public function cuadros()
     {

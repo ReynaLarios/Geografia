@@ -8,16 +8,19 @@
         @csrf
         @method('PUT')
 
+        {{-- NOMBRE --}}
         <div class="mb-3">
-            <label class="form-label">Nombre de la Sección</label>
-            <input type="text" name="nombre" class="form-control" value="{{ old('nombre',$seccion->nombre) }}" required>
+            <label class="form-label">Nombre</label>
+            <input type="text" name="nombre" class="form-control" value="{{ old('nombre', $seccion->nombre) }}" required>
         </div>
 
+        {{-- DESCRIPCIÓN --}}
         <div class="mb-3">
             <label class="form-label">Descripción</label>
-            <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion',$seccion->descripcion) }}</textarea>
+            <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion', $seccion->descripcion) }}</textarea>
         </div>
 
+        {{-- IMAGEN PRINCIPAL --}}
         <div class="mb-3">
             <label class="form-label">Imagen principal (opcional)</label>
             <input type="file" name="imagen" class="form-control">
@@ -26,7 +29,23 @@
             @endif
         </div>
 
-        {{-- Cuadros --}}
+        {{-- ARCHIVOS ADICIONALES --}}
+        <div class="mb-3">
+            <label class="form-label">Archivos adicionales</label>
+            <input type="file" name="archivos[]" multiple class="form-control">
+            @if(($seccion->archivos ?? null) && $seccion->archivos->count())
+                <ul class="mt-2">
+                    @foreach($seccion->archivos as $archivo)
+                        <li>
+                            <a href="{{ asset('storage/'.$archivo->ruta) }}" target="_blank">{{ $archivo->nombre }}</a>
+                            <small class="text-muted">{{ number_format(Storage::disk('public')->size($archivo->ruta)/1024/1024,2) }} MB</small>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
+
+        {{-- CUADROS --}}
         <h5 class="mt-4">Cuadros</h5>
         <table class="table table-bordered" id="tabla-cuadro">
             <thead>
@@ -38,23 +57,27 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($seccion->cuadros as $index => $cuadro)
+                @php $index = 0; @endphp
+                @foreach($seccion->cuadros ?? [] as $cuadro)
                     <tr>
                         <td>
                             <input type="text" name="cuadros[{{ $index }}][titulo]" class="form-control" value="{{ $cuadro->titulo }}">
                             <input type="hidden" name="cuadros[{{ $index }}][id]" value="{{ $cuadro->id }}">
                         </td>
-                        <td><input type="text" name="cuadros[{{ $index }}][autor]" class="form-control" value="{{ $cuadro->autor }}"></td>
+                        <td>
+                            <input type="text" name="cuadros[{{ $index }}][autor]" class="form-control" value="{{ $cuadro->autor }}">
+                        </td>
                         <td>
                             <input type="file" name="cuadros[{{ $index }}][archivo]" class="form-control">
-                            @if($cuadro->archivo)
-                                <small class="d-block mt-1"><a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">Archivo actual</a></small>
+                            @if($cuadro->ruta)
+                                <small class="d-block mt-1"><a href="{{ asset('storage/'.$cuadro->ruta) }}" target="_blank">Archivo actual</a></small>
                             @endif
                         </td>
                         <td class="text-center">
                             <button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button>
                         </td>
                     </tr>
+                    @php $index++; @endphp
                 @endforeach
             </tbody>
         </table>
@@ -71,20 +94,20 @@
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    let index = {{ count($seccion->cuadros) }};
+    let index = {{ $index }};
     const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
     const btnAgregar = document.getElementById('agregar-fila');
 
     btnAgregar.addEventListener('click', function() {
-        index++;
         const nuevaFila = document.createElement('tr');
         nuevaFila.innerHTML = `
-            <td><input type="text" name="cuadros[${index}][titulo]" class="form-control"></td>
+            <td><input type="text" name="cuadros[${index}][titulo]" class="form-control"><input type="hidden" name="cuadros[${index}][id]" value="0"></td>
             <td><input type="text" name="cuadros[${index}][autor]" class="form-control"></td>
             <td><input type="file" name="cuadros[${index}][archivo]" class="form-control"></td>
             <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
         `;
         tabla.appendChild(nuevaFila);
+        index++;
     });
 
     tabla.addEventListener('click', function(e){

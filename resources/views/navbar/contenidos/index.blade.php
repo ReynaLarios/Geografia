@@ -20,7 +20,6 @@
         <thead>
             <tr>
                 <th>Título</th>
-                <th>Sección</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -30,8 +29,6 @@
                 <tr>
                     <td>{{ $contenido->titulo }}</td>
 
-                    <td>
-                       {{ $contenido->seccion->titulo ?? 'Sin sección' }}
 
                     </td>
 

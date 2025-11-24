@@ -184,13 +184,14 @@
 
 <body>
 
+    
 {{-- NAVBAR SUPERIOR --}}
 <nav class="navbar navbar-top d-flex justify-content-between align-items-center">
     <a href="{{ route('public.inicio.index') }}" class="navbar-brand d-flex align-items-center">
         <img src="{{ asset('/logo.png') }}" alt="Logo">
     </a>
-</nav>
-<div class="mb-3">
+
+    <div class="mb-3">
     <input type="text" id="buscador" placeholder="Buscar..." style="padding:5px 10px; width:300px; border-radius:25px; border:1px solid #60a5fa;">
 </div>
 
@@ -212,6 +213,8 @@ $(document).ready(function(){
     });
 });
 </script>
+</nav>
+
 
 
 @php
@@ -271,14 +274,6 @@ $(document).ready(function(){
     @endforeach
 
 
-    <!-- DIRECTORIO (Dropdown) -->
-    <div class="paste-button dropdown">
-        <button class="button">DIRECTORIO ▼</button>
-        <div class="dropdown-content">
-            <a href="{{ route('public.personas.index') }}">Academicos</a>
-        </div>
-    </div>
-
 </nav>
 
     {{-- LAYOUT PRINCIPAL --}}
@@ -303,6 +298,12 @@ $(document).ready(function(){
                     <li>No hay secciones disponibles</li>
                 @endif
 
+                
+         <div class="contenido-fixed">
+            <button class="fancy" onclick="window.location='{{ route('public.personas.index') }}'">
+              Académicos
+            </button>
+        </div>
                 {{-- BOTÓN VIDEOTECA --}}
                 <div class="mb-3">
                     <a href="{{ route('videoteca') }}" class="fancy d-block text-center py-2">

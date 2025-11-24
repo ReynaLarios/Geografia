@@ -42,8 +42,7 @@ class SeccionesController extends Controller
         $seccion = Seccion::create([
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
-            'imagen' => $request->hasFile('imagen') ? $request->imagen->store('secciones', 'public') : null,
-            'video' => $request->hasFile('video') ? $request->video->store('videos', 'public') : null,
+            'imagen' => $request->hasFile('imagen') ? $request->imagen->store('secciones', 'public') : null
         ]);
 
         $this->guardarArchivos($request, $seccion);

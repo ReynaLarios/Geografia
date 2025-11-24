@@ -2,34 +2,37 @@
 
 @section('contenido')
 <div class="container mt-4">
-    <h2 class="mb-4 text-center">Agregar Nueva Sección al Navbar</h2>
+    <h2 class="mb-4 text-center">Crear Sección del Navbar</h2>
 
     <form action="{{ route('navbar.secciones.guardar') }}" method="POST" enctype="multipart/form-data" class="p-4 bg-light rounded shadow-sm">
         @csrf
 
+        {{-- NOMBRE --}}
         <div class="mb-3">
-            <label class="form-label">Nombre de la sección</label>
+            <label class="form-label">Nombre</label>
             <input type="text" name="nombre" class="form-control" value="{{ old('nombre') }}" required>
         </div>
 
+        {{-- DESCRIPCIÓN --}}
         <div class="mb-3">
             <label class="form-label">Descripción</label>
             <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion') }}</textarea>
         </div>
 
+        {{-- IMAGEN PRINCIPAL --}}
         <div class="mb-3">
-            <label class="form-label">Imagen principal (opcional)</label>
+            <label class="form-label">Imagen</label>
             <input type="file" name="imagen" class="form-control">
         </div>
 
-        {{-- Archivos adicionales --}}
+        {{-- ARCHIVOS ADICIONALES --}}
         <div class="mb-3">
             <label class="form-label">Archivos adicionales</label>
             <input type="file" name="archivos[]" multiple class="form-control">
         </div>
 
-        {{-- Cuadros --}}
-        <h5 class="mt-4">Cuadro tipo tabla</h5>
+        {{-- CUADROS --}}
+        <h5 class="mt-4">Cuadros</h5>
         <table class="table table-bordered" id="tabla-cuadro">
             <thead>
                 <tr>
@@ -40,12 +43,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><input type="text" name="cuadros[0][titulo]" class="form-control"></td>
-                    <td><input type="text" name="cuadros[0][autor]" class="form-control"></td>
-                    <td><input type="file" name="cuadros[0][archivo]" class="form-control"></td>
-                    <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
-                </tr>
+                {{-- No hay cuadros iniciales --}}
             </tbody>
         </table>
 
@@ -65,20 +63,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
     const btnAgregar = document.getElementById('agregar-fila');
 
-    // Agregar fila
     btnAgregar.addEventListener('click', function() {
-        index++;
         const nuevaFila = document.createElement('tr');
         nuevaFila.innerHTML = `
-            <td><input type="text" name="cuadros[${index}][titulo]" class="form-control"></td>
+            <td>
+                <input type="text" name="cuadros[${index}][titulo]" class="form-control">
+                <input type="hidden" name="cuadros[${index}][id]" value="0">
+            </td>
             <td><input type="text" name="cuadros[${index}][autor]" class="form-control"></td>
             <td><input type="file" name="cuadros[${index}][archivo]" class="form-control"></td>
             <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
         `;
         tabla.appendChild(nuevaFila);
+        index++;
     });
 
-    // Eliminar fila
     tabla.addEventListener('click', function(e){
         if(e.target && e.target.classList.contains('eliminar-fila')){
             e.target.closest('tr').remove();

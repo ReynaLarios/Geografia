@@ -74,7 +74,7 @@ footer { position:relative; background:linear-gradient(135deg, #60a5fa, #1e3a8a)
         <img src="{{ asset('/logo.png') }}" alt="Logo" style="height:70px;">
     </a>
 <div class="mb-3">
-    <input type="text" id="buscador-admin" placeholder="Buscar en admin..." style="padding:5px 10px; width:300px; border-radius:25px; border:1px solid #f87171;">
+    <input type="text" id="buscador-admin" placeholder="Buscar en admin..." style="padding:5px 10px; width:300px; border-radius:25px; border:1px solid #60a5fa;">
 </div>
 
 <ul id="resultados-admin"></ul>
@@ -241,24 +241,6 @@ $banner = Banner::latest()->first();
         </div>
     @endforeach
 
-    <!-- Directorio -->
- <div class="paste-button dropdown">
-    <button class="button">DIRECTORIO ▼</button>
-
-    <div class="dropdown-content">
-
-        <!-- Enlaces reales -->
-        <a href="{{ route('personas.index') }}">Académicos</a>
-
-        <!-- Botón + dentro del menú -->
-        <a href="{{ route('navbar.contenidos.crear') }}" 
-           style="font-weight:bold; text-align:center; background:rgba(255,255,255,0.2); border-radius:6px;">
-            +
-        </a>
-
-    </div>
-</div>
-
 
 </nav>
 
@@ -268,11 +250,7 @@ $banner = Banner::latest()->first();
     <aside class="sidebar">
 
         <!-- BOTÓN FIJO DE VIDEOTECA -->
-        <div class="videoteca-fixed">
-            <button class="fancy" onclick="window.location='{{ route('videoteca.index') }}'">
-                Videoteca
-            </button>
-        </div>
+    
 
           <div class="contenido-fixed">
             <button class="fancy" onclick="window.location='{{ route('personas.crear') }}'">
@@ -280,6 +258,11 @@ $banner = Banner::latest()->first();
             </button>
         </div>
 
+         <div class="contenido-fixed">
+            <button class="fancy" onclick="window.location='{{ route('personas.index') }}'">
+              Académicos
+            </button>
+        </div>
         <div class="contenido-fixed">
             <button class="fancy" onclick="window.location='{{ route('contenidos.crear') }}'">
              Crear contenido
@@ -323,6 +306,12 @@ $banner = Banner::latest()->first();
             @endforeach
         </ul> 
         @endif
+
+            <div class="videoteca-fixed">
+            <button class="fancy" onclick="window.location='{{ route('videoteca.index') }}'">
+                Videoteca
+            </button>
+        </div>
     </aside>
 
 
