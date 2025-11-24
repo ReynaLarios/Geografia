@@ -55,3 +55,14 @@
     </div>
 </div>
 @endsection
+@section('scripts')
+<!-- CKEditor -->
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#datos_personales'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+@endsection

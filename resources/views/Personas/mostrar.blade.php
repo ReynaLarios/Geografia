@@ -3,7 +3,7 @@
 @section('contenido')
 <div class="container mt-5">
 
-    <a href="{{ route('public.personas.index') }}" class="btn btn-secondary mb-4">← Volver al listado</a>
+    <a href="{{ route('personas.index') }}" class="btn btn-secondary mb-4">← Volver al listado</a>
 
     <div class="card mx-auto" style="max-width: 500px; background-color: #dbeafe; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
         <div class="card-body text-center p-4">
@@ -33,6 +33,28 @@
                     {!! $persona->datos_personales !!}
                 </div>
             @endif
+
+            {{-- Botones de acción --}}
+            <div class="mt-4 d-flex justify-content-center gap-3">
+
+                {{-- Botón Editar --}}
+                <a href="{{ route('personas.editar', $persona->id) }}" 
+                   class="btn btn-primary">
+                    Editar
+                </a>
+
+                {{-- Botón Eliminar --}}
+                <form action="{{ route('personas.borrar', $persona->id) }}" 
+                      method="POST"
+                      onsubmit="return confirm('¿Seguro que deseas eliminar esta persona?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                        Eliminar
+                    </button>
+                </form>
+
+            </div>
 
         </div>
     </div>

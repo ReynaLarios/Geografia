@@ -6,16 +6,19 @@
 
     <div class="d-flex flex-wrap justify-content-center gap-4">
         @foreach($personas as $persona)
-            <a href="{{ route('public.personas.show', $persona->id) }}" 
-               class="card shadow-sm text-center text-decoration-none persona-card">
-
-                <div class="d-flex justify-content-center mb-2 p-3">
+            <a href="{{ route('personas.mostrar', $persona->id) }}" 
+              class="card shadow-sm text-center text-decoration-none"
+               style="width: 180px; border-radius: 12px; background-color: #dbeafe; color: inherit; transition: transform 0.2s;">
+                
+               <div class="p-3">
                     @if($persona->foto)
                         <img src="{{ asset('storage/' . $persona->foto) }}" 
-                             class="persona-foto">
+                             class="rounded-circle mb-2"
+                             style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #90caf9;">
                     @else
-                        <div class="persona-foto placeholder">
-                            {{ strtoupper(substr($persona->nombre, 0, 1)) }}
+                        <div class="rounded-circle d-flex align-items-center justify-content-center mb-2"
+                             style="width: 100px; height: 100px; background-color: #90caf9; color: white; font-weight: bold; font-size: 1.2rem;">
+                             {{ strtoupper(substr($persona->nombre, 0, 1)) }}
                         </div>
                     @endif
                 </div>
@@ -28,7 +31,7 @@
         @endforeach
     </div>
 
-    <!-- Paginación -->
+ 
     <div class="d-flex justify-content-center mt-4">
         {{ $personas->links('pagination::bootstrap-5') }}
     </div>
@@ -37,7 +40,7 @@
 <style>
 .persona-card {
     width: 180px;
-    min-height: 210px; /* más compacto que antes */
+    min-height: 210px; 
     border-radius: 15px;
     background-color: #dbeafe;
     color: inherit;

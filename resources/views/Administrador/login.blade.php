@@ -138,9 +138,7 @@ body {
     <div class="login-html">
         <input id="tab-1" type="radio" name="tab" class="sign-in" checked>
         <label for="tab-1" class="tab">Iniciar Sesión</label>
-        <input id="tab-2" type="radio" name="tab" class="sign-up">
-        <label for="tab-2" class="tab">Registrarse</label>
-
+       
         <div class="login-form">
             <div class="sign-in-htm">
                 <form action="{{ route('login.post') }}" method="POST">
@@ -176,27 +174,6 @@ body {
                 </div>
             @endif
 
-            <div class="sign-up-htm">
-                <form action="{{ route('register.post') }}" method="POST">
-                    @csrf
-                    <div class="group">
-                        <label for="email2" class="label">Correo electrónico</label>
-                        <input id="email2" name="email" type="email" class="input" required value="{{ old('email') }}">
-                    </div>
-                    <div class="group">
-                        <label for="pass" class="label">Contraseña</label>
-                        <input id="pass" name="password" type="password" class="input" required>
-                    </div>
-                    <div class="group">
-                        <label for="pass2" class="label">Repite tu contraseña</label>
-                        <input id="pass2" name="password_confirmation" type="password" class="input" required>
-                    </div>
-                    <div class="group">
-                        <input type="submit" class="button" value="Registrarse">
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
 </div>
 

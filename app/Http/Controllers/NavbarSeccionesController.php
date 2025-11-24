@@ -127,7 +127,7 @@ class NavbarSeccionesController extends Controller
                 }
                 $archivo->delete();
             }
-            $cuadro->delete();
+            $cuadro->delete(); 
         }
 
    
