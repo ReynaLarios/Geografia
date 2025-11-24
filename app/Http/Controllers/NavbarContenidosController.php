@@ -11,14 +11,13 @@ use Illuminate\Support\Facades\Storage;
 
 class NavbarContenidosController extends Controller
 {
-    // LISTADO
+  
     public function index()
     {
         $contenidos = NavbarContenido::with('seccion')->get();
         return view('navbar.contenidos.index', compact('contenidos'));
     }
 
-    // FORMULARIO CREAR
     public function crear(Request $request)
     {
         $secciones = NavbarSeccion::all();
@@ -29,7 +28,7 @@ class NavbarContenidosController extends Controller
         ]);
     }
 
-    // GUARDAR
+    
     public function guardar(Request $request)
     {
         $request->validate([
@@ -39,13 +38,13 @@ class NavbarContenidosController extends Controller
             'cuadros' => 'nullable|array',
         ]);
 
-        // Guardar imagen principal
+  
         $rutaImagen = null;
         if ($request->hasFile('imagen')) {
             $rutaImagen = $request->file('imagen')->store('navbar_contenidos', 'public');
         }
 
-        // Crear contenido
+       
         $contenido = NavbarContenido::create([
             'navbar_seccion_id' => $request->navbar_seccion_id,
             'titulo' => $request->titulo,
@@ -53,7 +52,7 @@ class NavbarContenidosController extends Controller
             'imagen' => $rutaImagen
         ]);
 
-        // Archivos adicionales del contenido
+        
         if ($request->hasFile('archivos')) {
             foreach ($request->file('archivos') as $archivo) {
                 $ruta = $archivo->store('archivos_navbar', 'public');
@@ -65,7 +64,7 @@ class NavbarContenidosController extends Controller
             }
         }
 
-        // Cuadros y archivos
+  
         if ($request->has('cuadros')) {
             foreach ($request->cuadros as $cuadroData) {
 
@@ -86,7 +85,6 @@ class NavbarContenidosController extends Controller
                     'archivo' => $rutaArchivo
                 ]);
 
-                // Archivos polimórficos adicionales del cuadro
                 if (isset($cuadroData['archivos'])) {
                     foreach ($cuadroData['archivos'] as $archivoExtra) {
                         $rutaExtra = $archivoExtra->store('archivos/cuadros', 'public');
@@ -104,7 +102,7 @@ class NavbarContenidosController extends Controller
             ->with('success', 'Contenido creado correctamente.');
     }
 
-    // FORMULARIO EDITAR
+  
     public function editar($id)
     {
         $contenido = NavbarContenido::with(['seccion', 'archivos', 'cuadros.archivos'])->findOrFail($id);
@@ -113,7 +111,7 @@ class NavbarContenidosController extends Controller
         return view('navbar.contenidos.editar', compact('contenido', 'secciones'));
     }
 
-    // ACTUALIZAR
+
     public function actualizar(Request $request, $id)
     {
         $contenido = NavbarContenido::with(['cuadros.archivos'])->findOrFail($id);
@@ -123,7 +121,7 @@ class NavbarContenidosController extends Controller
             'titulo' => 'required|string|max:255',
         ]);
 
-        // Imagen principal
+
         if ($request->hasFile('imagen')) {
             if ($contenido->imagen && Storage::disk('public')->exists($contenido->imagen)) {
                 Storage::disk('public')->delete($contenido->imagen);
@@ -136,7 +134,6 @@ class NavbarContenidosController extends Controller
         $contenido->descripcion = $request->descripcion;
         $contenido->save();
 
-        // Archivos adicionales del contenido
         if ($request->hasFile('archivos')) {
             foreach ($request->file('archivos') as $archivo) {
                 $ruta = $archivo->store('archivos_navbar', 'public');
@@ -148,12 +145,11 @@ class NavbarContenidosController extends Controller
             }
         }
 
-        // Cuadros
+      
         if ($request->has('cuadros')) {
             $idsRecibidos = collect($request->cuadros)->pluck('id')->filter()->all();
             $idsExistentes = $contenido->cuadros->pluck('id')->all();
 
-            // Borrar cuadros eliminados
             $paraBorrar = array_diff($idsExistentes, $idsRecibidos);
             foreach ($paraBorrar as $idBorrar) {
                 $cuadro = Cuadro::find($idBorrar);
@@ -169,7 +165,6 @@ class NavbarContenidosController extends Controller
                 $cuadro->delete();
             }
 
-            // Crear o actualizar cuadros
             foreach ($request->cuadros as $cuadroData) {
                 if (!empty($cuadroData['id'])) {
                     $cuadro = Cuadro::find($cuadroData['id']);
@@ -193,7 +188,7 @@ class NavbarContenidosController extends Controller
                     ]);
                 }
 
-                // Archivos polimórficos adicionales del cuadro
+               
                 if (isset($cuadroData['archivos'])) {
                     foreach ($cuadroData['archivos'] as $archivoExtra) {
                         $rutaExtra = $archivoExtra->store('archivos/cuadros', 'public');
@@ -211,17 +206,17 @@ class NavbarContenidosController extends Controller
             ->with('success', 'Contenido actualizado correctamente.');
     }
 
-    // BORRAR
+ 
     public function borrar($id)
     {
         $contenido = NavbarContenido::with(['archivos', 'cuadros.archivos'])->findOrFail($id);
 
-        // Imagen principal
+     
         if ($contenido->imagen && Storage::disk('public')->exists($contenido->imagen)) {
             Storage::disk('public')->delete($contenido->imagen);
         }
 
-        // Archivos adicionales
+     
         foreach ($contenido->archivos as $archivo) {
             if (Storage::disk('public')->exists($archivo->ruta)) {
                 Storage::disk('public')->delete($archivo->ruta);
@@ -229,7 +224,7 @@ class NavbarContenidosController extends Controller
             $archivo->delete();
         }
 
-        // Cuadros y archivos de cuadros
+        
         foreach ($contenido->cuadros as $cuadro) {
             if ($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo)) {
                 Storage::disk('public')->delete($cuadro->archivo);
@@ -251,7 +246,7 @@ class NavbarContenidosController extends Controller
 
     public function mostrar($id)
 {
-    // Traemos el contenido con sus relaciones: seccion, cuadros y archivos
+
     $contenido = NavbarContenido::with(['seccion', 'archivos', 'cuadros.archivos'])->findOrFail($id);
 
     return view('navbar.contenidos.mostrar', compact('contenido'));

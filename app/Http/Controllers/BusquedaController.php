@@ -12,19 +12,17 @@ use App\Models\Inicio;
 
 class BusquedaController extends Controller
 {
-    // Buscador público
+
     public function buscarPublico(Request $request)
     {
         return $this->buscarGeneral($request);
     }
 
-    // Buscador administrador
     public function buscarAdmin(Request $request)
     {
         return $this->buscarGeneral($request);
     }
 
-    // Función común
     private function buscarGeneral(Request $request)
     {
         if ($request->ajax()) {
@@ -67,7 +65,7 @@ class BusquedaController extends Controller
                       ->get()
             );
 
-            // HTML de resultados
+          
             $output = '';
             if ($resultados->count() > 0) {
                 foreach ($resultados as $item) {

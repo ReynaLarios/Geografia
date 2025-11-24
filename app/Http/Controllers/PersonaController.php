@@ -8,22 +8,21 @@ use Illuminate\Support\Facades\Storage;
 
 class PersonaController extends Controller
 {
-    // LISTADO
+
 public function index()
 {
-    // Paginación de 12 personas por página
     $personas = Persona::paginate(12);
     return view('personas.index', compact('personas'));
 }
 
 
-    // FORMULARIO CREAR
+
     public function crear()
     {
         return view('personas.crear');
     }
 
-    // GUARDAR
+
     public function guardar(Request $request)
 {
     $request->validate([
@@ -44,13 +43,12 @@ public function index()
     return redirect()->route('personas.index')->with('success', 'Persona creada correctamente');
 }
 
-    // FORMULARIO EDITAR
     public function editar(Persona $persona)
     {
         return view('personas.editar', compact('persona'));
     }
 
-    // ACTUALIZAR
+ 
     public function actualizar(Request $request, Persona $persona)
     {
         $request->validate([
@@ -74,7 +72,7 @@ public function index()
         return redirect()->route('personas.index')->with('success', 'Persona actualizada correctamente');
     }
 
-    // BORRAR
+   
     public function borrar(Persona $persona)
     {
         if($persona->foto){
@@ -86,19 +84,16 @@ public function index()
         return redirect()->route('personas.index')->with('success', 'Persona eliminada correctamente');
     }
 
-    // MOSTRAR INFORMACIÓN INDIVIDUAL
+    
     public function mostrar(Persona $persona)
     {
         return view('personas.mostrar', compact('persona'));
     }
 
-// PersonaController.php
 
-// LISTADO PÚBLICO
-// LISTADO PÚBLICO
 public function publicIndex()
 {
-    $personas = Persona::paginate(12); // Importante: usar paginate para que la paginación funcione
+    $personas = Persona::paginate(12); 
     return view('public.personas.index', compact('personas'));
 }
 

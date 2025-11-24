@@ -11,27 +11,19 @@ use Illuminate\Support\Facades\Storage;
 
 class ContenidosController extends Controller
 {
-    // ---------------------------------------------------------
-    // LISTADO
-    // ---------------------------------------------------------
     public function listado()
     {
         $contenidos = Contenidos::with(['seccion', 'archivos', 'cuadros'])->get();
         return view('Contenidos.listado', compact('contenidos'));
     }
 
-    // ---------------------------------------------------------
-    // FORM CREAR
-    // ---------------------------------------------------------
+   
     public function crear()
     {
         $secciones = Seccion::all();
         return view('Contenidos.contenidos', compact('secciones'));
     }
 
-    // ---------------------------------------------------------
-    // GUARDAR
-    // ---------------------------------------------------------
     public function guardar(Request $request)
     {
         $request->validate([
@@ -48,7 +40,6 @@ class ContenidosController extends Controller
 
         $datos = $request->only(['titulo', 'descripcion', 'seccion_id']);
 
-        // Imagen principal
         if ($request->hasFile('imagen')) {
             $datos['imagen'] = $request->file('imagen')->store('contenidos', 'public');
         }
@@ -61,9 +52,7 @@ class ContenidosController extends Controller
         return redirect()->route('contenidos.listado')->with('success', 'Contenido creado correctamente.');
     }
 
-    // ---------------------------------------------------------
-    // FORM EDITAR
-    // ---------------------------------------------------------
+    
     public function editar($id)
     {
         $contenido = Contenidos::with(['archivos', 'cuadros'])->findOrFail($id);
@@ -71,16 +60,14 @@ class ContenidosController extends Controller
         return view('Contenidos.editar', compact('contenido', 'secciones'));
     }
 
-    // ---------------------------------------------------------
-    // ACTUALIZAR
-    // ---------------------------------------------------------
+    
     public function actualizar(Request $request, $id)
     {
         $contenido = Contenidos::with(['archivos', 'cuadros'])->findOrFail($id);
 
         $request->validate([
             'titulo' => 'required|string|max:255',
-            // ❗ NO ponemos seccion_id porque NO debe cambiar
+          
             'descripcion' => 'nullable|string',
             'imagen' => 'nullable|image|max:2048',
             'archivos.*' => 'nullable|file|max:10240',
@@ -90,13 +77,13 @@ class ContenidosController extends Controller
             'cuadro_id.*' => 'nullable|integer',
         ]);
 
-        // No permitimos que cambien la sección
+       
         $datos = [
             'titulo' => $request->titulo,
             'descripcion' => $request->descripcion,
         ];
 
-        // Imagen principal
+     
         if ($request->hasFile('imagen')) {
             if ($contenido->imagen) Storage::disk('public')->delete($contenido->imagen);
 
@@ -109,7 +96,6 @@ class ContenidosController extends Controller
 
         $contenido->update($datos);
 
-        // Archivos adicionales eliminados
         if ($request->archivos_eliminados) {
             foreach ($request->archivos_eliminados as $archivoId) {
                 $archivo = Archivo::find($archivoId);
@@ -120,10 +106,10 @@ class ContenidosController extends Controller
             }
         }
 
-        // Nuevos archivos adicionales
+       
         $this->guardarArchivos($request, $contenido);
 
-        // Eliminar archivo del cuadro SIN borrar el cuadro
+     
         if ($request->cuadro_archivo_eliminado) {
             foreach ($request->cuadro_archivo_eliminado as $cuadroId) {
                 $cuadro = Cuadro::find($cuadroId);
@@ -135,32 +121,30 @@ class ContenidosController extends Controller
             }
         }
 
-        // Actualizar y agregar cuadros
+        
         $this->guardarCuadros($request, $contenido);
 
         return redirect()->route('contenidos.listado')->with('success', 'Contenido actualizado correctamente.');
     }
 
-    // ---------------------------------------------------------
-    // ELIMINAR
-    // ---------------------------------------------------------
+
     public function borrar($id)
     {
         $contenido = Contenidos::with(['archivos', 'cuadros'])->findOrFail($id);
 
-        // Borrar archivos adicionales
+      
         foreach ($contenido->archivos as $archivo) {
             if ($archivo->ruta) Storage::disk('public')->delete($archivo->ruta);
             $archivo->delete();
         }
 
-        // Borrar cuadros completos
+       
         foreach ($contenido->cuadros as $cuadro) {
             if ($cuadro->archivo) Storage::disk('public')->delete($cuadro->archivo);
             $cuadro->delete();
         }
 
-        // Borrar imagen principal
+      
         if ($contenido->imagen) Storage::disk('public')->delete($contenido->imagen);
 
         $contenido->delete();
@@ -168,18 +152,13 @@ class ContenidosController extends Controller
         return redirect()->route('contenidos.listado')->with('success', 'Contenido eliminado correctamente.');
     }
 
-    // ---------------------------------------------------------
-    // MOSTRAR
-    // ---------------------------------------------------------
     public function mostrar($id)
     {
         $contenido = Contenidos::with(['seccion', 'archivos', 'cuadros'])->findOrFail($id);
         return view('Contenidos.mostrar', compact('contenido'));
     }
 
-    // ---------------------------------------------------------
-    // MÉTODOS PRIVADOS
-    // ---------------------------------------------------------
+   
     private function guardarArchivos(Request $request, $contenido)
     {
         $archivos = $request->file('archivos') ?? [];
@@ -216,10 +195,10 @@ class ContenidosController extends Controller
             $archivo = $archivos[$i] ?? null;
             $hayArchivo = $archivo && $archivo->isValid();
 
-            // No llenar si todos los campos están vacíos
+        
             if (!$id && empty($tituloLimpio) && empty($autorLimpio) && !$hayArchivo) continue;
 
-            // Actualizar
+            
             if ($id > 0) {
                 $cuadro = Cuadro::find($id);
                 if (!$cuadro) continue;
@@ -236,7 +215,7 @@ class ContenidosController extends Controller
                 continue;
             }
 
-            // Nuevo cuadro
+          
             $nuevo = [
                 'titulo' => $tituloLimpio,
                 'autor' => $autorLimpio,
@@ -249,7 +228,7 @@ class ContenidosController extends Controller
             $contenido->cuadros()->create($nuevo);
         }
 
-        // Eliminar cuadros borrados manualmente
+    
         $paraBorrar = array_diff($idsExistentes, $idsRecibidos);
 
         foreach ($paraBorrar as $idBorrar) {

@@ -18,9 +18,9 @@ class ArchivoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'archivos.*' => 'required|file|max:10240', // max 10MB
-            'archivable_type' => 'nullable|string',     // nombre del modelo
-            'archivable_id' => 'nullable|integer',      // id del modelo
+            'archivos.*' => 'required|file|max:10240', 
+            'archivable_type' => 'nullable|string',     
+            'archivable_id' => 'nullable|integer',      
         ]);
 
         if ($request->hasFile('archivos')) {
@@ -39,7 +39,7 @@ class ArchivoController extends Controller
         return back()->with('success', 'Archivos subidos correctamente.');
     }
 
-    // Eliminar archivo individual
+
     public function destroy(Archivo $archivo)
     {
         if ($archivo->archivo && Storage::disk('public')->exists('archivos/' . $archivo->archivo)) {
@@ -51,14 +51,13 @@ class ArchivoController extends Controller
         return back()->with('success', 'Archivo eliminado correctamente.');
     }
 
-    // Guardar banner admin
+ 
     public function guardarBannerAdmin(Request $request)
     {
         $request->validate([
-            'archivo' => 'required|image|max:10240', // 10MB
+            'archivo' => 'required|image|max:10240', 
         ]);
 
-        // Eliminar banner anterior si existe
         $bannerExistente = Archivo::where('ubicacion', 'banner_admin')->latest()->first();
         if ($bannerExistente && $bannerExistente->archivo) {
             if (Storage::disk('public')->exists('archivos/' . $bannerExistente->archivo)) {

@@ -15,7 +15,7 @@ class Inicio extends Model
         'imagen',
     ];
 
-    // Relación polimórfica con archivos
+   
     public function archivos()
     {
         return $this->morphMany(Archivo::class, 'archivable');

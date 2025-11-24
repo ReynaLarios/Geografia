@@ -9,20 +9,17 @@ use Illuminate\Support\Facades\Storage;
 
 class NavbarSeccionesController extends Controller
 {
-    // LISTADO
     public function index()
     {
         $secciones = NavbarSeccion::with(['cuadros.archivos', 'archivos'])->get();
         return view('navbar.secciones.index', compact('secciones'));
     }
 
-    // FORMULARIO CREAR
     public function crear()
     {
         return view('navbar.secciones.crear');
     }
 
-    // GUARDAR
     public function guardar(Request $request)
     {
         $request->validate([
@@ -33,7 +30,7 @@ class NavbarSeccionesController extends Controller
             'cuadros' => 'nullable|array',
         ]);
 
-        // Imagen principal de la sección
+       
         $rutaImagen = $request->hasFile('imagen') ? $request->file('imagen')->store('navbar_secciones', 'public') : null;
 
         $seccion = NavbarSeccion::create([
@@ -42,7 +39,6 @@ class NavbarSeccionesController extends Controller
             'imagen' => $rutaImagen
         ]);
 
-        // Archivos adicionales de la sección
         foreach ($request->file('archivos') ?? [] as $archivo) {
             $seccion->archivos()->create([
                 'nombre' => $archivo->getClientOriginalName(),
@@ -51,11 +47,9 @@ class NavbarSeccionesController extends Controller
             ]);
         }
 
-        // Cuadros de la sección
         foreach ($request->cuadros ?? [] as $cuadroData) {
             if (empty($cuadroData['titulo']) && empty($cuadroData['autor']) && empty($cuadroData['archivo'])) continue;
 
-            // Archivo principal del cuadro
             $archivoPrincipal = isset($cuadroData['archivo']) ? $cuadroData['archivo']->store('cuadros', 'public') : null;
 
             $cuadro = $seccion->cuadros()->create([
@@ -64,7 +58,6 @@ class NavbarSeccionesController extends Controller
                 'archivo' => $archivoPrincipal
             ]);
 
-            // Archivos adicionales del cuadro
             foreach ($cuadroData['archivos'] ?? [] as $archivoExtra) {
                 $cuadro->archivos()->create([
                     'nombre' => $archivoExtra->getClientOriginalName(),
@@ -78,14 +71,13 @@ class NavbarSeccionesController extends Controller
                          ->with('success', 'Sección creada correctamente.');
     }
 
-    // FORMULARIO EDITAR
     public function editar($id)
     {
         $seccion = NavbarSeccion::with(['cuadros.archivos', 'archivos'])->findOrFail($id);
         return view('navbar.secciones.editar', compact('seccion'));
     }
 
-    // ACTUALIZAR
+   
     public function actualizar(Request $request, $id)
     {
         $seccion = NavbarSeccion::with(['cuadros.archivos', 'archivos'])->findOrFail($id);
@@ -98,7 +90,7 @@ class NavbarSeccionesController extends Controller
             'cuadros' => 'nullable|array',
         ]);
 
-        // Imagen principal
+ 
         if ($request->hasFile('imagen')) {
             if ($seccion->imagen && Storage::disk('public')->exists($seccion->imagen)) {
                 Storage::disk('public')->delete($seccion->imagen);
@@ -110,7 +102,7 @@ class NavbarSeccionesController extends Controller
         $seccion->descripcion = $request->descripcion;
         $seccion->save();
 
-        // Archivos adicionales de la sección
+        
         foreach ($request->file('archivos') ?? [] as $archivo) {
             $seccion->archivos()->create([
                 'nombre' => $archivo->getClientOriginalName(),
@@ -119,11 +111,11 @@ class NavbarSeccionesController extends Controller
             ]);
         }
 
-        // Manejo de cuadros
+      
         $idsRecibidos = collect($request->cuadros ?? [])->pluck('id')->filter()->all();
         $idsExistentes = $seccion->cuadros->pluck('id')->all();
 
-        // Borrar cuadros eliminados
+      
         foreach (array_diff($idsExistentes, $idsRecibidos) as $idBorrar) {
             $cuadro = Cuadro::find($idBorrar);
             if ($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo)) {
@@ -138,7 +130,7 @@ class NavbarSeccionesController extends Controller
             $cuadro->delete();
         }
 
-        // Crear o actualizar cuadros
+   
         foreach ($request->cuadros ?? [] as $cuadroData) {
             if (!empty($cuadroData['id'])) {
                 $cuadro = Cuadro::find($cuadroData['id']);
@@ -176,7 +168,7 @@ class NavbarSeccionesController extends Controller
                          ->with('success', 'Sección actualizada correctamente.');
     }
 
-    // BORRAR
+
     public function borrar($id)
     {
         $seccion = NavbarSeccion::with(['cuadros.archivos', 'archivos'])->findOrFail($id);
@@ -211,7 +203,7 @@ class NavbarSeccionesController extends Controller
                          ->with('success', 'Sección eliminada correctamente.');
     }
 
-    // MOSTRAR
+    
     public function mostrar($id)
     {
         $seccion = NavbarSeccion::with(['cuadros.archivos', 'archivos'])->findOrFail($id);

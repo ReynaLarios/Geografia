@@ -10,10 +10,9 @@ class CuadroController extends Controller
 {
     public function index(Request $request)
     {
-        // Traemos los cuadros, ordenados alfabéticamente por título
+     
         $cuadros = Cuadro::orderBy('titulo', 'asc');
 
-        // Si viene un filtro por letra
         if ($request->has('letra') && $request->letra != '') {
             $letra = $request->letra;
             $cuadros = $cuadros->where('titulo', 'like', $letra . '%');

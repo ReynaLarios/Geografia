@@ -14,12 +14,10 @@ use App\Models\Carrusel;
 
 class PublicController extends Controller
 {
-    // ============================
-    // PÁGINA PRINCIPAL
-    // ============================
+   
 public function inicio()
 {
-    $imagenesCarrusel = Carrusel::all();  // <-- carrusel separado
+    $imagenesCarrusel = Carrusel::all();  
     $noticias = Inicio::orderBy('created_at', 'desc')->get();
     $secciones = Seccion::where('oculto_publico', false)->get();
 
@@ -35,9 +33,7 @@ public function inicio()
         return view('public.inicios.show', compact('noticia', 'secciones'));
     }
 
-    // ============================
-    // CARRUSEL
-    // ============================
+   
     public function carrusel()
     {
        $imagenesCarrusel = Carrusel::all();
@@ -48,9 +44,7 @@ return view('public.inicio', compact('imagenesCarrusel', 'noticias'));
     }
 
 
-    // ============================
-    // NAVBAR SECCIONES
-    // ============================
+  
     public function navbarSeccionesIndex()
     {
         $secciones = NavbarSeccion::with('contenidosNavbar')->get();
@@ -65,9 +59,6 @@ return view('public.inicio', compact('imagenesCarrusel', 'noticias'));
         return view('public.navbar_secciones.show', compact('seccion'));
     }
 
-    // ============================
-    // NAVBAR CONTENIDOS
-    // ============================
     public function navbarContenidosIndex()
     {
         $navbarContenidos = NavbarContenido::with('seccion')->get();
@@ -82,9 +73,6 @@ return view('public.inicio', compact('imagenesCarrusel', 'noticias'));
         return view('public.navbar_contenidos.show', compact('contenido'));
     }
 
-    // ============================
-    // SECCIONES NORMALES
-    // ============================
     public function seccionesIndex()
     {
         $secciones = Seccion::with(['cuadros','contenidos'])
@@ -102,9 +90,7 @@ return view('public.inicio', compact('imagenesCarrusel', 'noticias'));
         return view('public.secciones.show', compact('seccion', 'secciones'));
     }
 
-    // ============================
-    // CONTENIDOS
-    // ============================
+  
     public function contenidosIndex()
     {
         $contenidos = Contenidos::with('seccion','cuadros')->get();
@@ -121,9 +107,7 @@ return view('public.inicio', compact('imagenesCarrusel', 'noticias'));
         return view('public.contenidos.show', compact('contenido', 'secciones'));
     }
 
-    // ============================
-    // CUADROS
-    // ============================
+
     public function cuadrosIndex()
     {
         $cuadros = Cuadro::all();
@@ -132,9 +116,6 @@ return view('public.inicio', compact('imagenesCarrusel', 'noticias'));
         return view('public.cuadros.index', compact('cuadros', 'secciones'));
     }
 
-    // ============================
-    // VIDEOTECA
-    // ============================
     public function videotecaIndex()
     {
         $videos = Videoteca::orderBy('created_at','desc')->get();

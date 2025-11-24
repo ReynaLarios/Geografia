@@ -14,20 +14,19 @@ class InicioController extends Controller
   public function index()
 {
     $noticias = Inicio::with('archivos')->get();
-   $imagenesCarrusel = Carrusel::all(); // así siempre
+   $imagenesCarrusel = Carrusel::all(); 
 return view('Inicio.index', compact('noticias', 'imagenesCarrusel'));
 
 }
 
 
 
-    // Formulario de creación
+  
     public function create()
     {
         return view('Inicio.create');
     }
 
-    // Guardar noticia
     public function store(Request $request)
     {
         $request->validate([
@@ -41,14 +40,14 @@ return view('Inicio.index', compact('noticias', 'imagenesCarrusel'));
         $inicio->titulo = $request->titulo;
         $inicio->descripcion = $request->descripcion ?? '';
 
-        // Imagen principal
+       
         if ($request->hasFile('imagen')) {
             $inicio->imagen = $request->file('imagen')->store('inicio', 'public');
         }
 
         $inicio->save();
 
-        // Archivos polimórficos
+       
         if ($request->hasFile('archivos')) {
             foreach ($request->file('archivos') as $archivo) {
                 $inicio->archivos()->create([
@@ -61,14 +60,14 @@ return view('Inicio.index', compact('noticias', 'imagenesCarrusel'));
         return redirect()->route('inicio.index')->with('success', 'Noticia creada correctamente.');
     }
 
-    // Formulario de edición
+ 
     public function edit($id)
     {
         $noticia = Inicio::with('archivos')->findOrFail($id);
         return view('Inicio.edit', compact('noticia'));
     }
 
-    // Actualizar noticia
+   
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -82,7 +81,7 @@ return view('Inicio.index', compact('noticias', 'imagenesCarrusel'));
         $noticia->titulo = $request->titulo;
         $noticia->descripcion = $request->descripcion;
 
-        // Imagen principal
+     
         if ($request->hasFile('imagen')) {
             if ($noticia->imagen && Storage::disk('public')->exists($noticia->imagen)) {
                 Storage::disk('public')->delete($noticia->imagen);
@@ -92,7 +91,7 @@ return view('Inicio.index', compact('noticias', 'imagenesCarrusel'));
 
         $noticia->save();
 
-        // Archivos nuevos
+  
         if ($request->hasFile('archivos')) {
             foreach ($request->file('archivos') as $archivo) {
                 $noticia->archivos()->create([
@@ -105,17 +104,17 @@ return view('Inicio.index', compact('noticias', 'imagenesCarrusel'));
         return redirect()->route('inicio.index')->with('success', 'Noticia actualizada correctamente.');
     }
 
-    // Eliminar noticia y archivos
+ 
     public function destroy($id)
     {
         $noticia = Inicio::with('archivos')->findOrFail($id);
 
-        // Borrar imagen principal
+       
         if ($noticia->imagen && Storage::disk('public')->exists($noticia->imagen)) {
             Storage::disk('public')->delete($noticia->imagen);
         }
 
-        // Borrar archivos relacionados
+     
         foreach ($noticia->archivos as $archivo) {
             if ($archivo->archivo && Storage::disk('public')->exists($archivo->archivo)) {
                 Storage::disk('public')->delete($archivo->archivo);
@@ -128,7 +127,6 @@ return view('Inicio.index', compact('noticias', 'imagenesCarrusel'));
         return redirect()->route('inicio.index')->with('success', 'Noticia eliminada correctamente.');
     }
 
-    // --- Métodos del Carrusel ---
     public function createImagen()
     {
         return view('Inicio.createImagen');

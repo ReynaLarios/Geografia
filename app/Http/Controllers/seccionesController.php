@@ -10,26 +10,19 @@ use Illuminate\Support\Facades\Storage;
 
 class SeccionesController extends Controller
 {
-    // ---------------------------------------------------------
-    // LISTADO
-    // ---------------------------------------------------------
+   
     public function listado()
     {
         $secciones = Seccion::all();
         return view('secciones.listado', compact('secciones'));
     }
 
-    // ---------------------------------------------------------
-    // FORM CREAR
-    // ---------------------------------------------------------
+    
     public function crear()
     {
-        return view('secciones.secciones'); // vista de crear
+        return view('secciones.secciones'); 
     }
 
-    // ---------------------------------------------------------
-    // GUARDAR NUEVA SECCIÓN
-    // ---------------------------------------------------------
     public function guardar(Request $request)
     {
         $request->validate([
@@ -51,9 +44,7 @@ class SeccionesController extends Controller
         return redirect()->route('secciones.listado')->with('success', 'Sección creada correctamente');
     }
 
-    // ---------------------------------------------------------
-    // MOSTRAR
-    // ---------------------------------------------------------
+    
     public function mostrar($id)
     {
         $seccion = Seccion::with(['archivos', 'cuadros.archivos'])->findOrFail($id);
@@ -65,31 +56,23 @@ class SeccionesController extends Controller
         return view('secciones.mostrar', compact('seccion'));
     }
 
-    // ---------------------------------------------------------
-    // FORM EDITAR
-    // ---------------------------------------------------------
     public function editar($id)
     {
         $seccion = Seccion::with(['archivos', 'cuadros.archivos'])->findOrFail($id);
         return view('secciones.editar', compact('seccion'));
     }
 
-    // ---------------------------------------------------------
-    // ACTUALIZAR
-    // ---------------------------------------------------------
     public function actualizar(Request $request, $id)
 {
     $seccion = Seccion::with(['archivos', 'cuadros.archivos'])->findOrFail($id);
 
-    // Actualizar datos básicos
+
     $seccion->update([
         'nombre' => $request->nombre,
         'descripcion' => $request->descripcion,
     ]);
 
-    // ---------------------------
-    // Imagen y video principal
-    // ---------------------------
+ 
     if ($request->eliminar_imagen && $seccion->imagen && Storage::disk('public')->exists($seccion->imagen)) {
         Storage::disk('public')->delete($seccion->imagen);
         $seccion->imagen = null;
@@ -114,11 +97,8 @@ class SeccionesController extends Controller
 
     $seccion->save();
 
-    // ---------------------------
-    // Archivos eliminados
-    // ---------------------------
     if ($request->archivos_eliminados) {
-        // Convierte a array seguro
+     
         $ids = is_array($request->archivos_eliminados)
             ? $request->archivos_eliminados
             : json_decode($request->archivos_eliminados, true);
@@ -134,22 +114,14 @@ class SeccionesController extends Controller
         }
     }
 
-    // ---------------------------
-    // Guardar nuevos archivos
-    // ---------------------------
     $this->guardarArchivos($request, $seccion);
 
-    // ---------------------------
-    // Guardar cuadros y sus archivos
-    // ---------------------------
+
     $this->guardarCuadros($request, $seccion);
 
     return redirect()->route('secciones.listado')->with('success', 'Sección actualizada correctamente');
 }
 
-    // ---------------------------------------------------------
-    // ELIMINAR SECCIÓN
-    // ---------------------------------------------------------
     public function borrar($id)
     {
         $seccion = Seccion::with(['archivos', 'cuadros.archivos'])->findOrFail($id);
@@ -157,13 +129,13 @@ class SeccionesController extends Controller
         $this->eliminarArchivoFisico($seccion->imagen);
         $this->eliminarArchivoFisico($seccion->video);
 
-        // Archivos de la sección
+    
         foreach ($seccion->archivos as $archivo) {
             $this->eliminarArchivoFisico($archivo->ruta);
             $archivo->delete();
         }
 
-        // Cuadros y sus archivos
+  
         foreach ($seccion->cuadros as $cuadro) {
             foreach ($cuadro->archivos as $archivo) {
                 $this->eliminarArchivoFisico($archivo->ruta);
@@ -177,9 +149,7 @@ class SeccionesController extends Controller
         return redirect()->route('secciones.listado')->with('success', 'Sección eliminada correctamente');
     }
 
-    // ---------------------------------------------------------
-    // FUNCIONES COMPARTIDAS
-    // ---------------------------------------------------------
+
     private function guardarArchivos(Request $request, $seccion)
     {
         $archivos = $request->file('archivos');
@@ -240,7 +210,7 @@ class SeccionesController extends Controller
             }
             $titulo = $request->titulo;
             $autor = $request->autor; 
-            // Nuevo cuadro
+          
             $cuadro = $seccion->cuadros()->create([
                 'titulo' => $titulo,
                 'autor' => $autor,
@@ -255,7 +225,7 @@ class SeccionesController extends Controller
             }
         }
 
-        // Borrar cuadros eliminados
+      
         $paraBorrar = array_diff($idsExistentes, $idsRecibidos);
         foreach ($paraBorrar as $idBorrar) {
             $cuadro = Cuadro::find($idBorrar);
@@ -269,9 +239,6 @@ class SeccionesController extends Controller
         }
     }
 
-    // ---------------------------------------------------------
-    // ELIMINA UN ARCHIVO FÍSICO SI EXISTE
-    // ---------------------------------------------------------
     private function eliminarArchivoFisico($ruta)
     {
         if ($ruta && Storage::disk('public')->exists($ruta)) {
