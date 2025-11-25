@@ -3,21 +3,35 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\VistaBusquedaGeneral;
+use App\Models\Buscador;
 
-class BuscadorController extends Controller
+class BuscadorPublicoController extends Controller
 {
-    public function buscar(Request $request)
-{
-    $search = $request->search;
-    $resultados = [];
+  
+    public function autocomplete(Request $request)
+    {
+        $q = $request->input('q');
 
-    if($search){
-        $resultados = VistaBusquedaGeneral::where('nombre','LIKE',"%$search%")
-            ->orWhere('descripcion','LIKE',"%$search%")
-            ->get();
+        if (!$q) return response()->json([]);
+
+        $resultados = Buscador::buscar($q)->take(10)->get();
+
+        return response()->json($resultados->map(function($item){
+            return [
+                'nombre' => $item->nombre,
+                'tipo' => $item->tipo,
+                'url' => $item->url(),
+            ];
+        }));
     }
 
-    return response()->json($resultados);
-}
+   
+    public function resultados(Request $request)
+    {
+        $q = $request->input('q');
+
+        $resultados = Buscador::buscar($q)->get();
+
+        return view('buscador.resultados', compact('resultados','q'));
+    }
 }

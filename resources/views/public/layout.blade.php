@@ -278,52 +278,20 @@
     <a href="{{ route('public.inicio.index') }}" class="navbar-brand d-flex align-items-center">
         <img src="{{ asset('/logo.png') }}" alt="Logo">
     </a>
-
 <div id="searchBox" class="search-container mt-3">
+
+    <form action="{{route('buscador')}}" method="get">
     <div class="search-wrapper">
         <input type="text" id="searchInput" placeholder="Buscar...">
-        <button id="searchBtn" class="search-btn">
-            🔍
-        </button>
+        <button id="searchBtn" type="submit" class="search-btn">🔍</button>
     </div>
-    <div id="searchResults" class="results-box"></div>
+    
+    </form>
+
+    <div id="searchResults" class="results-box" style="display:none;"></div>
 </div>
 
-
 </nav>
-
-<script>
-document.getElementById('searchInput').addEventListener('keyup', function() {
-    let q = this.value.trim();
-
-    if (q.length < 2) {
-        document.getElementById('searchResults').style.display = 'none';
-        return;
-    }
-
-    fetch(`/buscador?search=${q}`)
-        .then(r => r.json())
-        .then(data => {
-            let box = document.getElementById('searchResults');
-            box.innerHTML = '';
-
-            if (data.length === 0) {
-                box.innerHTML = `<div class="p-2 text-center text-gray-500">Sin resultados</div>`;
-            } else {
-                data.forEach(item => {
-                    box.innerHTML += `
-                        <a href="${item.url}">
-                            <strong>${item.nombre}</strong><br>
-                            <small>${item.tipo}</small>
-                        </a>
-                    `;
-                });
-            }
-
-            box.style.display = 'block';
-        });
-});
-</script>
 
 @php
     use App\Models\Banner;
@@ -438,6 +406,49 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     @yield('scripts')
 
+    <script>
+document.addEventListener('DOMContentLoaded', function(){
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+
+    searchInput.addEventListener('keyup', function(e) {
+        let q = this.value.trim();
+
+        if(q.length < 2){
+            searchResults.style.display = 'none';
+            return;
+        }
+
+     
+        fetch(url + "?q=" + encodeURIComponent(q))
+        .then(r => r.json())
+        .then(data => {
+            searchResults.innerHTML = '';
+
+            if(data.length === 0){
+                searchResults.innerHTML = '<div class="p-2 text-center text-gray-500">Sin resultados</div>';
+            } else {
+                data.forEach(item => {
+                    searchResults.innerHTML += `
+                        <a href="${item.url}" class="block p-2 hover:bg-gray-100 rounded">
+                            <strong>${item.nombre}</strong><br>
+                            <small>${item.tipo}</small>
+                        </a>
+                    `;
+                });
+            }
+
+            searchResults.style.display = 'block';
+        })
+        .catch(err => console.error(err));
+
+       
+        if(e.key === 'Enter' && q.length >= 2){
+            window.location.href = "{{ route('buscador.resultados') }}" + "?q=" + encodeURIComponent(q);
+        }
+    });
+});
+</script>
 </body>
 
 </html>

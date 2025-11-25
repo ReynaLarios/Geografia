@@ -17,7 +17,7 @@ use App\Http\Controllers\BannerController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\VisibilityController;
 use App\Http\Controllers\PersonaController;
-use App\Http\Controllers\BuscadorController;
+use App\Http\Controllers\BuscadorPublicoController;
 
 //------------------------------------------------------------------------RUTAS PÚBLICAS-------------------------------------------------------------------------------------------
 
@@ -58,7 +58,11 @@ use App\Http\Controllers\BuscadorController;
     // VIDEOTECA
   Route::get('/videoteca', [VideotecaController::class, 'publicIndex'])->name('videoteca');
 
-Route::get('/buscador', [BuscadorController::class, 'buscar'])->name('buscador');
+//BUSCADOR
+Route::get('/buscador', [BuscadorPublicoController::class, 'autocomplete'])->name('buscador');
+Route::get('/buscador/resultados', [BuscadorPublicoController::class, 'resultados'])->name('buscador.resultados');
+
+
 
 
 
@@ -203,7 +207,6 @@ Route::prefix('personas')->name('personas.')->group(function () {
 
 Route::post('/toggle-visibility', [VisibilityController::class, 'toggle'])->name('toggle-visibility');
 
-Route::get('/buscador', [BuscadorController::class, 'buscar'])->name('buscador');
 
 
 
