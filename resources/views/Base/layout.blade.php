@@ -161,12 +161,12 @@ $banner = Banner::latest()->first();
         <img src="{{ asset('Geo.jpg') }}" class="banner img-fluid" alt="Banner por defecto">
     @endif
 
-    <!-- Botones de acción sobre el banner -->
+ 
     <div style="position:absolute; top:10px; right:10px; display:flex; gap:5px;">
-        <!-- Editar -->
+   
         <a href="{{ route('banner.index') }}" class="small-btn" title="Administrar banner">✏️</a>
 
-        <!-- Borrar -->
+  
         @if($banner)
         <form action="{{ route('banner.borrar') }}" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar este banner?');">
             @csrf
@@ -182,12 +182,11 @@ $banner = Banner::latest()->first();
 {{-- NAVBAR INFERIOR --}}
 <nav class="navbar-bottom">
 
-    <!-- Botón de Inicio -->
     <div class="paste-button">
         <button class="button" onclick="window.location='{{ route('dashboard') }}'">Inicio</button>
     </div>
 
-    <!-- Botón para agregar nueva sección -->
+   
     <div class="paste-button">
         <button class="button" onclick="window.location='{{ route('navbar.secciones.crear') }}'">
             + Agregar Sección Navbar
@@ -197,7 +196,7 @@ $banner = Banner::latest()->first();
     @foreach($navbarSecciones ?? [] as $sec)
         <div class="paste-button section-hover" style="position: relative;">
 
-            <!-- Botón principal de la sección -->
+        
             <button class="button" onclick="window.location='{{ route('navbar.secciones.mostrar', $sec->id) }}'">
                 {{ $sec->nombre }}
                 @if($sec->contenidosNavbar && $sec->contenidosNavbar->count())
@@ -205,17 +204,16 @@ $banner = Banner::latest()->first();
                 @endif
             </button>
 
-            <!-- Contenedor de botones 2x2 -->
             <div class="section-actions" style="margin-top:5px;">
                 
                 <div style="display:flex; flex-wrap:wrap; gap:4px; width:92px; margin-bottom:4px;">
 
-                    <!-- Editar -->
+                
                     <button title="Editar sección" class="small-btn"
                             style="width:40px; height:40px; font-size:18px;"
                             onclick="window.location='{{ route('navbar.secciones.editar', $sec->id) }}'">✏️</button>
 
-                    <!-- Borrar -->
+                  
                     <form action="{{ route('navbar.secciones.borrar', $sec->id) }}" 
                           method="POST" style="margin:0;">
                         @csrf @method('DELETE')
@@ -223,14 +221,13 @@ $banner = Banner::latest()->first();
                                 style="width:40px; height:40px; font-size:18px;">🗑️</button>
                     </form>
 
-                    <!-- Visibilidad -->
+                 
                     <button class="small-btn toggle-visibility"
                             data-id="{{ $sec->id }}" data-model="NavbarSeccion"
                             style="width:40px; height:40px; font-size:18px; {{ $sec->oculto_publico ? 'opacity:0.4;' : '' }}">
                         👁
                     </button>
 
-                    <!-- Agregar contenido -->
                     <a href="{{ route('navbar.contenidos.crear') }}?seccion_id={{ $sec->id }}"
                        class="small-btn"
                        style="width:40px; height:40px; font-size:18px;">+
@@ -238,7 +235,7 @@ $banner = Banner::latest()->first();
 
                 </div>
 
-                <!-- Dropdown de contenidos -->
+          
                 @if($sec->contenidosNavbar && $sec->contenidosNavbar->count())
                     <div class="dropdown-content"
                          style="position:relative; display:block; margin-top:4px;
@@ -256,20 +253,20 @@ $banner = Banner::latest()->first();
 
                                 <div style="display:flex; gap:2px;">
 
-                                    <!-- Editar contenido -->
+                  
                                     <button title="Editar contenido" class="small-btn"
                                             onclick="window.location='{{ route('navbar.contenidos.editar', $contenido->id) }}'">
                                         ✏️
                                     </button>
 
-                                    <!-- Borrar contenido -->
+                                  
                                     <form action="{{ route('navbar.contenidos.borrar', $contenido->id) }}"
                                           method="POST">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="small-btn btn-borrar">🗑️</button>
                                     </form>
 
-                                    <!-- Visibilidad contenido -->
+                              
                                     <button class="small-btn toggle-visibility"
                                             data-id="{{ $contenido->id }}"
                                             data-model="NavbarContenido"
@@ -297,7 +294,6 @@ $banner = Banner::latest()->first();
 <div class="layout">
     <aside class="sidebar">
 
-        <!-- BOTÓN FIJO DE VIDEOTECA -->
     
 
           <div class="contenido-fixed">
@@ -371,23 +367,21 @@ $banner = Banner::latest()->first();
 
 <footer style="position: relative; background-color:#60a5fa; color:white; text-align:center; padding-top:80px; padding-bottom:30px; overflow:hidden; font-family:sans-serif;">
 
-    <!-- Ondas múltiples -->
     <div class="wave" style="position:absolute; top:0; left:0; width:100%; height:100px; overflow:hidden; line-height:0;">
         <svg viewBox="0 0 1200 120" preserveAspectRatio="none" style="width:100%; height:100%;">
-            <!-- Capa 1 -->
+     
             <path d="M0,0V35c150,20,300,25,450,10s300-25,450,10s300,25,450,0V0Z" fill="#ffffff" opacity="0.08"></path>
-            <!-- Capa 2 -->
+        
             <path d="M0,0V30c150,18,300,20,450,5s300-20,450,5s300,18,450,0V0Z" fill="#ffffff" opacity="0.12"></path>
-            <!-- Capa 3 -->
+        
             <path d="M0,0V25c150,15,300,15,450,0s300-15,450,0s300,15,450,0V0Z" fill="#ffffff" opacity="0.16"></path>
-            <!-- Capa 4 -->
+       
             <path d="M0,0V20c150,12,300,12,450,0s300-12,450,0s300,12,450,0V0Z" fill="#ffffff" opacity="0.20"></path>
-            <!-- Capa 5 -->
+          
             <path d="M0,0V15c150,10,300,10,450,0s300-10,450,0s300,10,450,0V0Z" fill="#ffffff" opacity="0.25"></path>
         </svg>
     </div>
 
-    <!-- Contenido del footer -->
     <div style="position: relative; z-index: 1; max-width:800px; margin:0 auto; line-height:1.5;">
         <p class="fw-bold mb-1" style="font-size:1rem; letter-spacing:1px;">CENTRO UNIVERSITARIO DE CIENCIAS SOCIALES Y HUMANIDADES</p>
         <p class="mb-1" style="font-size:0.9rem;">Los Belenes. Av. José Parres Arias #150, Zapopan, Jalisco, México.</p>

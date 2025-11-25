@@ -172,12 +172,100 @@
         }
         .navbar-bottom .dropdown-content {
     position: absolute;
-    z-index: 9999; /* el dropdown queda arriba de todo */
-}
+    z-index: 9999; 
 
 .navbar-bottom .paste-button {
-    position: relative; /* necesario para que el submenu se posicione bien */
+    position: relative;
 }
+
+/* Contenedor */
+.search-container {
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto;
+    position: relative;
+}
+
+/* Caja de búsqueda */
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 1px solid #60a5fa;
+    border-radius: 25px;
+    padding: 5px 10px;
+    transition: 0.3s;
+}
+
+.search-wrapper:focus-within {
+    box-shadow: 0 0 8px rgba(96,165,250,0.5);
+}
+
+/* Input */
+#searchInput {
+    border: none;
+    flex: 1;
+    padding: 10px;
+    border-radius: 20px;
+    outline: none;
+    font-size: 16px;
+}
+
+/* Botón bonito */
+.search-btn {
+    background: #60a5fa;
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+
+.search-btn:hover {
+    background: #3b82f6;
+    transform: scale(1.1);
+}
+
+/* Caja de resultados */
+.results-box {
+    position: absolute;
+    top: 55px;
+    left: 0;
+    width: 100%;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    z-index: 99;
+    display: none;
+    overflow: hidden;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Enlaces de resultados */
+.results-box a {
+    display: block;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    text-decoration: none;
+    color: #333;
+    transition: 0.2s;
+}
+
+.results-box a:hover {
+    background: #f0f8ff;
+}
+
 
     </style>
 </head>
@@ -185,47 +273,24 @@
 <body>
 
     
-{{-- NAVBAR SUPERIOR --}}
+
 <nav class="navbar navbar-top d-flex justify-content-between align-items-center">
     <a href="{{ route('public.inicio.index') }}" class="navbar-brand d-flex align-items-center">
         <img src="{{ asset('/logo.png') }}" alt="Logo">
     </a>
-<?php
 
-<style>
-    #searchBox {
-        position: relative;
-        width: 300px;
-        margin: 0 auto;
-    }
-    #searchResults {
-        position: absolute;
-        top: 40px;
-        left: 0;
-        width: 100%;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        z-index: 999;
-        display: none;
-    }
-    #searchResults a {
-        display: block;
-        padding: 10px;
-        border-bottom: 1px solid #eee;
-        text-decoration: none;
-        color: #333;
-    }
-    #searchResults a:hover {
-        background: #f0f8ff;
-    }
-</style>
-
-<div id="searchBox" class="mt-3">
-    <input type="text" id="searchInput" placeholder="Buscar..."
-           style="width:100%; padding:10px 15px; border-radius:20px; border:1px solid #60a5fa;">
-    <div id="searchResults"></div>
+<div id="searchBox" class="search-container mt-3">
+    <div class="search-wrapper">
+        <input type="text" id="searchInput" placeholder="Buscar...">
+        <button id="searchBtn" class="search-btn">
+            🔍
+        </button>
+    </div>
+    <div id="searchResults" class="results-box"></div>
 </div>
+
+
+</nav>
 
 <script>
 document.getElementById('searchInput').addEventListener('keyup', function() {
@@ -260,13 +325,6 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
 });
 </script>
 
-
-        </li>
-    </ul>
-</nav>
-
-
-
 @php
     use App\Models\Banner;
     use App\Models\NavbarSeccion;
@@ -287,11 +345,10 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
 </div>
 
 
-    {{-- NAVBAR SUPERIOR --}}
-    {{-- NAVBAR INFERIOR --}}
+ 
 <nav class="navbar-bottom">
 
-    <!-- Botón de Inicio -->
+
     <div class="paste-button">
         <button class="button" onclick="window.location='{{ route('public.inicio.index') }}'">
             Inicio
@@ -299,7 +356,7 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
     </div>
 
 
-    <!-- SECCIONES DEL NAVBAR -->
+
     @foreach ($navbarSecciones as $sec)
         <div class="paste-button">
             <button class="button"
@@ -310,7 +367,7 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
                 @endif
             </button>
 
-            {{-- Dropdown interno --}}
+      
             @if ($sec->contenidosNavbar->where('oculto_publico', false)->count())
                 <div class="dropdown-content">
                     @foreach ($sec->contenidosNavbar->where('oculto_publico', false) as $contenido)
@@ -326,13 +383,13 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
 
 </nav>
 
-    {{-- LAYOUT PRINCIPAL --}}
+
     <div class="layout">
         {{-- SIDEBAR --}}
         <aside class="sidebar">
 
 
-            {{-- LISTA DE SECCIONES --}}
+    
             <ul class="list-unstyled">
                 @if (!empty($secciones))
                     @foreach ($secciones as $sec)
@@ -354,7 +411,7 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
               Académicos
             </button>
         </div>
-                {{-- BOTÓN VIDEOTECA --}}
+                
                 <div class="mb-3">
                     <a href="{{ route('videoteca') }}" class="fancy d-block text-center py-2">
                         Videoteca
@@ -366,7 +423,7 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
 
 
 
-        {{-- CONTENIDO --}}
+ 
         <main class="content">
             @yield('contenido')
         </main>
