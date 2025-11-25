@@ -73,27 +73,75 @@ footer { position:relative; background:linear-gradient(135deg, #60a5fa, #1e3a8a)
     <a href="https://www.udg.mx/es" class="navbar-brand d-flex align-items-center">
         <img src="{{ asset('/logo.png') }}" alt="Logo" style="height:70px;">
     </a>
-<div class="mb-3">
-    <input type="text" id="buscador-admin" placeholder="Buscar en admin..." style="padding:5px 10px; width:300px; border-radius:25px; border:1px solid #60a5fa;">
+<style>
+    #searchBox {
+        position: relative;
+        width: 300px;
+        margin: 0 auto;
+    }
+    #searchResults {
+        position: absolute;
+        top: 40px;
+        left: 0;
+        width: 100%;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        z-index: 999;
+        display: none;
+    }
+    #searchResults a {
+        display: block;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        text-decoration: none;
+        color: #333;
+    }
+    #searchResults a:hover {
+        background: #f0f8ff;
+    }
+</style>
+
+<div id="searchBox" class="mt-3">
+    <input type="text" id="searchInput" placeholder="Buscar..."
+           style="width:100%; padding:10px 15px; border-radius:20px; border:1px solid #60a5fa;">
+    <div id="searchResults"></div>
 </div>
 
-<ul id="resultados-admin"></ul>
-
 <script>
-$(document).ready(function(){
-    $('#buscador-admin').on('keyup', function(){
-        let query = $(this).val();
-        $.ajax({
-            url: "{{ route('admin.buscar') }}",
-            type: "GET",
-            data: { query: query },
-            success: function(data){
-                $('#resultados-admin').html(data.html);
+document.getElementById('searchInput').addEventListener('keyup', function() {
+    let q = this.value.trim();
+
+    if (q.length < 2) {
+        document.getElementById('searchResults').style.display = 'none';
+        return;
+    }
+
+    fetch(`/buscador?search=${q}`)
+        .then(r => r.json())
+        .then(data => {
+            let box = document.getElementById('searchResults');
+            box.innerHTML = '';
+
+            if (data.length === 0) {
+                box.innerHTML = `<div class="p-2 text-center text-gray-500">Sin resultados</div>`;
+            } else {
+                data.forEach(item => {
+                    box.innerHTML += `
+                        <a href="${item.url}">
+                            <strong>${item.nombre}</strong><br>
+                            <small>${item.tipo}</small>
+                        </a>
+                    `;
+                });
             }
+
+            box.style.display = 'block';
         });
-    });
 });
 </script>
+
+
 
         <form action="{{ route('logout') }}" method="POST">@csrf
             <button type="submit" class="button" style="padding:6px 15px; font-size:0.9rem;">Cerrar sesión</button>
