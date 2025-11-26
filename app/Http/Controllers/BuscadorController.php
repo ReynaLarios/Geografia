@@ -7,7 +7,7 @@ use App\Models\Buscador;
 
 class BuscadorController extends Controller
 {
-    // Autocomplete AJAX
+
     public function autocomplete(Request $request)
     {
         $q = $request->input('q');
@@ -20,20 +20,19 @@ class BuscadorController extends Controller
                 'nombre' => $item->nombre,
                 'tipo' => $item->tipo,
                 'descripcion' => $item->descripcion,
-                'url' => $item->url(), // usa el método del modelo
+                'url' => $item->url(),
             ];
         });
 
         return response()->json($resultados);
     }
 
-    // Resultados página completa
+ 
     public function resultados(Request $request)
     {
         $q = $request->input('q');
         $resultados = Buscador::buscar($q)->get();
 
-        // Agregamos URL a cada registro
         $resultados->transform(function($item){
             $item->url = $item->url();
             return $item;

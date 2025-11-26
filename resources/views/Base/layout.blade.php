@@ -102,47 +102,6 @@ footer { position:relative; background:linear-gradient(135deg, #60a5fa, #1e3a8a)
     }
 </style>
 
-<div id="searchBox" class="mt-3">
-    <input type="text" id="searchInput" placeholder="Buscar..."
-           style="width:100%; padding:10px 15px; border-radius:20px; border:1px solid #60a5fa;">
-    <div id="searchResults"></div>
-</div>
-
-<script>
-document.getElementById('searchInput').addEventListener('keyup', function() {
-    let q = this.value.trim();
-
-    if (q.length < 2) {
-        document.getElementById('searchResults').style.display = 'none';
-        return;
-    }
-
-    fetch(`/buscador?search=${q}`)
-        .then(r => r.json())
-        .then(data => {
-            let box = document.getElementById('searchResults');
-            box.innerHTML = '';
-
-            if (data.length === 0) {
-                box.innerHTML = `<div class="p-2 text-center text-gray-500">Sin resultados</div>`;
-            } else {
-                data.forEach(item => {
-                    box.innerHTML += `
-                        <a href="${item.url}">
-                            <strong>${item.nombre}</strong><br>
-                            <small>${item.tipo}</small>
-                        </a>
-                    `;
-                });
-            }
-
-            box.style.display = 'block';
-        });
-});
-</script>
-
-
-
         <form action="{{ route('logout') }}" method="POST">@csrf
             <button type="submit" class="button" style="padding:6px 15px; font-size:0.9rem;">Cerrar sesión</button>
         </form>

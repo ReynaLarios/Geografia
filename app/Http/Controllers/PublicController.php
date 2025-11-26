@@ -82,9 +82,10 @@ return view('public.inicio', compact('imagenesCarrusel', 'noticias'));
         return view('public.secciones.index', compact('secciones'));
     }
 
-    public function seccionesMostrar($id)
+    public function seccionesMostrar($slug)
     {
-        $seccion = Seccion::with(['cuadros','contenidos'])->findOrFail($id);
+       $seccion = Seccion::with(['archivos', 'cuadros.archivos'])->where('slug',$slug)->first();
+
         $secciones = Seccion::where('oculto_publico', false)->get();
 
         return view('public.secciones.show', compact('seccion', 'secciones'));

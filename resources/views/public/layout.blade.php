@@ -170,116 +170,66 @@
                 gap: 8px;
             }
         }
-        .navbar-bottom .dropdown-content {
-    position: absolute;
-    z-index: 9999; 
 
-.navbar-bottom .paste-button {
-    position: relative;
-}
+        .search-container {
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto;
+            position: relative;
+        }
 
-/* Contenedor */
-.search-container {
-    width: 100%;
-    max-width: 350px;
-    margin: 0 auto;
-    position: relative;
-}
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 1px solid #60a5fa;
+            border-radius: 25px;
+            padding: 5px 10px;
+            transition: 0.3s;
+        }
 
-/* Caja de búsqueda */
-.search-wrapper {
-    display: flex;
-    align-items: center;
-    background: white;
-    border: 1px solid #60a5fa;
-    border-radius: 25px;
-    padding: 5px 10px;
-    transition: 0.3s;
-}
+        #searchInput {
+            border: none;
+            flex: 1;
+            padding: 10px;
+            border-radius: 20px;
+            outline: none;
+            font-size: 16px;
+        }
 
-.search-wrapper:focus-within {
-    box-shadow: 0 0 8px rgba(96,165,250,0.5);
-}
+        .search-btn {
+            background: #60a5fa;
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+        }
 
-/* Input */
-#searchInput {
-    border: none;
-    flex: 1;
-    padding: 10px;
-    border-radius: 20px;
-    outline: none;
-    font-size: 16px;
-}
-
-/* Botón bonito */
-.search-btn {
-    background: #60a5fa;
-    border: none;
-    color: white;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    font-size: 18px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.3s;
-}
-
-.search-btn:hover {
-    background: #3b82f6;
-    transform: scale(1.1);
-}
-
-/* Caja de resultados */
-.results-box {
-    position: absolute;
-    top: 55px;
-    left: 0;
-    width: 100%;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    z-index: 99;
-    display: none;
-    overflow: hidden;
-    animation: fadeIn 0.2s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Enlaces de resultados */
-.results-box a {
-    display: block;
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-    text-decoration: none;
-    color: #333;
-    transition: 0.2s;
-}
-
-.results-box a:hover {
-    background: #f0f8ff;
-}
-
-
+        .results-box {
+            position: absolute;
+            top: 55px;
+            left: 0;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            z-index: 99;
+            display: none;
+        }
     </style>
 </head>
 
 <body>
 
-    
-
 <nav class="navbar navbar-top d-flex justify-content-between align-items-center">
     <a href="{{ route('public.inicio.index') }}" class="navbar-brand d-flex align-items-center">
         <img src="{{ asset('/logo.png') }}" alt="Logo">
     </a>
-<div class="container mt-4">
-        <!-- Buscador -->
+
+    <div class="container mt-4">
         <div id="searchBox" class="search-container">
             <form action="{{ route('buscador.resultados') }}" method="get">
                 <div class="search-wrapper">
@@ -289,6 +239,7 @@
             </form>
             <div id="searchResults" style="display:none;"></div>
         </div>
+    </div>
 </nav>
 
 @php
@@ -301,7 +252,6 @@
                             ->get();
 @endphp
 
-{{-- BANNER --}}
 <div class="banner-container position-relative">
     @if($banner && $banner->imagen && file_exists(storage_path('app/public/banners/' . $banner->imagen)))
         <img src="{{ asset('storage/banners/' . $banner->imagen) }}" class="banner img-fluid" alt="Banner">
@@ -310,10 +260,7 @@
     @endif
 </div>
 
-
- 
 <nav class="navbar-bottom">
-
 
     <div class="paste-button">
         <button class="button" onclick="window.location='{{ route('public.inicio.index') }}'">
@@ -321,23 +268,20 @@
         </button>
     </div>
 
-
-
     @foreach ($navbarSecciones as $sec)
         <div class="paste-button">
             <button class="button"
-                onclick="window.location='{{ route('public.navbar.secciones.show', $sec->id) }}'">
+                onclick="window.location='{{ route('public.navbar.secciones.show', $sec->slug) }}'">
                 {{ $sec->nombre }}
                 @if ($sec->contenidosNavbar->where('oculto_publico', false)->count())
                     ▼
                 @endif
             </button>
 
-      
             @if ($sec->contenidosNavbar->where('oculto_publico', false)->count())
                 <div class="dropdown-content">
                     @foreach ($sec->contenidosNavbar->where('oculto_publico', false) as $contenido)
-                        <a href="{{ route('public.navbar.contenido.show', $contenido->id) }}">
+                        <a href="{{ route('public.navbar.contenido.show', $contenido->slug) }}">
                             {{ $contenido->titulo }}
                         </a>
                     @endforeach
@@ -346,65 +290,56 @@
         </div>
     @endforeach
 
-
 </nav>
 
+<div class="layout">
+    <aside class="sidebar">
+        <ul class="list-unstyled">
 
-    <div class="layout">
-        {{-- SIDEBAR --}}
-        <aside class="sidebar">
+            @if (!empty($secciones))
+                @foreach ($secciones as $sec)
+                    @if (!$sec->oculto_publico)
+                        <li class="mb-2">
+                            <a href="{{ route('public.secciones.show', $sec->slug) }}" class="fancy">
+                                {{ $sec->nombre }}
+                            </a>
+                        </li>
+                    @endif
+                @endforeach
+            @else
+                <li>No hay secciones disponibles</li>
+            @endif
 
+            <div class="contenido-fixed">
+                <button class="fancy" onclick="window.location='{{ route('public.personas.index') }}'">
+                    Académicos
+                </button>
+            </div>
 
-    
-            <ul class="list-unstyled">
-                @if (!empty($secciones))
-                    @foreach ($secciones as $sec)
-                        @if (!$sec->oculto_publico)
-                            <li class="mb-2">
-                                <a href="{{ route('public.secciones.show', $sec->id) }}" class="fancy">
-                                    {{ $sec->nombre }}
-                                </a>
-                            </li>
-                        @endif
-                    @endforeach
-                @else
-                    <li>No hay secciones disponibles</li>
-                @endif
+            <div class="mb-3">
+                <a href="{{ route('videoteca') }}" class="fancy d-block text-center py-2">
+                    Videoteca
+                </a>
+            </div>
 
-                
-         <div class="contenido-fixed">
-            <button class="fancy" onclick="window.location='{{ route('public.personas.index') }}'">
-              Académicos
-            </button>
-        </div>
-                
-                <div class="mb-3">
-                    <a href="{{ route('videoteca') }}" class="fancy d-block text-center py-2">
-                        Videoteca
-                    </a>
-                </div>
-            </ul>
+        </ul>
+    </aside>
 
-        </aside>
+    <main class="content">
+        @yield('contenido')
+    </main>
+</div>
 
+<footer>
+    <p class="fw-bold">CENTRO UNIVERSITARIO DE CIENCIAS SOCIALES Y HUMANIDADES</p>
+    <p>Los Belenes. Av. José Parres Arias #150, Zapopan, Jalisco, México.</p>
+    <p>© 1997 - 2025 Universidad de Guadalajara</p>
+</footer>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+@yield('scripts')
 
- 
-        <main class="content">
-            @yield('contenido')
-        </main>
-    </div>
-
-    <footer>
-        <p class="fw-bold">CENTRO UNIVERSITARIO DE CIENCIAS SOCIALES Y HUMANIDADES</p>
-        <p>Los Belenes. Av. José Parres Arias #150, Zapopan, Jalisco, México.</p>
-        <p>© 1997 - 2025 Universidad de Guadalajara</p>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    @yield('scripts')
-
-    <script>
+<script>
 document.addEventListener('DOMContentLoaded', function(){
     const searchInput = document.getElementById('searchInput');
     const searchResults = document.getElementById('searchResults');
@@ -440,13 +375,11 @@ document.addEventListener('DOMContentLoaded', function(){
         })
         .catch(err => console.error(err));
 
-        // Enter redirige a la página de resultados completa
         if(e.key === 'Enter' && q.length >= 2){
             window.location.href = "{{ route('buscador.resultados') }}" + "?q=" + encodeURIComponent(q);
         }
     });
 
-    // Ocultar resultados al hacer click fuera
     document.addEventListener('click', function(e){
         if(!searchBox.contains(e.target)){
             searchResults.style.display = 'none';
@@ -456,5 +389,4 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 
 </body>
-
 </html>
