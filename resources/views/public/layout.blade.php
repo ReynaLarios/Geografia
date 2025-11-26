@@ -278,19 +278,17 @@
     <a href="{{ route('public.inicio.index') }}" class="navbar-brand d-flex align-items-center">
         <img src="{{ asset('/logo.png') }}" alt="Logo">
     </a>
-<div id="searchBox" class="search-container mt-3">
-
-    <form action="{{route('buscador')}}" method="get">
-    <div class="search-wrapper">
-        <input type="text" id="searchInput" placeholder="Buscar...">
-        <button id="searchBtn" type="submit" class="search-btn">🔍</button>
-    </div>
-    
-    </form>
-
-    <div id="searchResults" class="results-box" style="display:none;"></div>
-</div>
-
+<div class="container mt-4">
+        <!-- Buscador -->
+        <div id="searchBox" class="search-container">
+            <form action="{{ route('buscador.resultados') }}" method="get">
+                <div class="search-wrapper">
+                    <input type="text" id="searchInput" name="q" placeholder="Buscar..." class="form-control">
+                    <button type="submit" class="btn btn-primary">🔍</button>
+                </div>
+            </form>
+            <div id="searchResults" style="display:none;"></div>
+        </div>
 </nav>
 
 @php
@@ -410,6 +408,8 @@
 document.addEventListener('DOMContentLoaded', function(){
     const searchInput = document.getElementById('searchInput');
     const searchResults = document.getElementById('searchResults');
+    const searchBox = document.getElementById('searchBox');
+    const searchUrl = "{{ route('buscador.autocomplete') }}";
 
     searchInput.addEventListener('keyup', function(e) {
         let q = this.value.trim();
@@ -419,20 +419,18 @@ document.addEventListener('DOMContentLoaded', function(){
             return;
         }
 
-     
-        fetch(url + "?q=" + encodeURIComponent(q))
+        fetch(searchUrl + "?q=" + encodeURIComponent(q))
         .then(r => r.json())
         .then(data => {
             searchResults.innerHTML = '';
 
             if(data.length === 0){
-                searchResults.innerHTML = '<div class="p-2 text-center text-gray-500">Sin resultados</div>';
+                searchResults.innerHTML = '<div class="p-2 text-center text-muted">Sin resultados</div>';
             } else {
                 data.forEach(item => {
                     searchResults.innerHTML += `
-                        <a href="${item.url}" class="block p-2 hover:bg-gray-100 rounded">
-                            <strong>${item.nombre}</strong><br>
-                            <small>${item.tipo}</small>
+                        <a href="${item.url}" class="d-block p-2 text-decoration-none text-primary">
+                            ${item.nombre}
                         </a>
                     `;
                 });
@@ -442,13 +440,21 @@ document.addEventListener('DOMContentLoaded', function(){
         })
         .catch(err => console.error(err));
 
-       
+        // Enter redirige a la página de resultados completa
         if(e.key === 'Enter' && q.length >= 2){
             window.location.href = "{{ route('buscador.resultados') }}" + "?q=" + encodeURIComponent(q);
         }
     });
+
+    // Ocultar resultados al hacer click fuera
+    document.addEventListener('click', function(e){
+        if(!searchBox.contains(e.target)){
+            searchResults.style.display = 'none';
+        }
+    });
 });
 </script>
+
 </body>
 
 </html>

@@ -17,7 +17,7 @@ use App\Http\Controllers\BannerController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\VisibilityController;
 use App\Http\Controllers\PersonaController;
-use App\Http\Controllers\BuscadorPublicoController;
+use App\Http\Controllers\BuscadorController;
 
 //------------------------------------------------------------------------RUTAS PÚBLICAS-------------------------------------------------------------------------------------------
 
@@ -25,7 +25,7 @@ use App\Http\Controllers\BuscadorPublicoController;
     //PERSONAS
  Route::prefix('public')->group(function () {
     Route::get('/personas', [PersonaController::class, 'publicIndex'])->name('public.personas.index');
-    Route::get('/personas/{persona}', [PersonaController::class, 'publicShow'])->name('public.personas.show');
+    Route::get('/personas/{slug}', [PersonaController::class, 'publicShow'])->name('public.personas.show');
 });
 
 
@@ -38,19 +38,19 @@ use App\Http\Controllers\BuscadorPublicoController;
 
     // NAVBAR - Secciones
     Route::get('/navbar/secciones', [PublicController::class, 'navbarSeccionesIndex'])->name('public.navbar.secciones.index');
-    Route::get('/navbar/secciones/{id}', [PublicController::class, 'navbarSeccionesMostrar'])->name('public.navbar.secciones.show');
+    Route::get('/navbar/secciones/{slug}', [PublicController::class, 'navbarSeccionesMostrar'])->name('public.navbar.secciones.show');
 
     // NAVBAR - Contenidos
     Route::get('/navbar/contenidos', [PublicController::class, 'navbarContenidosIndex'])->name('public.navbar.contenidos.index');
-    Route::get('/navbar/contenido/{id}', [PublicController::class, 'navbarContenidoMostrar'])->name('public.navbar.contenido.show');
+    Route::get('/navbar/contenido/{slug}', [PublicController::class, 'navbarContenidoMostrar'])->name('public.navbar.contenido.show');
 
     // SECCIONES públicas
     Route::get('/secciones', [PublicController::class, 'seccionesIndex'])->name('public.secciones.index');
-    Route::get('/secciones/{id}', [PublicController::class, 'seccionesMostrar'])->name('public.secciones.show');
+    Route::get('/secciones/{slug}', [PublicController::class, 'seccionesMostrar'])->name('public.secciones.show');
 
     // CONTENIDOS públicos
     Route::get('/contenidos', [PublicController::class, 'contenidosIndex'])->name('public.contenidos.index');
-    Route::get('/contenidos/{id}', [PublicController::class, 'contenidosMostrar'])->name('public.contenidos.show');
+    Route::get('/contenidos/{slug}', [PublicController::class, 'contenidosMostrar'])->name('public.contenidos.show');
 
     // CUADROS
     Route::get('/cuadros', [PublicController::class, 'cuadrosIndex'])->name('public.cuadros.index');
@@ -59,9 +59,9 @@ use App\Http\Controllers\BuscadorPublicoController;
   Route::get('/videoteca', [VideotecaController::class, 'publicIndex'])->name('videoteca');
 
 //BUSCADOR
-Route::get('/buscador', [BuscadorPublicoController::class, 'autocomplete'])->name('buscador');
-Route::get('/buscador/resultados', [BuscadorPublicoController::class, 'resultados'])->name('buscador.resultados');
 
+Route::get('/buscador/autocomplete', [BuscadorController::class, 'autocomplete'])->name('buscador.autocomplete');
+Route::get('/buscador/resultados', [BuscadorController::class, 'resultados'])->name('buscador.resultados');
 
 
 
