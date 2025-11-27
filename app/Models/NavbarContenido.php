@@ -4,16 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class NavbarContenido extends Model
 {
+    use HasFactory;
+
+    protected $table = 'navbar_contenidos';
+
     protected $fillable = [
         'navbar_seccion_id',
         'titulo',
+        'slug',
         'descripcion',
-        'imagen'
+        'imagen',
+       
     ];
 
+   
     public function seccion()
     {
         return $this->belongsTo(NavbarSeccion::class, 'navbar_seccion_id');
@@ -27,5 +35,23 @@ class NavbarContenido extends Model
     public function cuadros()
     {
         return $this->morphMany(Cuadro::class, 'cuadrobable');
+    }
+
+    
+    protected static function booted()
+    {
+       
+        static::creating(function ($contenido) {
+            if (!$contenido->slug) {
+                $contenido->slug = Str::slug($contenido->titulo);
+            }
+        });
+
+        
+        static::updating(function ($contenido) {
+            if ($contenido->isDirty('titulo')) {
+                $contenido->slug = Str::slug($contenido->titulo);
+            }
+        });
     }
 }

@@ -11,10 +11,13 @@ class Seccion extends Model
 
     protected $table = 'secciones';
 
-    protected $fillable = ['nombre', 'descripcion', 'imagen', 'archivos'];
+    protected $fillable = [
+        'nombre',
+        'descripcion',
+        'imagen',
+        'slug',  
+    ];
 
-
-   
     protected $casts = [
         'descripcion' => 'string',
     ];
@@ -25,16 +28,12 @@ class Seccion extends Model
     }
 
     public function archivos()
-{
-    return $this->morphMany(Archivo::class, 'archivable');
+    {
+        return $this->morphMany(Archivo::class, 'archivable');
+    }
+
+    public function cuadros()
+    {
+        return $this->morphMany(Cuadro::class, 'cuadrobable');
+    }
 }
-
-public function cuadros()
-{
-    return $this->morphMany(Cuadro::class, 'cuadrobable');
-}
-
-}
-
-
-

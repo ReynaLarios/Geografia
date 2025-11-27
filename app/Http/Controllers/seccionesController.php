@@ -7,7 +7,7 @@ use App\Models\Seccion;
 use App\Models\Cuadro;
 use App\Models\Archivo;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str; // ⭐ IMPORTANTE (faltaba)
+use Illuminate\Support\Str; 
 
 class SeccionesController extends Controller
 {
@@ -23,33 +23,34 @@ class SeccionesController extends Controller
     }
 
     public function guardar(Request $request)
-    {
-        $request->validate([
-            'nombre'        => 'required|string',
-            'descripcion'   => 'nullable|string',
-            'imagen'        => 'nullable|image',
-            'video'         => 'nullable|file',
-        ]);
+{
+    $request->validate([
+        'nombre'        => 'required|string',
+        'descripcion'   => 'nullable|string',
+        'imagen'        => 'nullable|image',
+        'video'         => 'nullable|file',
+    ]);
 
-        $seccion = Seccion::create([
-            'nombre'      => $request->nombre,
-            'descripcion' => $request->descripcion,
-            'imagen'      => $request->hasFile('imagen') 
-                                ? $request->imagen->store('secciones', 'public') 
-                                : null,
-            'slug'        => Str::slug($request->nombre) // ⭐ CORRECTO
-        ]);
+    $seccion = Seccion::create([
+        'nombre'      => $request->nombre,
+        'descripcion' => $request->descripcion,
+        'imagen'      => $request->hasFile('imagen') 
+                            ? $request->imagen->store('secciones', 'public') 
+                            : null,
+        'slug'        => Str::slug($request->nombre) . '-' . uniqid(), 
+    ]);
 
-        $this->guardarArchivos($request, $seccion);
-        $this->guardarCuadros($request, $seccion);
+    $this->guardarArchivos($request, $seccion);
+    $this->guardarCuadros($request, $seccion);
 
-        return redirect()->route('secciones.listado')
-                         ->with('success', 'Sección creada correctamente');
-    }
+    return redirect()->route('secciones.listado')
+                     ->with('success', 'Sección creada correctamente');
+}
+
 
     public function mostrar($slug)
     {
-        // ⭐ Corrección: no usar toSql(), ni $id
+    
         $seccion = Seccion::with(['archivos', 'cuadros.archivos'])
                           ->where('slug', $slug)
                           ->firstOrFail();
@@ -70,11 +71,9 @@ class SeccionesController extends Controller
         $seccion->update([
             'nombre'      => $request->nombre,
             'descripcion' => $request->descripcion,
-            // ⭐ Si NO quieres que cambie el slug al editar, déjalo así
-            // 'slug' => Str::slug($request->nombre),
         ]);
 
-        // --- NO TOQUÉ NADA DE TU LÓGICA DE IMÁGENES ---
+       
 
         if ($request->eliminar_imagen && $seccion->imagen && Storage::disk('public')->exists($seccion->imagen)) {
             Storage::disk('public')->delete($seccion->imagen);
@@ -100,7 +99,7 @@ class SeccionesController extends Controller
 
         $seccion->save();
 
-        // --- NO TOQUÉ NADA DE TU LÓGICA DE ARCHIVOS Y CUADROS ---
+       
         if ($request->archivos_eliminados) {
 
             $ids = is_array($request->archivos_eliminados)
@@ -108,7 +107,7 @@ class SeccionesController extends Controller
                 : json_decode($request->archivos_eliminados, true);
 
             if (is_array($ids)) {
-                foreach ($ids as $archivoId) { // ⭐ corregí $id -> $ids
+                foreach ($ids as $archivoId) { 
                     $archivo = Archivo::find($archivoId);
                     if ($archivo && $archivo->ruta && Storage::disk('public')->exists($archivo->ruta)) {
                         Storage::disk('public')->delete($archivo->ruta);
@@ -171,7 +170,7 @@ class SeccionesController extends Controller
 
     private function guardarCuadros(Request $request, $seccion)
     {
-        // ⭐ No toqué nada, solo arreglé un pequeño detalle en el foreach
+       
         $ids = $request->cuadro_id ?? [];
         $titulos = $request->cuadro_titulo ?? [];
         $autores = $request->cuadro_autor ?? [];
@@ -211,7 +210,7 @@ class SeccionesController extends Controller
                 continue;
             }
 
-            // ⭐ NO toqué esta parte porque ya te funciona
+            
             $cuadro = $seccion->cuadros()->create([
                 'titulo' => $tituloLimpio,
                 'autor'  => $autorLimpio,

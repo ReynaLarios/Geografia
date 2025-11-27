@@ -2,7 +2,7 @@
 
 @section('contenido')
 <style>
-/* 🎨 Estilo público para contenidos */
+
 .cuadros-box {
     background: #f8faff;
     padding: 15px;
@@ -17,7 +17,7 @@
     margin-bottom: 10px;
 }
 
-/* Tabla limpia */
+
 .table-cuadros thead {
     background: #dce9ff;
     color: #0b2f58;
@@ -37,7 +37,7 @@
     background: #edf5ff;
 }
 
-/* Links de archivos */
+
 .table-cuadros a {
     color: #0d47a1;
     font-weight: 500;
@@ -47,7 +47,6 @@
     text-decoration: underline;
 }
 
-/* Dropdown filtro */
 #filter-dropdown {
     max-width: 180px;
     margin-bottom: 15px;
@@ -69,13 +68,28 @@
             <img src="{{ asset('storage/'.$contenido->imagen) }}" class="img-fluid rounded" style="max-height: 300px; object-fit: cover;">
         </div>
     @endif
-
-    {{-- Cuadros con filtro --}}
+    
+    @if($contenido->archivos && count($contenido->archivos))
+        <div class="mb-4">
+            <h5>Archivos adicionales</h5>
+            <ul class="list-group">
+                @foreach($contenido->archivos as $archivo)
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="{{ asset('storage/' . $archivo) }}" target="_blank">{{ basename($archivo) }}</a>
+                        <small class="text-muted">
+                            {{ number_format(Storage::disk('public')->size($archivo)/1024/1024, 2) }} MB
+                        </small>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    
     @if($contenido->cuadros->isNotEmpty())
         <div class="cuadros-box">
             <h5>Cuadros</h5>
 
-            {{-- Dropdown filtro --}}
+            
             <select id="filter-dropdown" class="form-select form-select-sm">
                 <option value="all">Todos</option>
                 @foreach(range('A','Z') as $letter)
@@ -114,6 +128,9 @@
             </table>
         </div>
     @endif
+      <div class="mt-3">
+        <button class="fancy" onclick="window.history.back()">← Regresar</button>
+    </div>
 
 </div>
 @endsection

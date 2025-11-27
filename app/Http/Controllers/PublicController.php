@@ -11,19 +11,19 @@ use App\Models\NavbarSeccion;
 use App\Models\NavbarContenido;
 use App\Models\Inicio;
 use App\Models\Carrusel;
+use App\Models\Persona;
 
 class PublicController extends Controller
 {
-   
-public function inicio()
-{
-    $imagenesCarrusel = Carrusel::all();  
-    $noticias = Inicio::orderBy('created_at', 'desc')->get();
-    $secciones = Seccion::where('oculto_publico', false)->get();
+    
+    public function inicio()
+    {
+        $imagenesCarrusel = Carrusel::all();
+        $noticias = Inicio::orderBy('created_at', 'desc')->get();
+        $secciones = Seccion::where('oculto_publico', false)->get();
 
-    return view('public.inicios.index', compact('imagenesCarrusel', 'noticias', 'secciones'));
-}
-
+        return view('public.inicios.index', compact('imagenesCarrusel', 'noticias', 'secciones'));
+    }
 
     public function inicioShow($id)
     {
@@ -33,95 +33,137 @@ public function inicio()
         return view('public.inicios.show', compact('noticia', 'secciones'));
     }
 
-   
     public function carrusel()
     {
-       $imagenesCarrusel = Carrusel::all();
-$noticias = Inicio::with('archivos')->get();
+        $imagenesCarrusel = Carrusel::all();
+        $noticias = Inicio::with('archivos')->get();
 
-return view('public.inicio', compact('imagenesCarrusel', 'noticias'));
-
+        return view('public.inicio', compact('imagenesCarrusel', 'noticias'));
     }
 
-
-  
+    
     public function navbarSeccionesIndex()
     {
-        $secciones = NavbarSeccion::with('contenidosNavbar')->get();
-
+        $secciones = NavbarSeccion::with('contenidos')->get();
         return view('public.navbar_secciones.index', compact('secciones'));
     }
 
-    public function navbarSeccionesMostrar($id)
-    {
-        $seccion = NavbarSeccion::with('contenidosNavbar')->findOrFail($id);
+    public function navbarSeccionesMostrar($slug)
+{
+    $seccion = NavbarSeccion::with(['contenidosNavbar'])->where('slug', $slug)->firstOrFail();
+    return view('public.navbar_secciones.show', compact('seccion'));
+}
 
-        return view('public.navbar_secciones.show', compact('seccion'));
-    }
 
     public function navbarContenidosIndex()
     {
-        $navbarContenidos = NavbarContenido::with('seccion')->get();
-
+        $navbarContenidos = NavbarContenido::with('seccion','cuadros.archivos')->get();
         return view('public.navbar_contenidos.index', compact('navbarContenidos'));
     }
 
-    public function navbarContenidoMostrar($id)
-    {
-        $contenido = NavbarContenido::with(['seccion','cuadros'])->findOrFail($id);
+  public function navbarContenidoMostrar($slug)
+{
+    $contenido = NavbarContenido::with(['cuadros', 'archivos'])->where('slug', $slug)->firstOrFail();
+    return view('public.navbar_contenidos.show', compact('contenido'));
+}
 
-        return view('public.navbar_contenidos.show', compact('contenido'));
-    }
-
+    
     public function seccionesIndex()
     {
-        $secciones = Seccion::with(['cuadros','contenidos'])
-            ->where('oculto_publico', false)
-            ->get();
-
+        $secciones = Seccion::with(['cuadros.archivos','contenidos'])->where('oculto_publico', false)->get();
         return view('public.secciones.index', compact('secciones'));
     }
 
     public function seccionesMostrar($slug)
     {
-       $seccion = Seccion::with(['archivos', 'cuadros.archivos'])->where('slug',$slug)->first();
-
+        $seccion = Seccion::with(['archivos','cuadros.archivos'])->where('slug',$slug)->firstOrFail();
         $secciones = Seccion::where('oculto_publico', false)->get();
 
-        return view('public.secciones.show', compact('seccion', 'secciones'));
+        return view('public.secciones.show', compact('seccion','secciones'));
     }
 
-  
+    
     public function contenidosIndex()
     {
-        $contenidos = Contenidos::with('seccion','cuadros')->get();
+        $contenidos = Contenidos::with(['seccion','cuadros.archivos'])->get();
         $secciones = Seccion::where('oculto_publico', false)->get();
 
-        return view('public.contenidos.index', compact('contenidos', 'secciones'));
+        return view('public.contenidos.index', compact('contenidos','secciones'));
     }
 
-    public function contenidosMostrar($id)
-    {
-        $contenido = Contenidos::with(['seccion','cuadros'])->findOrFail($id);
-        $secciones = Seccion::where('oculto_publico', false)->get();
+    public function contenidosMostrar($slug)
+{
+    $contenido = Contenidos::with(['seccion','cuadros'])->where('slug', $slug)->firstOrFail();
+    $secciones = Seccion::where('oculto_publico', false)->get();
 
-        return view('public.contenidos.show', compact('contenido', 'secciones'));
-    }
+    return view('public.contenidos.show', compact('contenido', 'secciones'));
+}
 
 
+   
     public function cuadrosIndex()
     {
-        $cuadros = Cuadro::all();
+        $cuadros = Cuadro::with('archivos')->get();
         $secciones = Seccion::where('oculto_publico', false)->get();
 
-        return view('public.cuadros.index', compact('cuadros', 'secciones'));
+        return view('public.cuadros.index', compact('cuadros','secciones'));
     }
 
+    
     public function videotecaIndex()
     {
         $videos = Videoteca::orderBy('created_at','desc')->get();
         $secciones = Seccion::where('oculto_publico', false)->get();
 
-        return view('public.videoteca.index', compact('videos', 'secciones'));
+        return view('public.videoteca.index', compact('videos','secciones'));
+    }
+
+    
+ public function personasIndex()
+    {
+        
+        $personas = Persona::all();
+
+        
+        $secciones = Seccion::where('oculto_publico', false)->get();
+
+        return view('public.personas.index', compact('personas', 'secciones'));
+    }
+
+   
+   public function personasMostrar($slug)
+{
+    $persona = Persona::where('slug', $slug)->firstOrFail();
+    $secciones = Seccion::where('oculto_publico', false)->get();
+
+    return view('public.personas.show', compact('persona','secciones'));
+}
+
+
+ 
+    public function personasAutocomplete(Request $request)
+    {
+        $q = $request->input('q');
+
+        
+        if (!$q || strlen($q) < 2) {
+            return response()->json([]);
+        }
+
+        
+        $personas = Persona::where('nombre', 'like', $q . '%')
+                            ->take(10)
+                            ->get(['nombre', 'slug']);
+
+        
+        $result = $personas->map(function ($p) {
+            return [
+                'nombre' => $p->nombre,
+                'url' => route('public.personas.show', $p->slug)
+            ];
+        });
+
+        return response()->json($result);
     }
 }
+

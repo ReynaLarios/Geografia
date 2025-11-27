@@ -229,17 +229,13 @@
         <img src="{{ asset('/logo.png') }}" alt="Logo">
     </a>
 
-    <div class="container mt-4">
-        <div id="searchBox" class="search-container">
-            <form action="{{ route('buscador.resultados') }}" method="get">
-                <div class="search-wrapper">
-                    <input type="text" id="searchInput" name="q" placeholder="Buscar..." class="form-control">
-                    <button type="submit" class="btn btn-primary">🔍</button>
-                </div>
-            </form>
-            <div id="searchResults" style="display:none;"></div>
-        </div>
-    </div>
+ <div class="container mt-4 d-flex justify-content-end">
+    <form action="{{ route('buscador.resultados') }}" method="get" class="d-flex">
+        <input type="text" name="q" placeholder="Buscar..." class="form-control me-2" required>
+        <button type="submit" class="btn btn-primary">🔍</button>
+    </form>
+</div>
+
 </nav>
 
 @php
@@ -340,50 +336,75 @@
 @yield('scripts')
 
 <script>
-document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
-    const searchResults = document.getElementById('searchResults');
     const searchBox = document.getElementById('searchBox');
     const searchUrl = "{{ route('buscador.autocomplete') }}";
 
-    searchInput.addEventListener('keyup', function(e) {
-        let q = this.value.trim();
+    let searchResults = document.getElementById('searchResults');
+    if (!searchResults) {
+        searchResults = document.createElement('div');
+        searchResults.id = 'searchResults';
+        searchResults.style.position = 'absolute';
+        searchResults.style.background = '#fff';
+        searchResults.style.border = '1px solid #ccc';
+        searchResults.style.zIndex = '1000';
+        searchResults.style.width = searchInput.offsetWidth + 'px';
+        searchResults.style.maxHeight = '300px';
+        searchResults.style.overflowY = 'auto';
+        searchResults.style.display = 'none';
+        searchBox.appendChild(searchResults);
+    }
 
-        if(q.length < 2){
+    searchInput.addEventListener('input', function() {
+        const q = this.value.trim().toLowerCase();
+
+       
+        if (q.length < 2) {
             searchResults.style.display = 'none';
             return;
         }
 
-        fetch(searchUrl + "?q=" + encodeURIComponent(q))
-        .then(r => r.json())
-        .then(data => {
-            searchResults.innerHTML = '';
+        fetch(searchUrl + '?q=' + encodeURIComponent(q))
+            .then(res => res.json())
+            .then(data => {
+                searchResults.innerHTML = '';
 
-            if(data.length === 0){
-                searchResults.innerHTML = '<div class="p-2 text-center text-muted">Sin resultados</div>';
-            } else {
-                data.forEach(item => {
-                    searchResults.innerHTML += `
-                        <a href="${item.url}" class="d-block p-2 text-decoration-none text-primary">
-                            ${item.nombre}
-                        </a>
-                    `;
-                });
-            }
+                if (!data.length) {
+                    searchResults.innerHTML = '<div class="p-2 text-muted text-center">Sin resultados</div>';
+                } else {
+                    let hasResults = false;
 
-            searchResults.style.display = 'block';
-        })
-        .catch(err => console.error(err));
+                    data.forEach(item => {
+                       
+                        if (item.nombre.toLowerCase().startsWith(q)) {
+                            const link = document.createElement('a');
+                            link.href = item.url || '#';
+                            link.textContent = item.nombre;
+                            link.className = 'd-block p-2 text-decoration-none text-primary';
+                            searchResults.appendChild(link);
+                            hasResults = true;
+                        }
+                    });
 
-        if(e.key === 'Enter' && q.length >= 2){
-            window.location.href = "{{ route('buscador.resultados') }}" + "?q=" + encodeURIComponent(q);
+                    if (!hasResults) {
+                        searchResults.innerHTML = '<div class="p-2 text-muted text-center">Sin resultados</div>';
+                    }
+                }
+
+                searchResults.style.display = 'block';
+            })
+            .catch(err => console.error(err));
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!searchBox.contains(e.target)) {
+            searchResults.style.display = 'none';
         }
     });
 
-    document.addEventListener('click', function(e){
-        if(!searchBox.contains(e.target)){
-            searchResults.style.display = 'none';
-        }
+    window.addEventListener('resize', () => {
+        searchResults.style.width = searchInput.offsetWidth + 'px';
     });
 });
 </script>

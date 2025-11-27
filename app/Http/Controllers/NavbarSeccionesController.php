@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\NavbarSeccion;
 use App\Models\Cuadro;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class NavbarSeccionesController extends Controller
 {
@@ -19,57 +20,60 @@ class NavbarSeccionesController extends Controller
     {
         return view('navbar.secciones.crear');
     }
+    
 
-    public function guardar(Request $request)
-    {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'imagen' => 'nullable|image|max:5120',
-            'archivos.*' => 'nullable|file|max:10240',
-            'cuadros' => 'nullable|array',
+public function guardar(Request $request)
+{
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'descripcion' => 'nullable|string',
+        'imagen' => 'nullable|image|max:5120',
+        'archivos.*' => 'nullable|file|max:10240',
+        'cuadros' => 'nullable|array',
+    ]);
+
+    $rutaImagen = $request->hasFile('imagen') ? $request->file('imagen')->store('navbar_secciones', 'public') : null;
+
+    $seccion = NavbarSeccion::create([
+        'nombre' => $request->nombre,
+        'slug' => Str::slug($request->nombre), 
+        'descripcion' => $request->descripcion,
+        'imagen' => $rutaImagen
+    ]);
+
+    foreach ($request->file('archivos') ?? [] as $archivo) {
+        $seccion->archivos()->create([
+            'nombre' => $archivo->getClientOriginalName(),
+            'ruta' => $archivo->store('archivos_seccion', 'public'),
+            'tipo' => $archivo->getClientOriginalExtension()
         ]);
-
-       
-        $rutaImagen = $request->hasFile('imagen') ? $request->file('imagen')->store('navbar_secciones', 'public') : null;
-
-        $seccion = NavbarSeccion::create([
-            'nombre' => $request->nombre,
-            'descripcion' => $request->descripcion,
-            'imagen' => $rutaImagen
-        ]);
-
-        foreach ($request->file('archivos') ?? [] as $archivo) {
-            $seccion->archivos()->create([
-                'nombre' => $archivo->getClientOriginalName(),
-                'ruta' => $archivo->store('archivos_seccion', 'public'),
-                'tipo' => $archivo->getClientOriginalExtension()
-            ]);
-        }
-
-        foreach ($request->cuadros ?? [] as $cuadroData) {
-            if (empty($cuadroData['titulo']) && empty($cuadroData['autor']) && empty($cuadroData['archivo'])) continue;
-
-            $archivoPrincipal = isset($cuadroData['archivo']) ? $cuadroData['archivo']->store('cuadros', 'public') : null;
-
-            $cuadro = $seccion->cuadros()->create([
-                'titulo' => $cuadroData['titulo'] ?? null,
-                'autor' => $cuadroData['autor'] ?? null,
-                'archivo' => $archivoPrincipal
-            ]);
-
-            foreach ($cuadroData['archivos'] ?? [] as $archivoExtra) {
-                $cuadro->archivos()->create([
-                    'nombre' => $archivoExtra->getClientOriginalName(),
-                    'ruta' => $archivoExtra->store('archivos/cuadros', 'public'),
-                    'tipo' => $archivoExtra->getClientOriginalExtension()
-                ]);
-            }
-        }
-
-        return redirect()->route('navbar.secciones.index')
-                         ->with('success', 'Sección creada correctamente.');
     }
+
+    foreach ($request->cuadros ?? [] as $cuadroData) {
+        if (empty($cuadroData['titulo']) && empty($cuadroData['autor']) && empty($cuadroData['archivo'])) continue;
+
+        $archivoPrincipal = isset($cuadroData['archivo']) ? $cuadroData['archivo']->store('cuadros', 'public') : null;
+
+        $cuadro = $seccion->cuadros()->create([
+            'titulo' => $cuadroData['titulo'] ?? null,
+            'autor' => $cuadroData['autor'] ?? null,
+            'archivo' => $archivoPrincipal
+        ]);
+
+        foreach ($cuadroData['archivos'] ?? [] as $archivoExtra) {
+            $cuadro->archivos()->create([
+                'nombre' => $archivoExtra->getClientOriginalName(),
+                'ruta' => $archivoExtra->store('archivos/cuadros', 'public'),
+                'tipo' => $archivoExtra->getClientOriginalExtension()
+            ]);
+        }
+    }
+
+    return redirect()->route('navbar.secciones.index')
+                     ->with('success', 'Sección creada correctamente.');
+}
+
+    
 
     public function editar($id)
     {

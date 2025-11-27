@@ -9,10 +9,17 @@ class Contenidos extends Model
 {
     use HasFactory;
 
+    protected $table = 'contenidos';
+
     protected $fillable = [
-        'titulo', 'descripcion', 'seccion_id', 'imagen'
+        'titulo',
+        'descripcion',
+        'imagen',
+        'seccion_id',
+        'slug', 
     ];
 
+    
     public function seccion()
     {
         return $this->belongsTo(Seccion::class);
@@ -23,11 +30,8 @@ class Contenidos extends Model
         return $this->morphMany(Archivo::class, 'archivable');
     }
 
-
-public function cuadros()
-{
-    return $this->morphMany(Cuadro::class, 'cuadrobable');
+    public function cuadros()
+    {
+        return $this->morphMany(Cuadro::class, 'cuadrobable');
+    }
 }
-}
-
-

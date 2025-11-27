@@ -23,10 +23,20 @@ use App\Http\Controllers\BuscadorController;
 
 
     //PERSONAS
- Route::prefix('public')->group(function () {
-    Route::get('/personas', [PersonaController::class, 'publicIndex'])->name('public.personas.index');
-    Route::get('/personas/{slug}', [PersonaController::class, 'publicShow'])->name('public.personas.show');
+Route::prefix('public')->group(function () {
+    // Listado público
+    Route::get('/academicos', [PersonaController::class, 'publicIndex'])
+        ->name('public.personas.index');
+
+    // Vista individual por slug
+    Route::get('/academicos/{slug}', [PersonaController::class, 'publicShow'])
+        ->name('public.personas.show');
+
+    // Autocomplete del buscador
+    Route::get('/buscador/personas', [PersonaController::class, 'autocomplete'])
+        ->name('buscador.personas.autocomplete');
 });
+
 
 
     // INICIO

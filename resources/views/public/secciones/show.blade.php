@@ -2,21 +2,21 @@
 
 @section('contenido')
 <style>
-/* 🎨 Estilo Cuadros - Página pública */
+
 .cuadros-box {
-    background: linear-gradient(135deg, #eef5ff, #ffffff);
-    padding: 20px;
-    border-radius: 14px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
-    margin-top: 20px;
+    background: #f8faff;
+    padding: 15px;
+    border-radius: 10px;
     border: 1px solid #d0e1ff;
+    margin-top: 20px;
 }
 
 .cuadros-box h5 {
     color: #0d3b66;
-    font-weight: bold;
-    margin-bottom: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
 }
+
 
 .table-cuadros thead {
     background: #dce9ff;
@@ -24,74 +24,52 @@
 }
 
 .table-cuadros thead th {
-    padding: 14px;
-    font-size: 15px;
-    font-weight: 700;
-    border-bottom: 2px solid #9ec3ff !important;
+    padding: 10px;
+    font-weight: 600;
 }
 
-.table-cuadros tbody tr {
-    background: #ffffff;
-    transition: background 0.25s ease, transform 0.2s ease;
-}
-
-.table-cuadros tbody tr:nth-child(even) {
-    background: #f4f8ff;
-}
-
-.table-cuadros tbody tr:hover {
-    background: #d7e7ff !important;
-    transform: scale(1.01);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.10);
-}
-
-.table-cuadros td {
-    padding: 12px;
-    vertical-align: middle;
+.table-cuadros tbody td {
+    padding: 10px;
     color: #1a1a1a;
 }
 
+.table-cuadros tbody tr:nth-child(even) {
+    background: #edf5ff;
+}
+
+
 .table-cuadros a {
     color: #0d47a1;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .table-cuadros a:hover {
     text-decoration: underline;
 }
 
-.table-cuadros small {
-    color: #555;
-}
 
-/* Dropdown filtro */
 #filter-dropdown {
-    max-width: 200px;
+    max-width: 180px;
     margin-bottom: 15px;
-    border-radius: 8px;
-    border: 1px solid #ffffff;
     background-color: #ffffff;
-    color: #0d47a1;
-    font-weight: 600;
-}
-#filter-dropdown option {
-    color: #000000;
+    color: #0d3b66;
+    border: 1px solid #0d3b66;
 }
 </style>
 
 <main class="container mt-4">
 
-    {{-- Nombre --}}
+ 
     <h2 class="mb-4 text-center">{{ $seccion->nombre }}</h2>
 
-    {{-- Imagen --}}
+    
     @if($seccion->imagen)
         <div class="mb-4 text-center">
             <img src="{{ asset('storage/'.$seccion->imagen) }}" class="img-fluid rounded shadow-sm" style="max-height: 300px; object-fit: cover;">
         </div>
     @endif
 
-    {{-- Descripción --}}
+    
     @if($seccion->descripcion)
         <div class="mb-4 p-3 bg-light rounded shadow-sm">
             <h5 class="mb-2">Descripción</h5>
@@ -101,7 +79,7 @@
         </div>
     @endif
 
-    {{-- Archivos --}}
+    
     @if($seccion->archivos && count($seccion->archivos))
         <div class="mb-4">
             <h5>Archivos adicionales</h5>
@@ -118,12 +96,12 @@
         </div>
     @endif
 
-    {{-- Cuadros --}}
+   
     @if($seccion->cuadros && $seccion->cuadros->count())
         <div class="cuadros-box">
             
 
-            {{-- Dropdown filtro --}}
+           
             <select id="filter-dropdown" class="form-select form-select-sm">
                 <option value="all">Todos</option>
                 @foreach(range('A','Z') as $letter)
@@ -163,7 +141,7 @@
         </div>
     @endif
 
-    {{-- Contenidos --}}
+    
     @if($seccion->contenidosNavbar && $seccion->contenidosNavbar->count())
         <div class="mb-4">
             <h5>Contenidos asociados</h5>
@@ -175,8 +153,8 @@
         </div>
     @endif
 
-    <div class="mt-3 text-center">
-        <button class="btn btn-secondary" onclick="window.history.back()">← Regresar</button>
+     <div class="mt-3">
+        <button class="fancy" onclick="window.history.back()">← Regresar</button>
     </div>
 
 </main>

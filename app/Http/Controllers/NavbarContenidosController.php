@@ -29,77 +29,60 @@ class NavbarContenidosController extends Controller
     }
 
     
-    public function guardar(Request $request)
+   public function guardar(Request $request)
     {
         $request->validate([
             'navbar_seccion_id' => 'required|exists:navbar_secciones,id',
             'titulo' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'imagen' => 'nullable|image|max:5120',
             'archivos.*' => 'nullable|file|max:10240',
             'cuadros' => 'nullable|array',
         ]);
 
-  
-        $rutaImagen = null;
-        if ($request->hasFile('imagen')) {
-            $rutaImagen = $request->file('imagen')->store('navbar_contenidos', 'public');
-        }
+        // Imagen principal
+        $rutaImagen = $request->hasFile('imagen') ? $request->file('imagen')->store('navbar_contenidos', 'public') : null;
 
-       
+        // Crear contenido (slug automático en el modelo)
         $contenido = NavbarContenido::create([
             'navbar_seccion_id' => $request->navbar_seccion_id,
             'titulo' => $request->titulo,
             'descripcion' => $request->descripcion,
-            'imagen' => $rutaImagen
+            'imagen' => $rutaImagen,
         ]);
 
-        
-        if ($request->hasFile('archivos')) {
-            foreach ($request->file('archivos') as $archivo) {
-                $ruta = $archivo->store('archivos_navbar', 'public');
-                $contenido->archivos()->create([
-                    'nombre' => $archivo->getClientOriginalName(),
-                    'ruta' => $ruta,
-                    'tipo' => $archivo->getClientOriginalExtension(),
-                ]);
-            }
+        // Archivos adicionales
+        foreach ($request->file('archivos') ?? [] as $archivo) {
+            $contenido->archivos()->create([
+                'nombre' => $archivo->getClientOriginalName(),
+                'ruta' => $archivo->store('archivos_navbar', 'public'),
+                'tipo' => $archivo->getClientOriginalExtension(),
+            ]);
         }
 
-  
-        if ($request->has('cuadros')) {
-            foreach ($request->cuadros as $cuadroData) {
+        // Cuadros
+        foreach ($request->cuadros ?? [] as $cuadroData) {
+            if (empty($cuadroData['titulo']) && empty($cuadroData['autor']) && empty($cuadroData['archivo'])) continue;
 
-                if (
-                    empty($cuadroData['titulo']) &&
-                    empty($cuadroData['autor']) &&
-                    empty($cuadroData['archivo'])
-                ) continue;
+            $rutaArchivo = isset($cuadroData['archivo']) ? $cuadroData['archivo']->store('cuadros', 'public') : null;
 
-                $rutaArchivo = null;
-                if (isset($cuadroData['archivo']) && $cuadroData['archivo']) {
-                    $rutaArchivo = $cuadroData['archivo']->store('cuadros', 'public');
-                }
+            $cuadro = $contenido->cuadros()->create([
+                'titulo' => $cuadroData['titulo'] ?? null,
+                'autor' => $cuadroData['autor'] ?? null,
+                'archivo' => $rutaArchivo,
+            ]);
 
-                $cuadro = $contenido->cuadros()->create([
-                    'titulo' => $cuadroData['titulo'] ?? null,
-                    'autor' => $cuadroData['autor'] ?? null,
-                    'archivo' => $rutaArchivo
+            foreach ($cuadroData['archivos'] ?? [] as $archivoExtra) {
+                $cuadro->archivos()->create([
+                    'nombre' => $archivoExtra->getClientOriginalName(),
+                    'ruta' => $archivoExtra->store('archivos/cuadros', 'public'),
+                    'tipo' => $archivoExtra->getClientOriginalExtension(),
                 ]);
-
-                if (isset($cuadroData['archivos'])) {
-                    foreach ($cuadroData['archivos'] as $archivoExtra) {
-                        $rutaExtra = $archivoExtra->store('archivos/cuadros', 'public');
-                        $cuadro->archivos()->create([
-                            'nombre' => $archivoExtra->getClientOriginalName(),
-                            'ruta' => $rutaExtra,
-                            'tipo' => $archivoExtra->getClientOriginalExtension(),
-                        ]);
-                    }
-                }
             }
         }
 
         return redirect()->route('navbar.contenidos.index')
-            ->with('success', 'Contenido creado correctamente.');
+                         ->with('success', 'Contenido creado correctamente.');
     }
 
   
