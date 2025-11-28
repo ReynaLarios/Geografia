@@ -2,8 +2,8 @@
 
 @section('contenido')
 <style>
-/* 🎨 Estilo Cuadros */
-.cuadros-box {
+/* 🎨 Estilo Contenidos */
+.contenidos-box {
     background: linear-gradient(135deg, #eef5ff, #ffffff);
     padding: 20px;
     border-radius: 14px;
@@ -12,44 +12,55 @@
     border: 1px solid #d0e1ff;
 }
 
-.cuadros-box h5 {
+.contenidos-box h5 {
     color: #0d3b66;
     font-weight: bold;
     margin-bottom: 15px;
 }
 
-.table-cuadros thead {
+.table-contenidos thead {
     background: #dce9ff;
     color: #0b2f58;
 }
 
-.table-cuadros thead th {
+.table-contenidos thead th {
     padding: 14px;
     font-size: 15px;
     font-weight: 700;
     border-bottom: 2px solid #9ec3ff !important;
 }
 
-.table-cuadros tbody tr:nth-child(even) {
+.table-contenidos tbody tr {
+    background: #ffffff;
+    transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.table-contenidos tbody tr:nth-child(even) {
     background: #f4f8ff;
 }
 
-.table-cuadros tbody tr:hover {
+.table-contenidos tbody tr:hover {
     background: #d7e7ff !important;
+    transform: scale(1.01);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.10);
 }
 
-.table-cuadros td {
+.table-contenidos td {
     padding: 12px;
     vertical-align: middle;
     color: #1a1a1a;
 }
 
-.table-cuadros a {
+.table-contenidos a {
     color: #0d47a1;
     font-weight: 600;
 }
 
-.table-cuadros small {
+.table-contenidos a:hover {
+    text-decoration: underline;
+}
+
+.table-contenidos small {
     color: #555;
 }
 
@@ -59,52 +70,58 @@
 }
 </style>
 
-<main class="p-4" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-    <h2>{{ $contenido->titulo }}</h2>
+<main class="container mt-4">
+
+    <h2 class="mb-4 text-center">{{ $contenido->titulo }}</h2>
+
+    @if($contenido->imagen)
+        <div class="mb-4 text-center">
+            <img src="{{ asset('storage/'.$contenido->imagen) }}" class="img-fluid rounded shadow-sm" style="max-height: 300px; object-fit: cover;">
+        </div>
+    @endif
 
     @if($contenido->descripcion)
-        <div class="mb-3">
-            {!! $contenido->descripcion !!}
+        <div class="mb-4 p-3 bg-light rounded shadow-sm">
+            <div class="border p-2 rounded" style="min-height:100px;">
+                {!! $contenido->descripcion !!}
+            </div>
         </div>
     @endif
 
-    @if($contenido->imagen && Storage::disk('public')->exists($contenido->imagen))
-        <div class="mb-3">
-            <img src="{{ asset('storage/'.$contenido->imagen) }}" class="img-fluid rounded">
-        </div>
-    @endif
-
-    {{-- Archivos adicionales --}}
+    {{-- Archivos asociados --}}
     @if($contenido->archivos && $contenido->archivos->count())
         <div class="mb-4">
-            <h5>Archivos adicionales</h5>
+            <h5>Archivos asociados</h5>
             <ul class="list-group">
                 @foreach($contenido->archivos as $archivo)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        @if($archivo->ruta && Storage::disk('public')->exists($archivo->ruta))
-                            <a href="{{ asset('storage/'.$archivo->ruta) }}" target="_blank">{{ $archivo->nombre }}</a>
-                        @else
-                            <span class="text-muted">{{ $archivo->nombre }} (archivo no disponible)</span>
-                        @endif
+                        <a href="{{ asset('storage/' . $archivo->ruta) }}" target="_blank">{{ $archivo->nombre }}</a>
+                        <small class="text-muted">
+                            @if($archivo->ruta && Storage::disk('public')->exists($archivo->ruta))
+                                {{ number_format(Storage::disk('public')->size($archivo->ruta)/1024/1024, 2) }} MB
+                            @else
+                                0 MB
+                            @endif
+                        </small>
                     </li>
                 @endforeach
             </ul>
         </div>
     @endif
 
-    {{-- Cuadros con filtro --}}
-    @if($contenido->cuadros && $contenido->cuadros->count())
-        <div class="cuadros-box">
-            <h5>Cuadros</h5>
+    {{-- Detalles del contenido --}}
+    @if($contenido->detalles && $contenido->detalles->count())
+        <div class="contenidos-box">
+            <h5>Detalles</h5>
 
-            <select id="filter-dropdown" class="form-select form-select-sm mb-3">
+            <select id="filter-dropdown" class="form-select form-select-sm mb-2">
                 <option value="all">Todos</option>
                 @foreach(range('A','Z') as $letter)
                     <option value="{{ $letter }}">{{ $letter }}</option>
                 @endforeach
             </select>
 
-            <table class="table table-cuadros">
+            <table class="table table-contenidos">
                 <thead>
                     <tr>
                         <th>Título</th>
@@ -113,13 +130,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($contenido->cuadros->sortBy('titulo') as $cuadro)
-                        <tr class="cuadro-item" data-letter="{{ strtoupper(substr($cuadro->titulo ?? '', 0, 1)) }}">
-                            <td>{{ $cuadro->titulo ?? '-' }}</td>
-                            <td>{{ $cuadro->autor ?? '-' }}</td>
+                    @foreach($contenido->detalles->sortBy('titulo') as $detalle)
+                        <tr class="detalle-item" data-letter="{{ strtoupper(substr($detalle->titulo,0,1)) }}">
+                            <td>{{ $detalle->titulo }}</td>
+                            <td>{{ $detalle->autor ?? '-' }}</td>
                             <td>
-                                @if($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo))
-                                    <a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">Ver archivo</a>
+                                @if($detalle->archivos && $detalle->archivos->count())
+                                    @foreach($detalle->archivos as $archivo)
+                                        <a href="{{ asset('storage/' . $archivo->ruta) }}" target="_blank">Ver archivo</a>
+                                        <small class="text-muted">
+                                            @if($archivo->ruta && Storage::disk('public')->exists($archivo->ruta))
+                                                {{ number_format(Storage::disk('public')->size($archivo->ruta)/1024/1024, 2) }} MB
+                                            @else
+                                                0 MB
+                                            @endif
+                                        </small>
+                                    @endforeach
                                 @else
                                     <span class="text-muted">Sin archivo</span>
                                 @endif
@@ -130,6 +156,10 @@
             </table>
         </div>
     @endif
+
+    <div class="mt-3">
+        <button class="fancy" onclick="window.history.back()">← Regresar</button>
+    </div>
 </main>
 @endsection
 
@@ -137,16 +167,15 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const dropdown = document.getElementById('filter-dropdown');
-    if(!dropdown) return;
+    const detalles = document.querySelectorAll('.detalle-item');
 
-    const cuadros = document.querySelectorAll('.cuadro-item');
     dropdown.addEventListener('change', function() {
         const val = this.value;
-        cuadros.forEach(c => {
-            if(val === 'all' || c.dataset.letter === val) {
-                c.style.display = 'table-row';
+        detalles.forEach(d => {
+            if(val === 'all' || d.dataset.letter === val) {
+                d.style.display = 'table-row';
             } else {
-                c.style.display = 'none';
+                d.style.display = 'none';
             }
         });
     });

@@ -7,63 +7,66 @@ use App\Models\Seccion;
 use App\Models\Cuadro;
 use App\Models\Archivo;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str; 
+use Illuminate\Support\Str;
 
 class SeccionesController extends Controller
 {
+    // LISTADO (admin)
     public function listado()
     {
         $secciones = Seccion::all();
         return view('secciones.listado', compact('secciones'));
     }
 
+    // CREAR (admin)
     public function crear()
     {
         return view('secciones.secciones'); 
     }
 
+    // GUARDAR (admin)
     public function guardar(Request $request)
-{
-    $request->validate([
-        'nombre'        => 'required|string',
-        'descripcion'   => 'nullable|string',
-        'imagen'        => 'nullable|image',
-        'video'         => 'nullable|file',
-    ]);
-
-    $seccion = Seccion::create([
-        'nombre'      => $request->nombre,
-        'descripcion' => $request->descripcion,
-        'imagen'      => $request->hasFile('imagen') 
-                            ? $request->imagen->store('secciones', 'public') 
-                            : null,
-        'slug'        => Str::slug($request->nombre) . '-' . uniqid(), 
-    ]);
-
-    $this->guardarArchivos($request, $seccion);
-    $this->guardarCuadros($request, $seccion);
-
-    return redirect()->route('secciones.listado')
-                     ->with('success', 'Sección creada correctamente');
-}
-
-
-    public function mostrar($slug)
     {
-    
-        $seccion = Seccion::with(['archivos', 'cuadros.archivos'])
-                          ->where('slug', $slug)
-                          ->firstOrFail();
+        $request->validate([
+            'nombre'        => 'required|string',
+            'descripcion'   => 'nullable|string',
+            'imagen'        => 'nullable|image',
+        ]);
+
+        $seccion = Seccion::create([
+            'nombre'      => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'imagen'      => $request->hasFile('imagen') 
+                                ? $request->imagen->store('secciones', 'public') 
+                                : null,
+            'slug'        => Str::slug($request->nombre) . '-' . uniqid(),
+        ]);
+
+        $this->guardarArchivos($request, $seccion);
+        $this->guardarCuadros($request, $seccion);
+
+        return redirect()->route('secciones.listado')
+                         ->with('success', 'Sección creada correctamente');
+    }
+
+    // MOSTRAR (admin) → ahora usa ID
+     public function mostrar($slug)
+    {
+        $seccion = Seccion::with([ 'archivos', 'cuadros'])
+         
+            ->firstOrFail();
 
         return view('secciones.mostrar', compact('seccion'));
     }
 
+    // EDITAR (admin)
     public function editar($id)
     {
         $seccion = Seccion::with(['archivos', 'cuadros.archivos'])->findOrFail($id);
         return view('secciones.editar', compact('seccion'));
     }
 
+    // ACTUALIZAR (admin)
     public function actualizar(Request $request, $id)
     {
         $seccion = Seccion::with(['archivos', 'cuadros.archivos'])->findOrFail($id);
@@ -73,8 +76,7 @@ class SeccionesController extends Controller
             'descripcion' => $request->descripcion,
         ]);
 
-       
-
+        // IMAGEN
         if ($request->eliminar_imagen && $seccion->imagen && Storage::disk('public')->exists($seccion->imagen)) {
             Storage::disk('public')->delete($seccion->imagen);
             $seccion->imagen = null;
@@ -86,6 +88,7 @@ class SeccionesController extends Controller
             $seccion->imagen = $request->imagen->store('secciones', 'public');
         }
 
+        // VIDEO
         if ($request->eliminar_video && $seccion->video && Storage::disk('public')->exists($seccion->video)) {
             Storage::disk('public')->delete($seccion->video);
             $seccion->video = null;
@@ -99,15 +102,14 @@ class SeccionesController extends Controller
 
         $seccion->save();
 
-       
+        // ELIMINAR ARCHIVOS
         if ($request->archivos_eliminados) {
-
-            $ids = is_array($request->archivos_eliminados)
-                ? $request->archivos_eliminados
-                : json_decode($request->archivos_eliminados, true);
+            $ids = is_array($request->archivos_eliminados) 
+                   ? $request->archivos_eliminados 
+                   : json_decode($request->archivos_eliminados, true);
 
             if (is_array($ids)) {
-                foreach ($ids as $archivoId) { 
+                foreach ($ids as $archivoId) {
                     $archivo = Archivo::find($archivoId);
                     if ($archivo && $archivo->ruta && Storage::disk('public')->exists($archivo->ruta)) {
                         Storage::disk('public')->delete($archivo->ruta);
@@ -124,6 +126,7 @@ class SeccionesController extends Controller
                          ->with('success', 'Sección actualizada correctamente');
     }
 
+    // BORRAR (admin)
     public function borrar($id)
     {
         $seccion = Seccion::with(['archivos', 'cuadros.archivos'])->findOrFail($id);
@@ -150,6 +153,8 @@ class SeccionesController extends Controller
                          ->with('success', 'Sección eliminada correctamente');
     }
 
+    // --------------------- FUNCIONES PRIVADAS ---------------------
+
     private function guardarArchivos(Request $request, $seccion)
     {
         $archivos = $request->file('archivos');
@@ -170,7 +175,6 @@ class SeccionesController extends Controller
 
     private function guardarCuadros(Request $request, $seccion)
     {
-       
         $ids = $request->cuadro_id ?? [];
         $titulos = $request->cuadro_titulo ?? [];
         $autores = $request->cuadro_autor ?? [];
@@ -206,11 +210,9 @@ class SeccionesController extends Controller
                         'tipo'   => $archivo->getClientOriginalExtension(),
                     ]);
                 }
-
                 continue;
             }
 
-            
             $cuadro = $seccion->cuadros()->create([
                 'titulo' => $tituloLimpio,
                 'autor'  => $autorLimpio,

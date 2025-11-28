@@ -12,18 +12,21 @@ use Illuminate\Support\Str;
 
 class ContenidosController extends Controller
 {
+    // ADMIN: listado de contenidos
     public function listado()
     {
         $contenidos = Contenidos::with(['seccion', 'archivos', 'cuadros'])->get();
-        return view('Contenidos.listado', compact('contenidos'));
+        return view('contenidos.listado', compact('contenidos'));
     }
 
+    // ADMIN: mostrar formulario de creación
     public function crear()
     {
         $secciones = Seccion::all();
-        return view('Contenidos.contenidos', compact('secciones'));
+        return view('contenidos.contenidos', compact('secciones'));
     }
 
+    // ADMIN: guardar contenido
     public function guardar(Request $request)
     {
         $request->validate([
@@ -39,8 +42,7 @@ class ContenidosController extends Controller
         ]);
 
         $datos = $request->only(['titulo', 'descripcion', 'seccion_id']);
-        $datos['slug'] = Str::slug($request->titulo) . '-' . uniqid();
-
+       
         if ($request->hasFile('imagen')) {
             $datos['imagen'] = $request->file('imagen')->store('contenidos', 'public');
         }
@@ -53,13 +55,15 @@ class ContenidosController extends Controller
         return redirect()->route('contenidos.listado')->with('success', 'Contenido creado correctamente.');
     }
 
+    // ADMIN: formulario edición
     public function editar($id)
     {
         $contenido = Contenidos::with(['archivos', 'cuadros'])->findOrFail($id);
         $secciones = Seccion::all();
-        return view('Contenidos.editar', compact('contenido', 'secciones'));
+        return view('contenidos.editar', compact('contenido', 'secciones'));
     }
 
+    // ADMIN: actualizar contenido
     public function actualizar(Request $request, $id)
     {
         $contenido = Contenidos::with(['archivos', 'cuadros'])->findOrFail($id);
@@ -78,7 +82,7 @@ class ContenidosController extends Controller
         $datos = [
             'titulo' => $request->titulo,
             'descripcion' => $request->descripcion,
-            'slug' => Str::slug($request->titulo) . '-' . uniqid(),
+            
         ];
 
         if ($request->hasFile('imagen')) {
@@ -104,7 +108,7 @@ class ContenidosController extends Controller
 
         $this->guardarArchivos($request, $contenido);
 
-        // Eliminar archivos de cuadros
+        // Manejar archivos de cuadros
         if ($request->cuadro_archivo_eliminado) {
             foreach ($request->cuadro_archivo_eliminado as $cuadroId) {
                 $cuadro = Cuadro::find($cuadroId);
@@ -121,6 +125,7 @@ class ContenidosController extends Controller
         return redirect()->route('contenidos.listado')->with('success', 'Contenido actualizado correctamente.');
     }
 
+    // ADMIN: borrar contenido
     public function borrar($id)
     {
         $contenido = Contenidos::with(['archivos', 'cuadros'])->findOrFail($id);
@@ -142,15 +147,17 @@ class ContenidosController extends Controller
         return redirect()->route('contenidos.listado')->with('success', 'Contenido eliminado correctamente.');
     }
 
+    // PÚBLICO: mostrar contenido por slug
     public function mostrar($slug)
     {
         $contenido = Contenidos::with(['seccion', 'archivos', 'cuadros'])
-            ->where('slug', $slug)
+         
             ->firstOrFail();
 
-        return view('Contenidos.mostrar', compact('contenido'));
+        return view('contenidos.mostrar', compact('contenido'));
     }
 
+    // Funciones auxiliares
     private function guardarArchivos(Request $request, $contenido)
     {
         $archivos = $request->file('archivos') ?? [];
@@ -218,7 +225,6 @@ class ContenidosController extends Controller
         }
 
         $paraBorrar = array_diff($idsExistentes, $idsRecibidos);
-
         foreach ($paraBorrar as $idBorrar) {
             $cuadro = Cuadro::find($idBorrar);
             if ($cuadro) {

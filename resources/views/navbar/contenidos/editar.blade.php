@@ -9,17 +9,18 @@
         @method('PUT')
 
         {{-- SELECCIÓN DE SECCIÓN --}}
-        <div class="mb-3">
-            <label class="form-label">Sección del Navbar</label>
-            <select name="navbar_seccion_id" class="form-control" required>
-                <option value="">Selecciona una sección…</option>
-                @foreach($secciones as $seccion)
-                    <option value="{{ $seccion->id }}" {{ $contenido->navbar_seccion_id == $seccion->id ? 'selected' : '' }}>
-                        {{ $seccion->nombre }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
+ <div class="mb-3">
+    <label class="form-label">Sección del Navbar</label>
+    <select name="navbar_seccion_id" class="form-control" required>
+        <option value="">Selecciona una sección…</option>
+        @foreach($navbarSecciones as $seccion)
+            <option value="{{ $seccion->id }}" {{ $contenido->navbar_seccion_id == $seccion->id ? 'selected' : '' }}>
+                {{ $seccion->nombre }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
 
         {{-- TÍTULO --}}
         <div class="mb-3">
@@ -38,8 +39,12 @@
             <label class="form-label">Imagen principal (opcional)</label>
             <input type="file" name="imagen" class="form-control">
             @if($contenido->imagen)
-                <img src="{{ asset('storage/'.$contenido->imagen) }}" class="img-fluid mt-2 rounded" style="max-height:200px;">
+                <div class="mt-2 position-relative d-inline-block">
+                    <img src="{{ asset('storage/'.$contenido->imagen) }}" class="img-fluid rounded" style="max-height:200px;">
+                    <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 eliminar-imagen">✖</button>
+                </div>
             @endif
+            <input type="hidden" name="eliminar_imagen" value="0">
         </div>
 
         {{-- ARCHIVOS ADICIONALES --}}
@@ -49,13 +54,15 @@
             @if($contenido->archivos->count())
                 <ul class="mt-2">
                     @foreach($contenido->archivos as $archivo)
-                        <li>
+                        <li class="d-flex align-items-center">
                             <a href="{{ asset('storage/'.$archivo->ruta) }}" target="_blank">{{ $archivo->nombre }}</a>
-                            <small class="text-muted">{{ number_format(Storage::disk('public')->size($archivo->ruta)/1024/1024,2) }} MB</small>
+                            <small class="text-muted ms-2">{{ number_format(Storage::disk('public')->size($archivo->ruta)/1024/1024,2) }} MB</small>
+                            <button type="button" class="btn btn-sm btn-danger ms-2 eliminar-archivo" data-id="{{ $archivo->id }}">✖</button>
                         </li>
                     @endforeach
                 </ul>
             @endif
+            <input type="hidden" name="archivos_eliminar" value="">
         </div>
 
         {{-- CUADROS --}}
@@ -107,6 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
     const btnAgregar = document.getElementById('agregar-fila');
 
+    // Agregar fila de cuadro
     btnAgregar.addEventListener('click', function() {
         const nuevaFila = document.createElement('tr');
         nuevaFila.innerHTML = `
@@ -119,14 +127,38 @@ document.addEventListener('DOMContentLoaded', function() {
         index++;
     });
 
+    // Eliminar fila de cuadro
     tabla.addEventListener('click', function(e){
         if(e.target && e.target.classList.contains('eliminar-fila')){
             e.target.closest('tr').remove();
         }
     });
 
+    // Editor CKEditor
     ClassicEditor.create(document.querySelector('#descripcion'))
         .catch(error => console.error(error));
+
+    // Eliminar imagen principal
+    document.querySelectorAll('.eliminar-imagen').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (confirm('¿Eliminar imagen principal?')) {
+                document.querySelector('input[name="eliminar_imagen"]').value = 1;
+                btn.closest('div').remove();
+            }
+        });
+    });
+
+    // Eliminar archivos existentes
+    let archivosEliminar = [];
+    document.querySelectorAll('.eliminar-archivo').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (confirm('¿Eliminar este archivo?')) {
+                archivosEliminar.push(btn.dataset.id);
+                document.querySelector('input[name="archivos_eliminar"]').value = archivosEliminar.join(',');
+                btn.closest('li').remove();
+            }
+        });
+    });
 });
 </script>
 @endsection

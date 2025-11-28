@@ -47,8 +47,7 @@ body {
     transition: all 0.3s ease;
 }
 
-.login-html .sign-in:checked + .tab,
-.login-html .sign-up:checked + .tab {
+.login-html .sign-in:checked + .tab {
     color: #60a5fa;
     border-color: #60a5fa;
 }
@@ -116,12 +115,7 @@ body {
     color: #fff;
 }
 
-.login-html .sign-in-htm, .login-html .sign-up-htm {
-    display: none;
-}
-
-.login-html input.sign-in:checked ~ .login-form .sign-in-htm,
-.login-html input.sign-up:checked ~ .login-form .sign-up-htm {
+.login-html .sign-in-htm {
     display: block;
 }
 
@@ -164,6 +158,7 @@ body {
             @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
+
             @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul class="mb-0">
@@ -173,11 +168,9 @@ body {
                     </ul>
                 </div>
             @endif
-
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/flowbite@3.0.0/dist/flowbite.min.js"></script>
 </body>
 </html>
-

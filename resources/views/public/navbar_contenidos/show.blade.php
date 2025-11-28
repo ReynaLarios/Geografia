@@ -74,7 +74,7 @@
                                     <a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">{{ basename($cuadro->archivo) }}</a>
                                     <small class="text-muted d-block">({{ $tamanoMB }} MB)</small>
                                 @else
-                                    <span class="text-muted">Sin archivo</span>
+                                    <span class="text-muted">-</span>
                                 @endif
                             </td>
                         </tr>

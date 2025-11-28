@@ -70,12 +70,9 @@
     @endif
 
     
-    @if($seccion->descripcion)
+ @if(!empty($seccion->descripcion))
         <div class="mb-4 p-3 bg-light rounded shadow-sm">
-            <h5 class="mb-2">Descripción</h5>
-            <div class="border p-2 rounded" style="min-height:100px;">
-                {!! $seccion->descripcion !!}
-            </div>
+            {!! $seccion->descripcion !!}
         </div>
     @endif
 
@@ -130,7 +127,7 @@
                                         {{ number_format(Storage::disk('public')->size($cuadro->archivo)/1024/1024, 2) }} MB
                                     </small>
                                 @else
-                                    <span class="text-muted">Sin archivo</span>
+                                    <span class="text-muted">-</span>
                                 @endif
                             </td>
                             
@@ -141,18 +138,7 @@
         </div>
     @endif
 
-    
-    @if($seccion->contenidosNavbar && $seccion->contenidosNavbar->count())
-        <div class="mb-4">
-            <h5>Contenidos asociados</h5>
-            <ul class="list-group">
-                @foreach($seccion->contenidosNavbar as $contenido)
-                    <li class="list-group-item">{{ $contenido->titulo }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
+ 
      <div class="mt-3">
         <button class="fancy" onclick="window.history.back()">← Regresar</button>
     </div>

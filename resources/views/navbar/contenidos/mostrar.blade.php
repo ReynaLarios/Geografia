@@ -82,8 +82,8 @@
     @endif
 
     {{-- Botón regresar --}}
-    <div class="mt-3 text-center">
-        <button class="btn btn-secondary" onclick="window.history.back()">← Regresar</button>
+    <div class="mt-3">
+        <button class="fancy" onclick="window.history.back()">← Regresar</button>
     </div>
 
 </main>

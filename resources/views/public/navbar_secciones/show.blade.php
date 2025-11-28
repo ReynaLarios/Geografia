@@ -40,7 +40,7 @@
     @endif
 
     {{-- Cuadros con filtro --}}
-    @if($contenido->cuadros->isNotEmpty())
+    @if($seccion->cuadros->isNotEmpty())
         <div class="cuadros-box">
             <h5>Cuadros</h5>
 
@@ -74,7 +74,7 @@
                                     <a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">{{ basename($cuadro->archivo) }}</a>
                                     <small class="text-muted d-block">({{ $tamanoMB }} MB)</small>
                                 @else
-                                    <span class="text-muted">Sin archivo</span>
+                                    <span class="text-muted">-</span>
                                 @endif
                             </td>
                         </tr>
@@ -83,9 +83,8 @@
             </table>
         </div>
     @endif
-      <div class="mt-3">
+     <div class="mt-3">
         <button class="fancy" onclick="window.history.back()">← Regresar</button>
     </div>
-
 </div>
 @endsection

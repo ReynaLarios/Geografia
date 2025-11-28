@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 
 class NavbarSeccionesController extends Controller
 {
+    // ================= Admin =================
     public function index()
     {
         $secciones = NavbarSeccion::with(['cuadros.archivos', 'archivos'])->get();
@@ -20,7 +21,8 @@ class NavbarSeccionesController extends Controller
     {
         return view('navbar.secciones.crear');
     }
-    
+
+
 
 public function guardar(Request $request)
 {
@@ -34,46 +36,29 @@ public function guardar(Request $request)
 
     $rutaImagen = $request->hasFile('imagen') ? $request->file('imagen')->store('navbar_secciones', 'public') : null;
 
+    // Generar slug único
+    $slugBase = Str::slug($request->nombre);
+    $slug = $slugBase;
+    $contador = 1;
+    while (NavbarSeccion::where('slug', $slug)->exists()) {
+        $slug = $slugBase . '-' . $contador;
+        $contador++;
+    }
+
     $seccion = NavbarSeccion::create([
         'nombre' => $request->nombre,
-        'slug' => Str::slug($request->nombre), 
+        'slug' => $slug,
         'descripcion' => $request->descripcion,
-        'imagen' => $rutaImagen
+        'imagen' => $rutaImagen,
     ]);
 
-    foreach ($request->file('archivos') ?? [] as $archivo) {
-        $seccion->archivos()->create([
-            'nombre' => $archivo->getClientOriginalName(),
-            'ruta' => $archivo->store('archivos_seccion', 'public'),
-            'tipo' => $archivo->getClientOriginalExtension()
-        ]);
-    }
-
-    foreach ($request->cuadros ?? [] as $cuadroData) {
-        if (empty($cuadroData['titulo']) && empty($cuadroData['autor']) && empty($cuadroData['archivo'])) continue;
-
-        $archivoPrincipal = isset($cuadroData['archivo']) ? $cuadroData['archivo']->store('cuadros', 'public') : null;
-
-        $cuadro = $seccion->cuadros()->create([
-            'titulo' => $cuadroData['titulo'] ?? null,
-            'autor' => $cuadroData['autor'] ?? null,
-            'archivo' => $archivoPrincipal
-        ]);
-
-        foreach ($cuadroData['archivos'] ?? [] as $archivoExtra) {
-            $cuadro->archivos()->create([
-                'nombre' => $archivoExtra->getClientOriginalName(),
-                'ruta' => $archivoExtra->store('archivos/cuadros', 'public'),
-                'tipo' => $archivoExtra->getClientOriginalExtension()
-            ]);
-        }
-    }
+    $this->guardarArchivos($request, $seccion);
+    $this->guardarCuadros($request, $seccion);
 
     return redirect()->route('navbar.secciones.index')
                      ->with('success', 'Sección creada correctamente.');
 }
 
-    
 
     public function editar($id)
     {
@@ -81,7 +66,6 @@ public function guardar(Request $request)
         return view('navbar.secciones.editar', compact('seccion'));
     }
 
-   
     public function actualizar(Request $request, $id)
     {
         $seccion = NavbarSeccion::with(['cuadros.archivos', 'archivos'])->findOrFail($id);
@@ -94,7 +78,6 @@ public function guardar(Request $request)
             'cuadros' => 'nullable|array',
         ]);
 
- 
         if ($request->hasFile('imagen')) {
             if ($seccion->imagen && Storage::disk('public')->exists($seccion->imagen)) {
                 Storage::disk('public')->delete($seccion->imagen);
@@ -106,72 +89,12 @@ public function guardar(Request $request)
         $seccion->descripcion = $request->descripcion;
         $seccion->save();
 
-        
-        foreach ($request->file('archivos') ?? [] as $archivo) {
-            $seccion->archivos()->create([
-                'nombre' => $archivo->getClientOriginalName(),
-                'ruta' => $archivo->store('archivos_seccion', 'public'),
-                'tipo' => $archivo->getClientOriginalExtension()
-            ]);
-        }
-
-      
-        $idsRecibidos = collect($request->cuadros ?? [])->pluck('id')->filter()->all();
-        $idsExistentes = $seccion->cuadros->pluck('id')->all();
-
-      
-        foreach (array_diff($idsExistentes, $idsRecibidos) as $idBorrar) {
-            $cuadro = Cuadro::find($idBorrar);
-            if ($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo)) {
-                Storage::disk('public')->delete($cuadro->archivo);
-            }
-            foreach ($cuadro->archivos ?? [] as $archivo) {
-                if (Storage::disk('public')->exists($archivo->ruta)) {
-                    Storage::disk('public')->delete($archivo->ruta);
-                }
-                $archivo->delete();
-            }
-            $cuadro->delete(); 
-        }
-
-   
-        foreach ($request->cuadros ?? [] as $cuadroData) {
-            if (!empty($cuadroData['id'])) {
-                $cuadro = Cuadro::find($cuadroData['id']);
-                $cuadro->titulo = $cuadroData['titulo'] ?? $cuadro->titulo;
-                $cuadro->autor = $cuadroData['autor'] ?? $cuadro->autor;
-
-                if (isset($cuadroData['archivo'])) {
-                    if ($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo)) {
-                        Storage::disk('public')->delete($cuadro->archivo);
-                    }
-                    $cuadro->archivo = $cuadroData['archivo']->store('cuadros', 'public');
-                }
-
-                $cuadro->save();
-            } else {
-                $archivoPrincipal = isset($cuadroData['archivo']) ? $cuadroData['archivo']->store('cuadros', 'public') : null;
-
-                $cuadro = $seccion->cuadros()->create([
-                    'titulo' => $cuadroData['titulo'] ?? null,
-                    'autor' => $cuadroData['autor'] ?? null,
-                    'archivo' => $archivoPrincipal
-                ]);
-            }
-
-            foreach ($cuadroData['archivos'] ?? [] as $archivoExtra) {
-                $cuadro->archivos()->create([
-                    'nombre' => $archivoExtra->getClientOriginalName(),
-                    'ruta' => $archivoExtra->store('archivos/cuadros', 'public'),
-                    'tipo' => $archivoExtra->getClientOriginalExtension()
-                ]);
-            }
-        }
+        $this->guardarArchivos($request, $seccion);
+        $this->guardarCuadrosActualizar($request, $seccion);
 
         return redirect()->route('navbar.secciones.index')
                          ->with('success', 'Sección actualizada correctamente.');
     }
-
 
     public function borrar($id)
     {
@@ -207,10 +130,107 @@ public function guardar(Request $request)
                          ->with('success', 'Sección eliminada correctamente.');
     }
 
-    
-    public function mostrar($id)
+    // ================= Mostrar (Admin ID / Public slug) =================
+    public function mostrar($idOrSlug)
     {
-        $seccion = NavbarSeccion::with(['cuadros.archivos', 'archivos'])->findOrFail($id);
+        if (is_numeric($idOrSlug)) {
+            // Admin
+            $seccion = NavbarSeccion::with(['cuadros.archivos', 'archivos'])->findOrFail($idOrSlug);
+        } else {
+            // Público
+            $seccion = NavbarSeccion::with(['cuadros.archivos', 'archivos'])
+                ->where('slug', $idOrSlug)
+                ->firstOrFail();
+        }
+
         return view('navbar.secciones.mostrar', compact('seccion'));
+    }
+
+    // ================= Funciones privadas =================
+    private function guardarArchivos(Request $request, $seccion)
+    {
+        foreach ($request->file('archivos') ?? [] as $archivo) {
+            $seccion->archivos()->create([
+                'nombre' => $archivo->getClientOriginalName(),
+                'ruta' => $archivo->store('archivos_seccion', 'public'),
+                'tipo' => $archivo->getClientOriginalExtension()
+            ]);
+        }
+    }
+
+    private function guardarCuadros(Request $request, $seccion)
+    {
+        foreach ($request->cuadros ?? [] as $cuadroData) {
+            if (empty($cuadroData['titulo']) && empty($cuadroData['autor']) && empty($cuadroData['archivo'])) continue;
+
+            $archivoPrincipal = isset($cuadroData['archivo']) ? $cuadroData['archivo']->store('cuadros', 'public') : null;
+
+            $cuadro = $seccion->cuadros()->create([
+                'titulo' => $cuadroData['titulo'] ?? null,
+                'autor' => $cuadroData['autor'] ?? null,
+                'archivo' => $archivoPrincipal
+            ]);
+
+            foreach ($cuadroData['archivos'] ?? [] as $archivoExtra) {
+                $cuadro->archivos()->create([
+                    'nombre' => $archivoExtra->getClientOriginalName(),
+                    'ruta' => $archivoExtra->store('archivos/cuadros', 'public'),
+                    'tipo' => $archivoExtra->getClientOriginalExtension()
+                ]);
+            }
+        }
+    }
+
+    private function guardarCuadrosActualizar(Request $request, $seccion)
+    {
+        $idsRecibidos = collect($request->cuadros ?? [])->pluck('id')->filter()->all();
+        $idsExistentes = $seccion->cuadros->pluck('id')->all();
+
+        foreach (array_diff($idsExistentes, $idsRecibidos) as $idBorrar) {
+            $cuadro = Cuadro::find($idBorrar);
+            if ($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo)) {
+                Storage::disk('public')->delete($cuadro->archivo);
+            }
+            foreach ($cuadro->archivos ?? [] as $archivo) {
+                if (Storage::disk('public')->exists($archivo->ruta)) {
+                    Storage::disk('public')->delete($archivo->ruta);
+                }
+                $archivo->delete();
+            }
+            $cuadro->delete();
+        }
+
+        foreach ($request->cuadros ?? [] as $cuadroData) {
+            if (!empty($cuadroData['id'])) {
+                $cuadro = Cuadro::find($cuadroData['id']);
+                $cuadro->titulo = $cuadroData['titulo'] ?? $cuadro->titulo;
+                $cuadro->autor = $cuadroData['autor'] ?? $cuadro->autor;
+
+                if (isset($cuadroData['archivo'])) {
+                    if ($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo)) {
+                        Storage::disk('public')->delete($cuadro->archivo);
+                    }
+                    $cuadro->archivo = $cuadroData['archivo']->store('cuadros', 'public');
+                }
+
+                $cuadro->save();
+            } else {
+                $archivoPrincipal = isset($cuadroData['archivo']) ? $cuadroData['archivo']->store('cuadros', 'public') : null;
+
+                $cuadro = $seccion->cuadros()->create([
+                    'titulo' => $cuadroData['titulo'] ?? null,
+                    'autor' => $cuadroData['autor'] ?? null,
+                    'archivo' => $archivoPrincipal
+                ]);
+            }
+
+            foreach ($cuadroData['archivos'] ?? [] as $archivoExtra) {
+                $cuadro->archivos()->create([
+                    'nombre' => $archivoExtra->getClientOriginalName(),
+                    'ruta' => $archivoExtra->store('archivos/cuadros', 'public'),
+                    'tipo' => $archivoExtra->getClientOriginalExtension()
+                ]);
+            }
+        }
     }
 }

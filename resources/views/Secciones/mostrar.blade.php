@@ -84,7 +84,6 @@
 
     @if($seccion->descripcion)
         <div class="mb-4 p-3 bg-light rounded shadow-sm">
-            <h5 class="mb-2">Descripción</h5>
             <div class="border p-2 rounded" style="min-height:100px;">
                 {!! $seccion->descripcion !!}
             </div>
@@ -94,7 +93,6 @@
     {{-- Archivos adicionales --}}
 @if($seccion->archivos && $seccion->archivos->count())
     <div class="mb-4">
-        <h5>Archivos adicionales</h5>
         <ul class="list-group">
             @foreach($seccion->archivos as $archivo)
                 <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -115,7 +113,6 @@
 {{-- Cuadros --}}
 @if($seccion->cuadros && $seccion->cuadros->count())
     <div class="cuadros-box">
-        <h5>Cuadros</h5>
 
         {{-- Dropdown filtro --}}
         <select id="filter-dropdown" class="form-select form-select-sm mb-2">
@@ -161,10 +158,9 @@
     </div>
 @endif
 
-    <div class="mt-3 text-center">
-        <button class="btn btn-secondary" onclick="window.history.back()">← Regresar</button>
+   <div class="mt-3">
+        <button class="fancy" onclick="window.history.back()">← Regresar</button>
     </div>
-
 </main>
 @endsection
 

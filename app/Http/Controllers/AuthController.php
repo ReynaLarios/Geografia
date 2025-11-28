@@ -9,37 +9,31 @@ class AuthController extends Controller
 {
     public function showLoginForm()
     {
-        return view('auth.login');
+        return view('administrador.login');
     }
 
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'usuario' => 'required|usuario',
+            'email' => 'required|email',
             'password' => 'required',
-            'email' => 'required|email'
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+            return redirect()->intended('/dashboard');
         }
 
         return back()->withErrors([
-            'usuario' => 'Las credenciales proporcionadas no coinciden con nuestros registros.',
-            'password' => 'Las credenciales proporcionadas no coinciden con nuestros registros.',
-            'email' => 'Las credenciales proporcionadas no coinciden con nuestros registros.'
-        ]);
+            'email' => 'Correo o contraseña incorrectos.',
+        ])->withInput();
     }
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        return redirect()->route('login.form');
     }
 }
-
-
-

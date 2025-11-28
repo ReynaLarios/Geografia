@@ -2,10 +2,13 @@
 
 @section('contenido')
 <div class="container mt-4">
-    <h2 class="mb-4 text-center">Agregar Nuevo Contenido al Navbar</h2>
+    <h2 class="mb-4 text-center">{{ isset($contenido) ? 'Editar' : 'Crear' }} Contenido del Navbar</h2>
 
-    <form action="{{ route('navbar.contenidos.guardar') }}" method="POST" enctype="multipart/form-data" class="p-4 bg-light rounded shadow-sm">
+    <form action="{{ isset($contenido) ? route('navbar.contenidos.actualizar', $contenido->id) : route('navbar.contenidos.guardar') }}" method="POST" enctype="multipart/form-data" class="p-4 bg-light rounded shadow-sm">
         @csrf
+        @if(isset($contenido))
+            @method('PUT')
+        @endif
 
         {{-- SELECCIÓN DE SECCIÓN --}}
         <div class="mb-3">
@@ -13,7 +16,8 @@
             <select name="navbar_seccion_id" class="form-control" required>
                 <option value="">Selecciona una sección…</option>
                 @foreach($navbarSecciones as $seccion)
-                    <option value="{{ $seccion->id }}" {{ (isset($seccionId) && $seccionId == $seccion->id) ? 'selected' : '' }}>
+                    <option value="{{ $seccion->id }}"
+                        {{ (isset($contenido) && $contenido->navbar_seccion_id == $seccion->id) || old('navbar_seccion_id') == $seccion->id ? 'selected' : '' }}>
                         {{ $seccion->nombre }}
                     </option>
                 @endforeach
@@ -23,29 +27,47 @@
         {{-- TÍTULO --}}
         <div class="mb-3">
             <label class="form-label">Título</label>
-            <input type="text" name="titulo" class="form-control" value="{{ old('titulo') }}" required>
+            <input type="text" name="titulo" class="form-control" value="{{ old('titulo', $contenido->titulo ?? '') }}" required>
         </div>
 
         {{-- DESCRIPCIÓN --}}
         <div class="mb-3">
             <label class="form-label">Descripción</label>
-            <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion') }}</textarea>
+            <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion', $contenido->descripcion ?? '') }}</textarea>
         </div>
 
         {{-- IMAGEN PRINCIPAL --}}
         <div class="mb-3">
             <label class="form-label">Imagen principal (opcional)</label>
             <input type="file" name="imagen" class="form-control">
+            @if(isset($contenido) && $contenido->imagen)
+                <div class="mt-2">
+                    <img src="{{ asset('storage/'.$contenido->imagen) }}" class="img-fluid rounded" style="max-height:200px;">
+                    <button type="button" class="btn btn-danger btn-sm mt-1" id="eliminarImagen">Eliminar imagen</button>
+                    <input type="hidden" name="eliminar_imagen" id="inputEliminarImagen" value="0">
+                </div>
+            @endif
         </div>
 
         {{-- ARCHIVOS ADICIONALES --}}
         <div class="mb-3">
             <label class="form-label">Archivos adicionales</label>
             <input type="file" name="archivos[]" multiple class="form-control">
+            @if(isset($contenido) && $contenido->archivos->count())
+                <ul class="mt-2">
+                    @foreach($contenido->archivos as $archivo)
+                        <li>
+                            <a href="{{ asset('storage/'.$archivo->ruta) }}" target="_blank">{{ $archivo->nombre }}</a>
+                            <small class="text-muted">{{ number_format(Storage::disk('public')->size($archivo->ruta)/1024/1024,2) }} MB</small>
+                            <button type="button" class="btn btn-danger btn-sm btnEliminarArchivo" data-id="{{ $archivo->id }}">Eliminar</button>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
         </div>
 
         {{-- CUADROS --}}
-        <h5 class="mt-4">Cuadros tipo tabla</h5>
+        <h5 class="mt-4">Cuadros</h5>
         <table class="table table-bordered" id="tabla-cuadro">
             <thead>
                 <tr>
@@ -56,19 +78,33 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><input type="text" name="cuadros[0][titulo]" class="form-control"></td>
-                    <td><input type="text" name="cuadros[0][autor]" class="form-control"></td>
-                    <td><input type="file" name="cuadros[0][archivo]" class="form-control"></td>
-                    <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
-                </tr>
+                @if(isset($contenido))
+                    @foreach($contenido->cuadros as $index => $cuadro)
+                        <tr>
+                            <td>
+                                <input type="text" name="cuadros[{{ $index }}][titulo]" class="form-control" value="{{ $cuadro->titulo }}">
+                                <input type="hidden" name="cuadros[{{ $index }}][id]" value="{{ $cuadro->id }}">
+                            </td>
+                            <td><input type="text" name="cuadros[{{ $index }}][autor]" class="form-control" value="{{ $cuadro->autor }}"></td>
+                            <td>
+                                <input type="file" name="cuadros[{{ $index }}][archivo]" class="form-control">
+                                @if($cuadro->archivo)
+                                    <small class="d-block mt-1"><a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">Archivo actual</a></small>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button>
+                            </td>
+                        </tr>
+                    @endforeach
+                @endif
             </tbody>
         </table>
 
         <button type="button" id="agregar-fila" class="btn btn-secondary mb-3">+ Agregar fila</button>
         <br>
 
-        <button type="submit" class="btn btn-primary mt-1">Guardar Contenido</button>
+        <button type="submit" class="btn btn-primary mt-1">{{ isset($contenido) ? 'Actualizar' : 'Crear' }} Contenido</button>
     </form>
 </div>
 @endsection
@@ -77,12 +113,11 @@
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    let index = 0;
+    let index = {{ isset($contenido) ? count($contenido->cuadros) : 0 }};
     const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
     const btnAgregar = document.getElementById('agregar-fila');
 
     btnAgregar.addEventListener('click', function() {
-        index++;
         const nuevaFila = document.createElement('tr');
         nuevaFila.innerHTML = `
             <td><input type="text" name="cuadros[${index}][titulo]" class="form-control"></td>
@@ -91,12 +126,31 @@ document.addEventListener('DOMContentLoaded', function() {
             <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
         `;
         tabla.appendChild(nuevaFila);
+        index++;
     });
 
     tabla.addEventListener('click', function(e){
         if(e.target && e.target.classList.contains('eliminar-fila')){
             e.target.closest('tr').remove();
         }
+    });
+
+    // Botón eliminar imagen principal
+    const btnEliminarImagen = document.getElementById('eliminarImagen');
+    if(btnEliminarImagen){
+        btnEliminarImagen.addEventListener('click', function(){
+            document.getElementById('inputEliminarImagen').value = 1;
+            btnEliminarImagen.closest('div').remove();
+        });
+    }
+
+    // Botones eliminar archivos
+    document.querySelectorAll('.btnEliminarArchivo').forEach(btn => {
+        btn.addEventListener('click', function(){
+            // Aquí puedes agregar lógica para marcar el archivo para eliminar
+            // Por ejemplo, crear un input hidden dinámico con el ID del archivo
+            this.closest('li').remove();
+        });
     });
 
     ClassicEditor.create(document.querySelector('#descripcion'))
