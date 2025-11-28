@@ -34,7 +34,7 @@
         </ul>
       @endif
 
-      <a href="{{ route('inicio.index') }}" class="btn btn-secondary mt-3">Volver</a>
+      <a href="{{ route('public.inicio.index') }}" class="btn btn-secondary mt-3">Volver</a>
     </div>
   </div>
 </div>

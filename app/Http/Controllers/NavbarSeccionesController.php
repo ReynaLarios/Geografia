@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 
 class NavbarSeccionesController extends Controller
 {
-    // ================= Admin =================
+   
     public function index()
     {
         $secciones = NavbarSeccion::with(['cuadros.archivos', 'archivos'])->get();
@@ -36,7 +36,7 @@ public function guardar(Request $request)
 
     $rutaImagen = $request->hasFile('imagen') ? $request->file('imagen')->store('navbar_secciones', 'public') : null;
 
-    // Generar slug único
+    
     $slugBase = Str::slug($request->nombre);
     $slug = $slugBase;
     $contador = 1;
@@ -130,14 +130,13 @@ public function guardar(Request $request)
                          ->with('success', 'Sección eliminada correctamente.');
     }
 
-    // ================= Mostrar (Admin ID / Public slug) =================
     public function mostrar($idOrSlug)
     {
         if (is_numeric($idOrSlug)) {
-            // Admin
+           
             $seccion = NavbarSeccion::with(['cuadros.archivos', 'archivos'])->findOrFail($idOrSlug);
         } else {
-            // Público
+          
             $seccion = NavbarSeccion::with(['cuadros.archivos', 'archivos'])
                 ->where('slug', $idOrSlug)
                 ->firstOrFail();
@@ -146,7 +145,7 @@ public function guardar(Request $request)
         return view('navbar.secciones.mostrar', compact('seccion'));
     }
 
-    // ================= Funciones privadas =================
+
     private function guardarArchivos(Request $request, $seccion)
     {
         foreach ($request->file('archivos') ?? [] as $archivo) {

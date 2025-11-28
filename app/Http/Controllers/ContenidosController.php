@@ -125,7 +125,6 @@ class ContenidosController extends Controller
         return redirect()->route('contenidos.listado')->with('success', 'Contenido actualizado correctamente.');
     }
 
-    // ADMIN: borrar contenido
     public function borrar($id)
     {
         $contenido = Contenidos::with(['archivos', 'cuadros'])->findOrFail($id);
@@ -147,17 +146,18 @@ class ContenidosController extends Controller
         return redirect()->route('contenidos.listado')->with('success', 'Contenido eliminado correctamente.');
     }
 
-    // PÚBLICO: mostrar contenido por slug
+
     public function mostrar($slug)
-    {
-        $contenido = Contenidos::with(['seccion', 'archivos', 'cuadros'])
-         
-            ->firstOrFail();
+{
+    $contenido = Contenidos::with(['seccion', 'archivos', 'cuadros'])
+        ->where('slug', $slug)
+        ->firstOrFail();
 
-        return view('contenidos.mostrar', compact('contenido'));
-    }
+    return view('contenidos.mostrar', compact('contenido'));
+}
 
-    // Funciones auxiliares
+
+    
     private function guardarArchivos(Request $request, $contenido)
     {
         $archivos = $request->file('archivos') ?? [];

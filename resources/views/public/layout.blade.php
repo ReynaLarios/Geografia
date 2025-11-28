@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Licenciatura en Geografía</title>
+    <title>Departamento de geografia y ordenación</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
@@ -13,7 +13,7 @@
             --azul-medio: #60a5fa;
             --azul-oscuro: #1e3a8a;
             --gris-claro: #f5f6fa;
-            --gris-medio: #d1d5db;
+            --gris-medio: #000000ff;
             --blanco: #ffffff;
             --sombra: rgba(0, 0, 0, 0.05);
         }
@@ -267,7 +267,7 @@
     @foreach ($navbarSecciones as $sec)
         <div class="paste-button">
             <button class="button"
-                onclick="window.location='{{ route('public.navbar.secciones.show', $sec->slug) }}'">
+                onclick="window.location='{{ route('navbar.secciones.mostrar', $sec->slug) }}'">
                 {{ $sec->nombre }}
                 @if ($sec->contenidosNavbar->where('oculto_publico', false)->count())
                     ▼
@@ -277,7 +277,7 @@
             @if ($sec->contenidosNavbar->where('oculto_publico', false)->count())
                 <div class="dropdown-content">
                     @foreach ($sec->contenidosNavbar->where('oculto_publico', false) as $contenido)
-                        <a href="{{ route('public.navbar.contenido.show', $contenido->slug) }}">
+                        <a href="{{ route('navbar.contenido.show', $contenido->slug) }}">
                             {{ $contenido->titulo }}
                         </a>
                     @endforeach
@@ -290,21 +290,30 @@
 
 <div class="layout">
     <aside class="sidebar">
-        <ul class="list-unstyled">
+       
+ <ul class="nav flex-column">
+                 @if(isset($seccion))
+                    <ul class="nav flex-column">
+            @foreach($seccion->contenidos ?? [] as $cont)
+            <li class="mb-2">
+                <a href="{{ route('public.contenidos.show', $cont->id) }}" class="fancy">{{ $cont->titulo }}</a>
+@endforeach
+@endif
 
             @if (!empty($secciones))
                 @foreach ($secciones as $sec)
                     @if (!$sec->oculto_publico)
                         <li class="mb-2">
-                            <a href="{{ route('public.secciones.show', $sec->slug) }}" class="fancy">
-                                {{ $sec->nombre }}
-                            </a>
+                            <a href="{{ route('public.secciones.show', $sec->slug) }}" class="fancy">{{ $sec->nombre }}</a>
                         </li>
                     @endif
                 @endforeach
             @else
                 <li>No hay secciones disponibles</li>
             @endif
+            
+            
+
 
             <div class="contenido-fixed">
                 <button class="fancy" onclick="window.location='{{ route('public.personas.index') }}'">

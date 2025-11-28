@@ -22,7 +22,7 @@ class NavbarContenidosController extends Controller
     
 public function crear(Request $request)
 {
-    // Traemos únicamente las NavbarSecciones
+    
     $navbarSecciones = NavbarSeccion::all();
 
     return view('navbar.contenidos.crear', [

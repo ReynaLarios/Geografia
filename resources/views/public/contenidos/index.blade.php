@@ -23,9 +23,10 @@
                         <td>{{ $contenido->titulo }}</td>
                         <td>{{ $contenido->seccion->nombre ?? 'Sin sección' }}</td>
                         <td>
-                            <a href="{{ route('public.contenidos.show', $contenido->id) }}" class="btn btn-sm btn-primary">
-    Ver
+                            <a href="{{ route('public.contenidos.show', $contenido->slug) }}">
+    Ver contenido
 </a>
+
 
                         </td>
                     </tr>

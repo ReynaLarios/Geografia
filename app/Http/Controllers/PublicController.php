@@ -48,7 +48,7 @@ class PublicController extends Controller
         return view('public.navbar_secciones.index', compact('secciones'));
     }
 
-    public function navbarSeccionesMostrar($slug)
+    public function navbarSeccionesShow($slug)
 {
     $seccion = NavbarSeccion::with(['contenidosNavbar'])->where('slug', $slug)->firstOrFail();
     return view('public.navbar_secciones.show', compact('seccion'));
@@ -61,7 +61,7 @@ class PublicController extends Controller
         return view('public.navbar_contenidos.index', compact('navbarContenidos'));
     }
 
-  public function navbarContenidoMostrar($slug)
+  public function navbarContenidoShow($slug)
 {
     $contenido = NavbarContenido::with(['cuadros', 'archivos'])->where('slug', $slug)->firstOrFail();
     return view('public.navbar_contenidos.show', compact('contenido'));
@@ -74,11 +74,10 @@ class PublicController extends Controller
         return view('public.secciones.index', compact('secciones'));
     }
 
-    public function seccionesMostrar($slug)
+    public function seccionesShow($slug)
     {
         $seccion = Seccion::with(['archivos','cuadros.archivos'])->where('slug',$slug)->firstOrFail();
         $secciones = Seccion::where('oculto_publico', false)->get();
-
         return view('public.secciones.show', compact('seccion','secciones'));
     }
 
@@ -91,7 +90,7 @@ class PublicController extends Controller
         return view('public.contenidos.index', compact('contenidos','secciones'));
     }
 
-    public function contenidosMostrar($slug)
+    public function contenidosShow($slug)
 {
     $contenido = Contenidos::with(['seccion','cuadros'])->where('slug', $slug)->firstOrFail();
     $secciones = Seccion::where('oculto_publico', false)->get();
@@ -131,7 +130,7 @@ class PublicController extends Controller
     }
 
    
-   public function personasMostrar($slug)
+   public function personasShow($slug)
 {
     $persona = Persona::where('slug', $slug)->firstOrFail();
     $secciones = Seccion::where('oculto_publico', false)->get();

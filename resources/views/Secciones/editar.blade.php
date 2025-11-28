@@ -8,19 +8,18 @@
         @csrf
         @method('PUT')
 
-        {{-- Nombre de la sección --}}
         <div class="mb-3">
             <label class="form-label">Nombre de la sección</label>
             <input type="text" name="nombre" class="form-control" value="{{ old('nombre', $seccion->nombre) }}" required>
         </div>
 
-        {{-- Descripción --}}
+     
         <div class="mb-3">
             <label class="form-label">Descripción</label>
             <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion', $seccion->descripcion) }}</textarea>
         </div>
 
-        {{-- Imagen principal --}}
+      
         <div class="mb-3">
             <label class="form-label">Imagen principal (opcional)</label>
             <input type="file" name="imagen" class="form-control" id="input-imagen">
@@ -33,7 +32,7 @@
             <input type="hidden" name="eliminar_imagen" id="hidden-eliminar-imagen" value="0">
         </div>
         
-        {{-- Archivos adicionales --}}
+        
         <div class="mb-3">
             <label class="form-label">Archivos adicionales</label>
             @if($seccion->archivos && $seccion->archivos->count())
@@ -50,7 +49,7 @@
             <input type="hidden" name="archivos_eliminados" id="archivos-eliminados">
         </div>
 
-        {{-- Cuadros --}}
+        
         <h5 class="mt-4">Cuadros</h5>
         <table class="table table-bordered table-cuadros" id="tabla-cuadro">
             <thead>
@@ -91,7 +90,7 @@
         <button type="button" id="agregar-fila" class="btn btn-secondary mb-3">+ Agregar fila</button>
         <br>
 
-        {{-- Botones --}}
+        
         <button type="submit" class="btn btn-primary mt-1">Actualizar</button>
         <a href="{{ route('secciones.listado') }}" class="btn btn-outline-secondary mt-1">← Regresar a Secciones</a>
     </form>
@@ -103,11 +102,11 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // CKEditor
+ 
     ClassicEditor.create(document.querySelector('#descripcion'))
         .catch(error => console.error(error));
 
-    // Agregar filas a la tabla
+
     const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
     const btnAgregar = document.getElementById('agregar-fila');
 
@@ -128,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Eliminar imagen principal
+  
     const btnEliminarImagen = document.getElementById('eliminar-imagen');
     if(btnEliminarImagen){
         btnEliminarImagen.addEventListener('click', function() {
@@ -138,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Eliminar archivos adicionales
+
     const archivosEliminadosInput = document.getElementById('archivos-eliminados');
     document.querySelectorAll('.eliminar-archivo').forEach(btn => {
         btn.addEventListener('click', function() {

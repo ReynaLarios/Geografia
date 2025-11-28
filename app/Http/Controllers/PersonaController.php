@@ -86,11 +86,12 @@ class PersonaController extends Controller
         return redirect()->route('personas.index')->with('success', 'Persona eliminada correctamente');
     }
 
-    public function mostrar(Persona $persona)
-    {
+    
+     public function mostrar($slug) {
+    $persona = Persona::where('slug', $slug)->firstOrFail();
+
         return view('personas.mostrar', compact('persona'));
     }
-
    
     public function publicIndex()
     {

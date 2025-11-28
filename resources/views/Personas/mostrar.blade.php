@@ -8,7 +8,6 @@
     <div class="card mx-auto" style="max-width: 500px; background-color: #dbeafe; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
         <div class="card-body text-center p-4">
 
-            {{-- Foto redonda --}}
             @if($persona->foto)
                 <img src="{{ asset('storage/' . $persona->foto) }}" 
                      alt="Foto de {{ $persona->nombre }}" 
@@ -21,29 +20,25 @@
                 </div>
             @endif
 
-            {{-- Nombre --}}
             <h3 class="card-title fw-bold">{{ $persona->nombre }}</h3>
 
-            {{-- Email --}}
             <p class="text-muted mb-2">{{ $persona->email }}</p>
-
-            {{-- Datos personales --}}
+           
             @if($persona->datos_personales)
                 <div class="card-text text-start mt-3 p-3" style="background-color: #bbdefb; border-radius: 10px;">
                     {!! $persona->datos_personales !!}
                 </div>
             @endif
 
-            {{-- Botones de acción --}}
+       
             <div class="mt-4 d-flex justify-content-center gap-3">
 
-                {{-- Botón Editar --}}
+               
                 <a href="{{ route('personas.editar', $persona->id) }}" 
                    class="btn btn-primary">
                     Editar
                 </a>
 
-                {{-- Botón Eliminar --}}
                 <form action="{{ route('personas.borrar', $persona->id) }}" 
                       method="POST"
                       onsubmit="return confirm('¿Seguro que deseas eliminar esta persona?');">

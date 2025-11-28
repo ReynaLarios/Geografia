@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Licenciatura en Geografía</title>
+<title>Departamento de geografia y ordenación territorial</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -60,7 +60,7 @@ footer { position:relative; background:linear-gradient(135deg, #60a5fa, #1e3a8a)
 .navbar-bottom {
     display: flex;
     flex-wrap: wrap;
-    gap: 18px; /* 🔥 separa TODOS los botones principales */
+    gap: 18px; 
 }
 
 
@@ -68,7 +68,7 @@ footer { position:relative; background:linear-gradient(135deg, #60a5fa, #1e3a8a)
 </head>
 <body>
 
-{{-- NAVBAR SUPERIOR --}}
+
 <nav class="navbar navbar-top d-flex justify-content-between align-items-center" style="padding:0.25rem 1rem; height:70px;">
     <a href="https://www.udg.mx/es" class="navbar-brand d-flex align-items-center">
         <img src="{{ asset('/logo.png') }}" alt="Logo" style="height:70px;">
@@ -227,7 +227,7 @@ $banner = Banner::latest()->first();
 
                               
                                     <button class="small-btn toggle-visibility"
-                                            data-id="{{ $contenido->id }}"
+                                            data-id="{{ $contenido->slug }}"
                                             data-model="NavbarContenido"
                                             style="{{ $contenido->oculto_publico ? 'opacity:0.4;' : '' }}">
                                         👁
@@ -274,16 +274,16 @@ $banner = Banner::latest()->first();
 
 
         @if(isset($seccion))
-        <button class="fancy mb-2" onclick="window.location='{{ route('contenidos.crear') }}?seccion_id={{ $seccion->id }}'">+ Agregar Contenido</button>
+        <button class="fancy mb-2" onclick="window.location='{{ route('contenidos.crear') }}?seccion_slug={{ $seccion->slug }}'">+ Agregar Contenido</button>
         <button class="fancy mb-2" onclick="window.location='{{ route('dashboard') }}'">← Regresar a Secciones</button>
 
         <ul class="nav flex-column">
             @foreach($seccion->contenidos ?? [] as $cont)
             <li class="mb-2 d-flex justify-content-between align-items-center">
-                <a href="{{ route('contenidos.mostrar', $cont->id) }}" class="fancy flex-grow-1">{{ $cont->titulo }}</a>
+                <a href="{{ route('contenidos.mostrar', $cont->slug) }}" class="fancy flex-grow-1">{{ $cont->titulo }}</a>
                 <div class="d-flex gap-1">
                     <a href="{{ route('contenidos.editar', $cont->id) }}" class="small-btn">✏️</a>
-                    <form action="{{ route('contenidos.borrar', $cont->id) }}" method="POST">@csrf @method('DELETE')
+                    <form action="{{ route('contenidos.borrar', $cont->slug) }}" method="POST">@csrf @method('DELETE')
                         <button class="small-btn btn-borrar" type="submit">🗑</button>
                     </form>
                     <button class="small-btn toggle-visibility" data-id="{{ $cont->id }}" data-model="Contenido" style="{{ $cont->oculto_publico ? 'opacity:0.4;' : '' }}">👁</button>
@@ -297,13 +297,13 @@ $banner = Banner::latest()->first();
         <ul class="nav flex-column">
             @foreach($secciones ?? [] as $sec)
             <li class="mb-2 d-flex justify-content-between align-items-center">
-                <a href="{{ route('secciones.mostrar', $sec->id) }}" class="fancy flex-grow-1">{{ $sec->nombre }}</a>
+                <a href="{{ route('secciones.mostrar', $sec->slug) }}" class="fancy flex-grow-1">{{ $sec->nombre }}</a>
                 <div class="d-flex gap-1">
-                    <a href="{{ route('secciones.editar', $sec->id) }}" class="small-btn">✏️</a>
-                    <form action="{{ route('secciones.borrar', $sec->id) }}" method="POST">@csrf @method('DELETE')
+                    <a href="{{ route('secciones.editar', $sec->slug) }}" class="small-btn">✏️</a>
+                    <form action="{{ route('secciones.borrar', $sec->slug) }}" method="POST">@csrf @method('DELETE')
                         <button class="small-btn btn-borrar" type="submit">🗑</button>
                     </form>
-                    <button class="small-btn toggle-visibility" data-id="{{ $sec->id }}" data-model="Seccion" style="{{ $sec->oculto_publico ? 'opacity:0.4;' : '' }}">👁</button>
+                    <button class="small-btn toggle-visibility" data-slug=""="{{ $sec->slug }}" data-model="Seccion" style="{{ $sec->oculto_publico ? 'opacity:0.4;' : '' }}">👁</button>
                 </div>
             </li>
             @endforeach

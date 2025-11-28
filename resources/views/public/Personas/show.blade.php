@@ -1,29 +1,34 @@
 @extends('public.layout')
 
 @section('contenido')
-<div class="container mt-4 text-center">
+<div class="container mt-5">
 
-   
-    @if(!empty($persona->foto) && file_exists(public_path('storage/' . $persona->foto)))
-        <img src="{{ asset('storage/' . $persona->foto) }}" 
-             class="rounded-circle mb-3" 
-             style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #90caf9;">
-    @else
-        <div class="rounded-circle mb-3 d-flex align-items-center justify-content-center" 
-             style="width:120px; height:120px; background:#bbdefb; color:#1565c0; font-size:36px;">
-            {{ strtoupper(substr($persona->nombre ?? '', 0, 1)) }}
-        </div>
-    @endif
+    <a href="{{ route('public.personas.index') }}" class="btn btn-secondary mb-4">← Volver al listado</a>
 
-    <h3 class="fw-bold">{{ $persona->nombre ?? 'Nombre no disponible' }}</h3>
-    <p class="text-muted">{{ $persona->email ?? 'Correo no disponible' }}</p>
+    <div class="card mx-auto" style="max-width: 500px; background-color: #dbeafe; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+        <div class="card-body text-center p-4">
 
-    
-    @if(!empty($persona->datos_personales))
-        <div class="p-3 bg-light rounded shadow-sm mt-3 text-start">
-            {!! $persona->datos_personales !!}
-        </div>
-    @endif
+            @if($persona->foto)
+                <img src="{{ asset('storage/' . $persona->foto) }}" 
+                     alt="Foto de {{ $persona->nombre }}" 
+                     class="rounded-circle mb-3"
+                     style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #90caf9;">
+            @else
+                <div class="rounded-circle mb-3 d-flex align-items-center justify-content-center" 
+                     style="width: 150px; height: 150px; background-color: #bbdefb; color: #1565c0; font-size: 48px;">
+                    {{ strtoupper(substr($persona->nombre, 0, 1)) }}
+                </div>
+            @endif
+
+            <h3 class="card-title fw-bold">{{ $persona->nombre }}</h3>
+
+            <p class="text-muted mb-2">{{ $persona->email }}</p>
+           
+            @if($persona->datos_personales)
+                <div class="card-text text-start mt-3 p-3" style="background-color: #bbdefb; border-radius: 10px;">
+                    {!! $persona->datos_personales !!}
+                </div>
+            @endif
 
     <div class="mt-3">
         <button class="fancy" onclick="window.history.back()">← Regresar</button>
