@@ -138,9 +138,9 @@ Route::middleware(['admin'])->group(function () {
         Route::get('/{slug}/editar', [SeccionesController::class, 'editar'])->name('secciones.editar');
         Route::put('/{slug}/actualizar', [SeccionesController::class, 'actualizar'])->name('secciones.actualizar');
         Route::post('/{slug}/cuadro/guardar', [SeccionesController::class, 'guardarCuadro'])->name('secciones.cuadro.guardar');
-        Route::delete('/cuadros/{slug}/eliminar', [SeccionesController::class, 'eliminarCuadro'])->name('cuadros.eliminar');
+        Route::delete('/cuadros/{slug}/borrar', [SeccionesController::class, 'eliminarCuadro'])->name('cuadros.borrar');
         Route::post('/{slug}/archivo', [SeccionesController::class, 'guardarArchivo'])->name('secciones.archivo.guardar');
-        Route::delete('/archivos/{slug}/eliminar', [SeccionesController::class, 'eliminarArchivo'])->name('archivos.eliminar');
+        Route::delete('/archivos/{slug}/borrar', [SeccionesController::class, 'eliminarArchivo'])->name('archivos.borrar');
         Route::get('/{slug}', [SeccionesController::class, 'mostrar'])->name('secciones.mostrar');
         Route::delete('/{slug}/borrar', [SeccionesController::class, 'borrar'])->name('secciones.borrar');
     });

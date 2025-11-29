@@ -4,16 +4,17 @@
 <main class="p-4" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
     <h2>Editar Sección</h2>
 
-    <form action="{{ route('secciones.actualizar', $seccion->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('secciones.actualizar', $seccion->slug) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
+       
         <div class="mb-3">
             <label class="form-label">Nombre de la sección</label>
             <input type="text" name="nombre" class="form-control" value="{{ old('nombre', $seccion->nombre) }}" required>
         </div>
 
-     
+    
         <div class="mb-3">
             <label class="form-label">Descripción</label>
             <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion', $seccion->descripcion) }}</textarea>
@@ -31,8 +32,8 @@
             @endif
             <input type="hidden" name="eliminar_imagen" id="hidden-eliminar-imagen" value="0">
         </div>
-        
-        
+
+       
         <div class="mb-3">
             <label class="form-label">Archivos adicionales</label>
             @if($seccion->archivos && $seccion->archivos->count())
@@ -102,11 +103,11 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
- 
+
     ClassicEditor.create(document.querySelector('#descripcion'))
         .catch(error => console.error(error));
 
-
+    
     const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
     const btnAgregar = document.getElementById('agregar-fila');
 
@@ -137,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-
+    
     const archivosEliminadosInput = document.getElementById('archivos-eliminados');
     document.querySelectorAll('.eliminar-archivo').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -148,6 +149,8 @@ document.addEventListener('DOMContentLoaded', function() {
             this.closest('li').remove();
         });
     });
+
 });
 </script>
 @endsection
+
