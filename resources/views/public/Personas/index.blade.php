@@ -6,7 +6,7 @@
 
      <div class="d-flex flex-wrap justify-content-center gap-4">
         @foreach($personas as $persona)
-            <a href="{{ route('public.personas.show', $persona->id) }}" 
+            <a href="{{ route('public.personas.show', $persona->slug) }}" 
                class="card shadow-sm text-center text-decoration-none"
                style="width: 180px; border-radius: 12px; background-color: #dbeafe; color: inherit; transition: transform 0.2s;">
 

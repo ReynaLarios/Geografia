@@ -27,8 +27,6 @@ Route::get('/inicio/{slug}', [PublicController::class, 'inicioShow'])->name('pub
 
 //RUTAS PÚBLICAS 
 
-
-
 // PERSONAS
 Route::get('/academico', [PersonaController::class, 'publicIndex'])->name('public.personas.index');
 Route::get('/academico/{slug}', [PersonaController::class, 'publicShow'])->name('public.personas.show');

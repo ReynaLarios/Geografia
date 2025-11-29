@@ -33,7 +33,7 @@
                     @forelse($contenidos as $contenido)
                         <tr>
                             <td class="fw-semibold">
-                                <a href="{{ route('contenidos.mostrar', $contenido->id) }}"
+                                <a href="{{ route('contenidos.mostrar', $contenido->slug) }}"
                                    class="text-decoration-none text-primary hover-text">
                                     {{ $contenido->titulo }}
                                 </a>
@@ -46,13 +46,12 @@
                             <td class="text-center">
                                 <div class="d-inline-flex gap-2">
 
-                                    <a href="{{ route('contenidos.editar', $contenido->id) }}"
+                                    <a href="{{ route('contenidos.editar', $contenido->slug) }}"
                                        class="btn btn-outline-warning btn-sm rounded-pill px-3 shadow-sm">
                                         Editar
                                     </a>
 
-                                  
-                                    <form action="{{ route('contenidos.borrar', $contenido->id) }}"
+                                    <form action="{{ route('contenidos.borrar', $contenido->slug) }}"
                                           method="POST"
                                           onsubmit="return confirm('¿Seguro que quieres borrar este contenido?')">
                                         @csrf
@@ -81,16 +80,14 @@
 
 </main>
 
-
 <style>
-    .hover-text:hover {
-        color: #0a58ca !important;
-        text-decoration: underline !important;
-    }
+.hover-text:hover {
+    color: #0a58ca !important;
+    text-decoration: underline !important;
+}
 
-    table tbody tr:hover {
-        background-color: #f8f9fa;
-    }
+table tbody tr:hover {
+    background-color: #f8f9fa;
+}
 </style>
-
 @endsection

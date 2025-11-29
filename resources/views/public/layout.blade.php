@@ -288,6 +288,12 @@
 <div class="layout">
  <aside class="sidebar">
 
+     <div class="contenido-fixed">
+            <button class="fancy" onclick="window.location='{{ route('public.personas.index') }}'">
+              Académicos
+            </button>
+        </div>
+
   
     @if(isset($seccion) && optional($seccion->contenidos)->count())
         <ul class="nav flex-column">
@@ -315,6 +321,12 @@
             @endforeach
         </ul>
     @endif
+
+        <div class="videoteca-fixed">
+            <button class="fancy" onclick="window.location='{{ route('videoteca') }}'">
+                Videoteca
+            </button>
+        </div>
 
     <div class="contenido-fixed mt-3">
         <button class="fancy w-100" onclick="window.history.back()">
