@@ -37,10 +37,10 @@ Route::get('/academico/{slug}', [PersonaController::class, 'publicShow'])->name(
 Route::get('/carrusel', [PublicController::class, 'carrusel'])->name('public.carrusel');
 
 // NAVBAR
-Route::get('/navbar/seccion', [PublicController::class, 'navbarSeccionesIndex'])->name('navbar.secciones.index');
-Route::get('/navbar/seccion/{slug}', [PublicController::class, 'navbarSeccionesshow'])->name('navbar.secciones.show');
-Route::get('/navbar/contenido', [PublicController::class, 'navbarContenidosIndex'])->name('navbar.contenidos.index');
-Route::get('/navbar/contenido/{slug}', [PublicController::class, 'navbarContenidoshow'])->name('navbar.contenido.show');
+Route::get('/navbar/seccion', [PublicController::class, 'navbarSeccionesIndex'])->name('public.navbar.secciones.index');
+Route::get('/navbar/seccion/{slug}', [PublicController::class, 'navbarSeccionesshow'])->name('public.navbar.secciones.show');
+Route::get('/navbar/contenido', [PublicController::class, 'navbarContenidosIndex'])->name('public.navbar.contenidos.index');
+Route::get('/navbar/contenido/{slug}', [PublicController::class, 'navbarContenidoshow'])->name('public.navbar.contenido.show');
 
 // SECCIONES PÚBLICAS
 Route::get('/seccion', [PublicController::class, 'seccionesIndex'])->name('public.secciones.index');

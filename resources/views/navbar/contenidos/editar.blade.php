@@ -8,7 +8,7 @@
         @csrf
         @method('PUT')
 
-        {{-- SELECCIÓN DE SECCIÓN --}}
+        
  <div class="mb-3">
     <label class="form-label">Sección del Navbar</label>
     <select name="navbar_seccion_id" class="form-control" required>
@@ -22,19 +22,19 @@
 </div>
 
 
-        {{-- TÍTULO --}}
+   
         <div class="mb-3">
             <label class="form-label">Título</label>
             <input type="text" name="titulo" class="form-control" value="{{ old('titulo', $contenido->titulo) }}" required>
         </div>
 
-        {{-- DESCRIPCIÓN --}}
+     
         <div class="mb-3">
             <label class="form-label">Descripción</label>
             <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion', $contenido->descripcion) }}</textarea>
         </div>
 
-        {{-- IMAGEN PRINCIPAL --}}
+        
         <div class="mb-3">
             <label class="form-label">Imagen principal (opcional)</label>
             <input type="file" name="imagen" class="form-control">
@@ -47,7 +47,6 @@
             <input type="hidden" name="eliminar_imagen" value="0">
         </div>
 
-        {{-- ARCHIVOS ADICIONALES --}}
         <div class="mb-3">
             <label class="form-label">Archivos adicionales</label>
             <input type="file" name="archivos[]" multiple class="form-control">
@@ -65,7 +64,7 @@
             <input type="hidden" name="archivos_eliminar" value="">
         </div>
 
-        {{-- CUADROS --}}
+      
         <h5 class="mt-4">Cuadros</h5>
         <table class="table table-bordered" id="tabla-cuadro">
             <thead>
@@ -114,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
     const btnAgregar = document.getElementById('agregar-fila');
 
-    // Agregar fila de cuadro
+    
     btnAgregar.addEventListener('click', function() {
         const nuevaFila = document.createElement('tr');
         nuevaFila.innerHTML = `
@@ -127,18 +126,18 @@ document.addEventListener('DOMContentLoaded', function() {
         index++;
     });
 
-    // Eliminar fila de cuadro
+  
     tabla.addEventListener('click', function(e){
         if(e.target && e.target.classList.contains('eliminar-fila')){
             e.target.closest('tr').remove();
         }
     });
 
-    // Editor CKEditor
+  
     ClassicEditor.create(document.querySelector('#descripcion'))
         .catch(error => console.error(error));
 
-    // Eliminar imagen principal
+   
     document.querySelectorAll('.eliminar-imagen').forEach(btn => {
         btn.addEventListener('click', function() {
             if (confirm('¿Eliminar imagen principal?')) {
@@ -148,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Eliminar archivos existentes
+    
     let archivosEliminar = [];
     document.querySelectorAll('.eliminar-archivo').forEach(btn => {
         btn.addEventListener('click', function() {

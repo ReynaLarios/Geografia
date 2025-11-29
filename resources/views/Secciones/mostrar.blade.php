@@ -2,7 +2,7 @@
 
 @section('contenido')
 <style>
-/* 🎨 Estilo Cuadros */
+
 .cuadros-box {
     background: linear-gradient(135deg, #eef5ff, #ffffff);
     padding: 20px;
@@ -64,7 +64,7 @@
     color: #555;
 }
 
-/* Dropdown filtro */
+
 #filter-dropdown {
     max-width: 200px;
     margin-bottom: 15px;
@@ -90,7 +90,6 @@
         </div>
     @endif
 
-    {{-- Archivos adicionales --}}
 @if($seccion->archivos && $seccion->archivos->count())
     <div class="mb-4">
         <ul class="list-group">
@@ -110,11 +109,11 @@
     </div>
 @endif
 
-{{-- Cuadros --}}
+
 @if($seccion->cuadros && $seccion->cuadros->count())
     <div class="cuadros-box">
 
-        {{-- Dropdown filtro --}}
+    
         <select id="filter-dropdown" class="form-select form-select-sm mb-2">
             <option value="all">Todos</option>
             @foreach(range('A','Z') as $letter)

@@ -10,7 +10,7 @@
             @method('PUT')
         @endif
 
-        {{-- SELECCIÓN DE SECCIÓN --}}
+      
         <div class="mb-3">
             <label class="form-label">Sección del Navbar</label>
             <select name="navbar_seccion_id" class="form-control" required>
@@ -24,19 +24,18 @@
             </select>
         </div>
 
-        {{-- TÍTULO --}}
+        
         <div class="mb-3">
             <label class="form-label">Título</label>
             <input type="text" name="titulo" class="form-control" value="{{ old('titulo', $contenido->titulo ?? '') }}" required>
         </div>
 
-        {{-- DESCRIPCIÓN --}}
         <div class="mb-3">
             <label class="form-label">Descripción</label>
             <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion', $contenido->descripcion ?? '') }}</textarea>
         </div>
 
-        {{-- IMAGEN PRINCIPAL --}}
+        
         <div class="mb-3">
             <label class="form-label">Imagen principal (opcional)</label>
             <input type="file" name="imagen" class="form-control">
@@ -49,7 +48,7 @@
             @endif
         </div>
 
-        {{-- ARCHIVOS ADICIONALES --}}
+   
         <div class="mb-3">
             <label class="form-label">Archivos adicionales</label>
             <input type="file" name="archivos[]" multiple class="form-control">
@@ -66,7 +65,7 @@
             @endif
         </div>
 
-        {{-- CUADROS --}}
+    
         <h5 class="mt-4">Cuadros</h5>
         <table class="table table-bordered" id="tabla-cuadro">
             <thead>
@@ -135,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Botón eliminar imagen principal
+ 
     const btnEliminarImagen = document.getElementById('eliminarImagen');
     if(btnEliminarImagen){
         btnEliminarImagen.addEventListener('click', function(){
@@ -144,11 +143,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Botones eliminar archivos
     document.querySelectorAll('.btnEliminarArchivo').forEach(btn => {
         btn.addEventListener('click', function(){
-            // Aquí puedes agregar lógica para marcar el archivo para eliminar
-            // Por ejemplo, crear un input hidden dinámico con el ID del archivo
+            
             this.closest('li').remove();
         });
     });

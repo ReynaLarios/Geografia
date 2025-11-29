@@ -8,13 +8,12 @@
         @csrf
         @method('PUT')
 
-        {{-- Título --}}
         <div class="mb-3">
             <label class="form-label">Título</label>
             <input type="text" name="titulo" class="form-control" value="{{ old('titulo', $contenido->titulo) }}" required>
         </div>
 
-        {{-- Sección --}}
+    
         <div class="mb-3">
             <label class="form-label">Sección</label>
             <select name="seccion_id" class="form-select" required>
@@ -30,14 +29,12 @@
                 @endforeach
             </select>
         </div>
-
-        {{-- Descripción --}}
         <div class="mb-3">
             <label class="form-label">Descripción</label>
             <textarea name="descripcion" id="descripcion" class="form-control" rows="10">{!! old('descripcion', $contenido->descripcion) !!}</textarea>
         </div>
 
-        {{-- Imagen principal --}}
+   
         <div class="mb-3">
             <label class="form-label">Imagen principal (opcional)</label>
             <input type="file" name="imagen" class="form-control">
@@ -53,7 +50,7 @@
             @endif
         </div>
 
-        {{-- Archivos adicionales --}}
+        
         <div class="mb-3">
             <label class="form-label">Archivos adicionales</label>
             <input type="file" name="archivos[]" multiple class="form-control">
@@ -67,7 +64,7 @@
                         @endphp
                         <li class="list-group-item d-flex justify-content-between align-items-center">
 
-                            {{-- Aquí sí mostrar el nombre real --}}
+                            
                             @if($existe)
                                 <a href="{{ asset('storage/'.$archivo->ruta) }}" target="_blank">
                                     {{ $archivo->nombre_original ?? 'Ver archivo' }}
@@ -87,7 +84,7 @@
             @endif
         </div>
 
-        {{-- Cuadro tipo tabla --}}
+      
         <h5 class="mt-4">Cuadro tipo tabla</h5>
 
         <table class="table table-bordered" id="tabla-cuadro">
@@ -111,11 +108,11 @@
                     <td><input type="text" name="cuadro_autor[]" class="form-control" value="{{ $cuadro->autor }}"></td>
 
                     <td>
-                        {{-- Mostrar SOLO "ver archivo" --}}
+                     
                         @if($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo))
                             <a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">Ver archivo</a>
 
-                            {{-- Checkbox eliminar archivo --}}
+                           
                             <div class="form-check mt-1">
                                 <input type="checkbox" name="cuadro_archivo_eliminado[]" value="{{ $cuadro->id }}" class="form-check-input">
                                 <label class="form-check-label text-danger">Eliminar archivo</label>

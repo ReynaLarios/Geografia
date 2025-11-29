@@ -88,7 +88,7 @@
         </div>
     @endif
 
-    {{-- Archivos asociados --}}
+   
     @if($contenido->archivos && $contenido->archivos->count())
         <div class="mb-4">
             <h5>Archivos asociados</h5>
@@ -109,7 +109,7 @@
         </div>
     @endif
 
-    {{-- Detalles del contenido --}}
+ 
     @if($contenido->detalles && $contenido->detalles->count())
         <div class="contenidos-box">
             <h5>Detalles</h5>

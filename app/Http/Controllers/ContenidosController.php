@@ -12,50 +12,51 @@ use Illuminate\Support\Str;
 
 class ContenidosController extends Controller
 {
-    // ADMIN: listado de contenidos
+   
     public function listado()
     {
         $contenidos = Contenidos::with(['seccion', 'archivos', 'cuadros'])->get();
         return view('contenidos.listado', compact('contenidos'));
     }
 
-    // ADMIN: mostrar formulario de creación
+  
     public function crear()
     {
         $secciones = Seccion::all();
         return view('contenidos.contenidos', compact('secciones'));
     }
 
-    // ADMIN: guardar contenido
-    public function guardar(Request $request)
-    {
-        $request->validate([
-            'titulo' => 'required|string|max:255',
-            'seccion_id' => 'required|exists:secciones,id',
-            'descripcion' => 'nullable|string',
-            'imagen' => 'nullable|image|max:2048',
-            'archivos.*' => 'nullable|file|max:10240',
-            'cuadro_titulo.*' => 'nullable|string|max:255',
-            'cuadro_autor.*' => 'nullable|string|max:255',
-            'cuadro_archivo.*' => 'nullable|file|max:5120',
-            'cuadro_id.*' => 'nullable|integer',
-        ]);
+public function guardar(Request $request)
+{
+    $request->validate([
+        'titulo' => 'required|string|max:255',
+        'seccion_id' => 'required|exists:secciones,id',
+        'descripcion' => 'nullable|string',
+        'imagen' => 'nullable|image|max:2048',
+        'archivos.*' => 'nullable|file|max:10240',
+        'cuadro_titulo.*' => 'nullable|string|max:255',
+        'cuadro_autor.*' => 'nullable|string|max:255',
+        'cuadro_archivo.*' => 'nullable|file|max:5120',
+        'cuadro_id.*' => 'nullable|integer',
+    ]);
 
-        $datos = $request->only(['titulo', 'descripcion', 'seccion_id']);
-       
-        if ($request->hasFile('imagen')) {
-            $datos['imagen'] = $request->file('imagen')->store('contenidos', 'public');
-        }
+    $datos = $request->only(['titulo', 'descripcion', 'seccion_id']);
 
-        $contenido = Contenidos::create($datos);
+   
+    $datos['slug'] = Str::slug($request->titulo) . '-' . uniqid();
 
-        $this->guardarArchivos($request, $contenido);
-        $this->guardarCuadros($request, $contenido);
-
-        return redirect()->route('contenidos.listado')->with('success', 'Contenido creado correctamente.');
+    if ($request->hasFile('imagen')) {
+        $datos['imagen'] = $request->file('imagen')->store('contenidos', 'public');
     }
 
-    // ADMIN: formulario edición
+    $contenido = Contenidos::create($datos);
+
+    $this->guardarArchivos($request, $contenido);
+    $this->guardarCuadros($request, $contenido);
+
+    return redirect()->route('contenidos.listado')->with('success', 'Contenido creado correctamente.');
+}
+
     public function editar($id)
     {
         $contenido = Contenidos::with(['archivos', 'cuadros'])->findOrFail($id);
@@ -63,67 +64,42 @@ class ContenidosController extends Controller
         return view('contenidos.editar', compact('contenido', 'secciones'));
     }
 
-    // ADMIN: actualizar contenido
+    
     public function actualizar(Request $request, $id)
-    {
-        $contenido = Contenidos::with(['archivos', 'cuadros'])->findOrFail($id);
+{
+    $request->validate([
+        'titulo' => 'required|string|max:255',
+        'seccion_id' => 'required|exists:secciones,id',
+        'descripcion' => 'nullable|string',
+        'imagen' => 'nullable|image|max:2048',
+        'archivos.*' => 'nullable|file|max:10240',
+        'cuadro_titulo.*' => 'nullable|string|max:255',
+        'cuadro_autor.*' => 'nullable|string|max:255',
+        'cuadro_archivo.*' => 'nullable|file|max:5120',
+        'cuadro_id.*' => 'nullable|integer',
+    ]);
 
-        $request->validate([
-            'titulo' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'imagen' => 'nullable|image|max:2048',
-            'archivos.*' => 'nullable|file|max:10240',
-            'cuadro_titulo.*' => 'nullable|string|max:255',
-            'cuadro_autor.*' => 'nullable|string|max:255',
-            'cuadro_archivo.*' => 'nullable|file|max:5120',
-            'cuadro_id.*' => 'nullable|integer',
-        ]);
+    $contenido = Contenidos::findOrFail($id);
 
-        $datos = [
-            'titulo' => $request->titulo,
-            'descripcion' => $request->descripcion,
-            
-        ];
+    $datos = $request->only(['titulo', 'descripcion', 'seccion_id']);
 
-        if ($request->hasFile('imagen')) {
-            if ($contenido->imagen) Storage::disk('public')->delete($contenido->imagen);
-            $datos['imagen'] = $request->file('imagen')->store('contenidos', 'public');
-        } elseif ($request->eliminar_imagen) {
-            if ($contenido->imagen) Storage::disk('public')->delete($contenido->imagen);
-            $datos['imagen'] = null;
-        }
 
-        $contenido->update($datos);
-
-        // Eliminar archivos seleccionados
-        if ($request->archivos_eliminados) {
-            foreach ($request->archivos_eliminados as $archivoId) {
-                $archivo = Archivo::find($archivoId);
-                if ($archivo) {
-                    if ($archivo->ruta) Storage::disk('public')->delete($archivo->ruta);
-                    $archivo->delete();
-                }
-            }
-        }
-
-        $this->guardarArchivos($request, $contenido);
-
-        // Manejar archivos de cuadros
-        if ($request->cuadro_archivo_eliminado) {
-            foreach ($request->cuadro_archivo_eliminado as $cuadroId) {
-                $cuadro = Cuadro::find($cuadroId);
-                if ($cuadro && $cuadro->archivo) {
-                    Storage::disk('public')->delete($cuadro->archivo);
-                    $cuadro->archivo = null;
-                    $cuadro->save();
-                }
-            }
-        }
-
-        $this->guardarCuadros($request, $contenido);
-
-        return redirect()->route('contenidos.listado')->with('success', 'Contenido actualizado correctamente.');
+    if ($contenido->titulo !== $request->titulo) {
+        $datos['slug'] = Str::slug($request->titulo) . '-' . uniqid();
     }
+
+    if ($request->hasFile('imagen')) {
+        $datos['imagen'] = $request->file('imagen')->store('contenidos', 'public');
+    }
+
+    $contenido->update($datos);
+
+    $this->guardarArchivos($request, $contenido);
+    $this->guardarCuadros($request, $contenido);
+
+    return redirect()->route('contenidos.listado')->with('success', 'Contenido actualizado correctamente.');
+}
+
 
     public function borrar($id)
     {

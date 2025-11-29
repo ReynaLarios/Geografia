@@ -57,13 +57,13 @@ class BuscadorController extends Controller
             $resultados = $resultados->merge($this->buscarTabla($q, $tipo, $config));
         }
 
-        // Solo devolver los que tengan slug definido
+      
         $resultados = $resultados->filter(fn($item) => !empty($item->slug));
 
         return response()->json($resultados);
     }
 
-    // Página de resultados
+  
     public function resultados(Request $request)
     {
         $q = trim($request->input('q'));
@@ -73,13 +73,12 @@ class BuscadorController extends Controller
             $resultados = $resultados->merge($this->buscarTabla($q, $tipo, $config));
         }
 
-        // Solo resultados válidos
         $resultados = $resultados->filter(fn($item) => !empty($item->slug));
 
         return view('public.buscador.resultados', compact('resultados', 'q'));
     }
 
-    // Función interna para buscar en cada tabla
+   
     protected function buscarTabla($q, $tipo, $config)
     {
         $model = $config['model'];
@@ -88,12 +87,11 @@ class BuscadorController extends Controller
 
         $query = $model::query();
 
-        // Aplicar oculto_publico si existe
+      
         if ($config['oculto'] && Schema::hasColumn((new $model)->getTable(), 'oculto_publico')) {
             $query->where('oculto_publico', false);
         }
 
-        // Filtro de búsqueda
         $query->where(function($qQuery) use ($q, $titulo, $campos, $model) {
             $qQuery->where($titulo, 'like', "%{$q}%");
 
@@ -102,15 +100,14 @@ class BuscadorController extends Controller
             }
         });
 
-        // Seleccionar solo columnas existentes
+        
         $camposExistentes = array_filter($campos, fn($c) => Schema::hasColumn((new $model)->getTable(), $c));
         $result = $query->get($camposExistentes);
 
-        // Preparar nombre y url
+      
         $result->each(function($item) use ($tipo) {
             $item->tipo = $tipo;
 
-            // Normalizar nombre
             if ($tipo === 'contenidos' || $tipo === 'navbar_contenidos') {
                 $item->nombre = $item->titulo ?? 'Sin título';
             } elseif ($tipo === 'personas') {
@@ -119,7 +116,6 @@ class BuscadorController extends Controller
                 $item->nombre = $item->nombre ?? 'Sin nombre';
             }
 
-            // URL según ruta definida
             switch ($tipo) {
                 case 'secciones':
                     $item->url = route('public.secciones.show', $item->slug);

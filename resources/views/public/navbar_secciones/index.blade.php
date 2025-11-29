@@ -5,7 +5,7 @@
 <div class="container mt-4">
     <h2 class="mb-4 text-center">Listado de Secciones</h2>
 
-    {{-- SIN BOTÓN DE AGREGAR SECCIÓN --}}
+    
 
     <table class="table table-bordered align-middle text-center">
         <thead class="table-light">

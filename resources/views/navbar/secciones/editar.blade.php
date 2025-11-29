@@ -8,19 +8,19 @@
         @csrf
         @method('PUT')
 
-        {{-- NOMBRE --}}
+       
         <div class="mb-3">
             <label class="form-label">Nombre</label>
             <input type="text" name="nombre" class="form-control" value="{{ old('nombre', $seccion->nombre) }}" required>
         </div>
 
-        {{-- DESCRIPCIÓN --}}
+       
         <div class="mb-3">
             <label class="form-label">Descripción</label>
             <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion', $seccion->descripcion) }}</textarea>
         </div>
 
-        {{-- IMAGEN PRINCIPAL --}}
+    
         <div class="mb-3">
             <label class="form-label">Imagen principal (opcional)</label>
             <input type="file" name="imagen" class="form-control">
@@ -29,7 +29,7 @@
             @endif
         </div>
 
-        {{-- ARCHIVOS ADICIONALES --}}
+       
         <div class="mb-3">
             <label class="form-label">Archivos adicionales</label>
             <input type="file" name="archivos[]" multiple class="form-control">
@@ -45,7 +45,7 @@
             @endif
         </div>
 
-        {{-- CUADROS --}}
+        
         <h5 class="mt-4">Cuadros</h5>
         <table class="table table-bordered" id="tabla-cuadro">
             <thead>

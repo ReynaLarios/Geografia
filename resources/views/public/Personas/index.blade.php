@@ -1,4 +1,4 @@
-@extends('base.layout')
+@extends('public.layout')
 
 @section('contenido')
 <div class="container mt-5">

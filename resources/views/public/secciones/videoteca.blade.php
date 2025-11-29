@@ -1,6 +1,6 @@
 @extends('public.layout')
 
-{{-- Usa tu layout público, NO el layout admin --}}
+
 @section('contenido')
 
 <div class="container py-5">

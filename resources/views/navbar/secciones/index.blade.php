@@ -2,7 +2,7 @@
 
 @section('contenido')
 <style>
-/* 🎨 Grid y tarjetas */
+
 .navbar-secciones-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -40,7 +40,7 @@
     margin-bottom: 15px;
 }
 
-/* 🎨 Botones outline */
+
 .btn-modern {
     background: #fff;
     color: inherit;

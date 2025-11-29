@@ -46,13 +46,12 @@
                             <td class="text-center">
                                 <div class="d-inline-flex gap-2">
 
-                                    {{-- Editar --}}
                                     <a href="{{ route('contenidos.editar', $contenido->id) }}"
                                        class="btn btn-outline-warning btn-sm rounded-pill px-3 shadow-sm">
                                         Editar
                                     </a>
 
-                                    {{-- Borrar --}}
+                                  
                                     <form action="{{ route('contenidos.borrar', $contenido->id) }}"
                                           method="POST"
                                           onsubmit="return confirm('¿Seguro que quieres borrar este contenido?')">
@@ -82,7 +81,7 @@
 
 </main>
 
-{{-- Estilos extras para hacer todo más elegante --}}
+
 <style>
     .hover-text:hover {
         color: #0a58ca !important;

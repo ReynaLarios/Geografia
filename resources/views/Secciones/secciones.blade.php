@@ -7,31 +7,29 @@
     <form action="{{ route('secciones.guardar') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
-        {{-- Nombre --}}
         <div class="mb-3">
             <label class="form-label">Nombre de la sección</label>
             <input type="text" name="nombre" class="form-control" value="{{ old('nombre') }}" required>
         </div>
 
-        {{-- Descripción --}}
         <div class="mb-3">
             <label class="form-label">Descripción</label>
             <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion') }}</textarea>
         </div>
 
-        {{-- Imagen principal --}}
+        
         <div class="mb-3">
             <label class="form-label">Imagen principal (opcional)</label>
             <input type="file" name="imagen" class="form-control">
         </div>
 
-        {{-- Archivos adicionales --}}
+       
         <div class="mb-3">
             <label class="form-label">Archivos adicionales</label>
             <input type="file" name="archivos[]" multiple class="form-control">
         </div>
 
-        {{-- Cuadros --}}
+  
         <h5 class="mt-4">Cuadros</h5>
         <table class="table table-bordered table-cuadros" id="tabla-cuadro">
             <thead>
@@ -69,15 +67,13 @@
 
 @section('scripts')
 
-{{-- CKEDITOR --}}
+
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 
-    // -----------------------------------------------------
-    // AGREGAR FILAS A LA TABLA
-    // -----------------------------------------------------
+
     const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
     const btnAgregar = document.getElementById('agregar-fila');
 
@@ -97,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
         tabla.appendChild(nuevaFila);
     });
 
-    // ELIMINAR FILAS
+   
     tabla.addEventListener('click', function(e) {
         if (e.target && e.target.classList.contains('eliminar-fila')) {
             e.target.closest('tr').remove();
@@ -105,9 +101,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 
-    // -----------------------------------------------------
-    // CKEDITOR (MISMO QUE EN EL FORMULARIO DE CONTENIDOS)
-    // -----------------------------------------------------
     ClassicEditor
         .create(document.querySelector('#descripcion'))
         .catch(error => { console.error(error); });

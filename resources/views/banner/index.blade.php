@@ -4,7 +4,7 @@
 <div class="container mt-4">
     <h2 class="mb-4">Administrar Banner</h2>
 
-    {{-- Mensajes de éxito o error --}}
+    
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
@@ -13,7 +13,6 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-    {{-- Mostrar banner actual --}}
     @if($banner?->imagen)
         <div class="mb-4">
             <p>Imagen actual: {{ $banner->imagen }}</p>
@@ -21,7 +20,6 @@
         </div>
     @endif
 
-    {{-- Formulario para subir o actualizar banner --}}
     <form action="{{ route('banner.guardar') }}" method="POST" enctype="multipart/form-data" class="border p-4 rounded bg-white shadow-sm">
         @csrf
         <div class="mb-3">

@@ -59,7 +59,6 @@
         <div class="d-flex justify-content-between align-items-center mb-2">
             <h5>Cuadros</h5>
 
-            {{-- Dropdown filtro --}}
             <select id="filter-letter" class="form-select form-select-sm filter-dropdown">
                 <option value="all">Mostrar todos</option>
                 @foreach(range('A','Z') as $letter)

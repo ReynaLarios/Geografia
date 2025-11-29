@@ -11,7 +11,7 @@
         <form action="{{ route('personas.guardar') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
-            {{-- Nombre --}}
+           
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre</label>
                 <input type="text" name="nombre" id="nombre" class="form-control" value="{{ old('nombre') }}" required>
@@ -20,7 +20,7 @@
                 @enderror
             </div>
 
-            {{-- Email --}}
+            
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}" required>
@@ -29,7 +29,7 @@
                 @enderror
             </div>
 
-            {{-- Datos personales --}}
+            
             <div class="mb-3">
                 <label for="datos_personales" class="form-label">Datos Personales</label>
                 <textarea name="datos_personales" id="datos_personales" class="form-control" rows="4">{{ old('datos_personales') }}</textarea>
@@ -38,7 +38,7 @@
                 @enderror
             </div>
 
-            {{-- Foto --}}
+        
             <div class="mb-3">
                 <label for="foto" class="form-label">Foto</label>
                 <input type="file" name="foto" id="foto" class="form-control">

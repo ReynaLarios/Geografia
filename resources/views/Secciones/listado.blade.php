@@ -22,19 +22,18 @@
 
                         <div class="card-body d-flex flex-column">
 
-                            {{-- Nombre --}}
                             <h5 class="card-title fw-semibold text-primary">
                                 {{ $seccion->nombre }}
                             </h5>
 
-                            {{-- Descripción --}}
+                           
                             @if($seccion->descripcion)
                                 <p class="text-muted small mt-2">
                                     {{ Str::limit($seccion->descripcion, 80) }}
                                 </p>
                             @endif
 
-                            {{-- Cuadros --}}
+                          
                             @if($seccion->cuadros && $seccion->cuadros->count() > 0)
                                 <span class="badge bg-light text-dark mt-1 px-3 py-2 rounded-pill shadow-sm w-fit">
                                     {{ $seccion->cuadros->count() }} cuadros
@@ -45,7 +44,7 @@
                                 </span>
                             @endif
 
-                            {{-- Botones --}}
+                          
                             <div class="mt-auto pt-3 d-flex justify-content-between">
 
                                 <a href="{{ route('secciones.mostrar', $seccion->id) }}"
@@ -85,7 +84,7 @@
 
 </main>
 
-{{-- Estilos extra --}}
+
 <style>
     .card-hover {
         transition: .25s ease;

@@ -7,13 +7,12 @@
     <form action="{{ route('contenidos.guardar') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
-        {{-- Título --}}
         <div class="mb-3">
             <label class="form-label">Título</label>
             <input type="text" name="titulo" class="form-control" value="{{ old('titulo') }}" required>
         </div>
 
-        {{-- Sección --}}
+   
         <div class="mb-3">
             <label class="form-label">Sección</label>
          <select name="seccion_id" class="form-select" required>
@@ -31,25 +30,24 @@
 
         </div>
 
-        {{-- Descripción --}}
+       
         <div class="mb-3">
             <label class="form-label">Descripción</label>
             <textarea name="descripcion" id="descripcion" class="form-control" rows="10">{{ old('descripcion') }}</textarea>
         </div>
 
-        {{-- Imagen principal --}}
+ 
         <div class="mb-3">
             <label class="form-label">Imagen principal (opcional)</label>
             <input type="file" name="imagen" class="form-control">
         </div>
 
-        {{-- Archivos adicionales --}}
+       
         <div class="mb-3">
             <label class="form-label">Archivos adicionales</label>
             <input type="file" name="archivos[]" multiple class="form-control">
         </div>
-
-        {{-- Cuadro tipo tabla --}}
+    
         <h5 class="mt-4">Cuadro tipo tabla</h5>
         <table class="table table-bordered" id="tabla-cuadro">
             <thead>
@@ -61,7 +59,7 @@
                 </tr>
             </thead>
             <tbody>
-                {{-- No hay cuadros iniciales, se agregan dinámicamente --}}
+                
             </tbody>
         </table>
         <button type="button" id="agregar-fila" class="btn btn-secondary mb-3">+ Agregar fila</button>
@@ -77,7 +75,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
     const btnAgregar = document.getElementById('agregar-fila');
 
-    // Agregar nueva fila
     btnAgregar.addEventListener('click', function() {
         const index = tabla.rows.length;
         const nuevaFila = document.createElement('tr');
@@ -93,14 +90,14 @@ document.addEventListener('DOMContentLoaded', function() {
         tabla.appendChild(nuevaFila);
     });
 
-    // Eliminar fila
+  
     tabla.addEventListener('click', function(e) {
         if(e.target && e.target.classList.contains('eliminar-fila')) {
             e.target.closest('tr').remove();
         }
     });
 
-    // CKEditor
+  
     ClassicEditor
         .create(document.querySelector('#descripcion'), {
             toolbar: [ 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ]

@@ -42,12 +42,11 @@ public function guardar(Request $request)
         'cuadros' => 'nullable|array',
     ]);
 
-    // Guardar imagen principal
     $rutaImagen = $request->hasFile('imagen') 
         ? $request->file('imagen')->store('navbar_contenidos', 'public') 
         : null;
 
-    // Generar slug único
+
     $slugBase = Str::slug($request->titulo);
     $slug = $slugBase;
     $contador = 1;
@@ -56,7 +55,6 @@ public function guardar(Request $request)
         $contador++;
     }
 
-    // Crear contenido
     $contenido = NavbarContenido::create([
         'navbar_seccion_id' => $request->navbar_seccion_id,
         'titulo' => $request->titulo,
@@ -65,7 +63,7 @@ public function guardar(Request $request)
         'slug' => $slug,
     ]);
 
-    // Archivos adicionales
+
     foreach ($request->file('archivos') ?? [] as $archivo) {
         $contenido->archivos()->create([
             'nombre' => $archivo->getClientOriginalName(),
@@ -74,7 +72,7 @@ public function guardar(Request $request)
         ]);
     }
 
-    // Cuadros con archivos
+   
     $this->guardarCuadros($request, $contenido);
 
     return redirect()->route('navbar.contenidos.index')
@@ -91,7 +89,6 @@ public function editar($id)
 
     return view('navbar.contenidos.editar', compact('contenido', 'navbarSecciones'));
 }
-    // ================== ACTUALIZAR ==================
     public function actualizar(Request $request, $id)
     {
         $contenido = NavbarContenido::with(['cuadros.archivos', 'archivos'])->findOrFail($id);
@@ -101,7 +98,7 @@ public function editar($id)
             'titulo' => 'required|string|max:255',
         ]);
 
-        // Eliminar imagen principal si se solicitó
+        
         if ($request->input('eliminar_imagen') == 1 && $contenido->imagen) {
             if (Storage::disk('public')->exists($contenido->imagen)) {
                 Storage::disk('public')->delete($contenido->imagen);
@@ -109,7 +106,7 @@ public function editar($id)
             $contenido->imagen = null;
         }
 
-        // Actualizar imagen si subieron nueva
+      
         if ($request->hasFile('imagen')) {
             if ($contenido->imagen && Storage::disk('public')->exists($contenido->imagen)) {
                 Storage::disk('public')->delete($contenido->imagen);
@@ -122,7 +119,7 @@ public function editar($id)
         $contenido->descripcion = $request->descripcion;
         $contenido->save();
 
-        // Archivos a eliminar
+        
         if ($request->input('archivos_eliminar')) {
             $idsEliminar = explode(',', $request->input('archivos_eliminar'));
             foreach ($idsEliminar as $idArchivo) {
@@ -136,7 +133,7 @@ public function editar($id)
             }
         }
 
-        // Archivos nuevos
+  
         if ($request->hasFile('archivos')) {
             foreach ($request->file('archivos') as $archivo) {
                 $contenido->archivos()->create([
@@ -147,12 +144,11 @@ public function editar($id)
             }
         }
 
-        // Cuadros
+   
         if ($request->has('cuadros')) {
             $idsRecibidos = collect($request->cuadros)->pluck('id')->filter()->all();
             $idsExistentes = $contenido->cuadros->pluck('id')->all();
 
-            // Borrar cuadros que ya no existen
             $paraBorrar = array_diff($idsExistentes, $idsRecibidos);
             foreach ($paraBorrar as $idBorrar) {
                 $cuadro = Cuadro::find($idBorrar);
@@ -170,7 +166,7 @@ public function editar($id)
                 }
             }
 
-            // Crear o actualizar cuadros
+         
             $this->guardarCuadros($request, $contenido, true);
         }
 
@@ -178,17 +174,16 @@ public function editar($id)
                          ->with('success', 'Contenido actualizado correctamente.');
     }
 
-    // ================== BORRAR ==================
+  
     public function borrar($id)
     {
         $contenido = NavbarContenido::with(['archivos', 'cuadros.archivos'])->findOrFail($id);
 
-        // Borrar imagen principal
         if ($contenido->imagen && Storage::disk('public')->exists($contenido->imagen)) {
             Storage::disk('public')->delete($contenido->imagen);
         }
 
-        // Borrar archivos
+       
         foreach ($contenido->archivos as $archivo) {
             if (Storage::disk('public')->exists($archivo->ruta)) {
                 Storage::disk('public')->delete($archivo->ruta);
@@ -196,7 +191,7 @@ public function editar($id)
             $archivo->delete();
         }
 
-        // Borrar cuadros
+   
         foreach ($contenido->cuadros as $cuadro) {
             if ($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo)) {
                 Storage::disk('public')->delete($cuadro->archivo);
@@ -216,14 +211,14 @@ public function editar($id)
                          ->with('success', 'Contenido eliminado correctamente.');
     }
 
-    // ================== MOSTRAR ==================
+  
     public function mostrar($id)
     {
         $contenido = NavbarContenido::with(['seccion', 'archivos', 'cuadros.archivos'])->findOrFail($id);
         return view('navbar.contenidos.mostrar', compact('contenido'));
     }
 
-    // ================== MÉTODO AUXILIAR PARA CUADROS ==================
+  
     protected function guardarCuadros(Request $request, NavbarContenido $contenido, $actualizar = false)
 {
     if (!$request->has('cuadros')) return;
@@ -234,7 +229,6 @@ public function editar($id)
         $titulo = $cuadroData['titulo'] ?? null;
         $autor  = $cuadroData['autor'] ?? null;
 
-        // Actualizar cuadro existente
         if ($id && $actualizar) {
             $cuadro = Cuadro::find($id);
             if (!$cuadro) continue;
@@ -250,7 +244,7 @@ public function editar($id)
             }
 
             $cuadro->save();
-        } else { // Crear nuevo cuadro
+        } else { 
             $rutaArchivo = $request->hasFile("cuadros.$index.archivo")
                 ? $request->file("cuadros.$index.archivo")->store('cuadros', 'public')
                 : null;

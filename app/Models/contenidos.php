@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Contenidos extends Model
 {
@@ -19,7 +20,25 @@ class Contenidos extends Model
         'slug', 
     ];
 
-    
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Crear slug automáticamente
+        static::creating(function ($contenido) {
+            if (empty($contenido->slug)) {
+                $contenido->slug = Str::slug($contenido->titulo) . '-' . uniqid();
+            }
+        });
+
+        // Actualizar slug si cambia el título
+        static::updating(function ($contenido) {
+            if ($contenido->isDirty('titulo')) {
+                $contenido->slug = Str::slug($contenido->titulo) . '-' . uniqid();
+            }
+        });
+    }
+
     public function seccion()
     {
         return $this->belongsTo(Seccion::class);

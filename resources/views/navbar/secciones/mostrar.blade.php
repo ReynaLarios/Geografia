@@ -2,7 +2,7 @@
 
 @section('contenido')
 <style>
-/* 🎨 Estilo Cuadros */
+
 .cuadros-box {
     background: linear-gradient(135deg, #eef5ff, #ffffff);
     padding: 20px;
@@ -22,19 +22,18 @@
 
     <h2 class="mb-4 text-center">{{ $seccion->nombre }}</h2>
 
-    {{-- Imagen principal --}}
+  
     @if($seccion->imagen)
         <div class="mb-4 text-center">
             <img src="{{ asset('storage/'.$seccion->imagen) }}" class="img-fluid rounded shadow-sm" style="max-height:300px; object-fit:cover;">
         </div>
     @endif
 
-    {{-- Descripción --}}
+   
     @if($seccion->descripcion)
         <div class="mb-4 p-3 bg-light rounded shadow-sm">{!! $seccion->descripcion !!}</div>
     @endif
 
-    {{-- Archivos adicionales --}}
     @if($seccion->archivos?->count())
         <div class="mb-4">
             <h5>Archivos adicionales</h5>
@@ -49,7 +48,7 @@
         </div>
     @endif
 
-    {{-- Cuadros --}}
+  
     @if($seccion->cuadros?->count())
         <div class="cuadros-box">
             <h5>Cuadros</h5>
@@ -81,7 +80,7 @@
         </div>
     @endif
 
-    {{-- Botón regresar --}}
+    
     <div class="mt-3">
         <button class="fancy" onclick="window.history.back()">← Regresar</button>
     </div>

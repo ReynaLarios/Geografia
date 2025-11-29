@@ -138,7 +138,7 @@ $banner = Banner::latest()->first();
 
 
 
-{{-- NAVBAR INFERIOR --}}
+
 <nav class="navbar-bottom">
 
     <div class="paste-button">

@@ -215,7 +215,7 @@
             width: 100%;
             background: white;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             z-index: 99;
             display: none;
         }
@@ -224,38 +224,35 @@
 
 <body>
 
-<nav class="navbar navbar-top d-flex justify-content-between align-items-center">
-    <a href="{{ route('public.inicio.index') }}" class="navbar-brand d-flex align-items-center">
-        <img src="{{ asset('/logo.png') }}" alt="Logo">
-    </a>
+    <nav class="navbar navbar-top d-flex justify-content-between align-items-center">
+        <a href="{{ route('public.inicio.index') }}" class="navbar-brand d-flex align-items-center">
+            <img src="{{ asset('/logo.png') }}" alt="Logo">
+        </a>
 
- <div class="container mt-4 d-flex justify-content-end">
-    <form action="{{ route('buscador.resultados') }}" method="get" class="d-flex">
-        <input type="text" name="q" placeholder="Buscar..." class="form-control me-2" required>
-        <button type="submit" class="btn btn-primary">🔍</button>
-    </form>
-</div>
+        <div class="container mt-4 d-flex justify-content-end">
+            <form action="{{ route('buscador.resultados') }}" method="get" class="d-flex">
+                <input type="text" name="q" placeholder="Buscar..." class="form-control me-2" required>
+                <button type="submit" class="btn btn-primary">🔍</button>
+            </form>
+        </div>
 
-</nav>
+    </nav>
 
-@php
-    use App\Models\Banner;
-    use App\Models\NavbarSeccion;
+    @php
+        use App\Models\Banner;
+        use App\Models\NavbarSeccion;
 
-    $banner = Banner::latest()->first();
-    $navbarSecciones = NavbarSeccion::with('contenidosNavbar')
-                            ->where('oculto_publico', false)
-                            ->get();
-@endphp
+        $banner = Banner::latest()->first();
+        $navbarSecciones = NavbarSeccion::with('contenidosNavbar')->where('oculto_publico', false)->get();
+    @endphp
 
-<div class="banner-container position-relative">
-    @if($banner && $banner->imagen && file_exists(storage_path('app/public/banners/' . $banner->imagen)))
-        <img src="{{ asset('storage/banners/' . $banner->imagen) }}" class="banner img-fluid" alt="Banner">
-    @else
-       <img src="{{ asset('Geo.jpg') }}" class="banner img-fluid" alt="Banner por defecto">
-    @endif
-</div>
-
+    <div class="banner-container position-relative">
+        @if ($banner && $banner->imagen && file_exists(storage_path('app/public/banners/' . $banner->imagen)))
+            <img src="{{ asset('storage/banners/' . $banner->imagen) }}" class="banner img-fluid" alt="Banner">
+        @else
+            <img src="{{ asset('Geo.jpg') }}" class="banner img-fluid" alt="Banner por defecto">
+        @endif
+    </div>
 <nav class="navbar-bottom">
 
     <div class="paste-button">
@@ -264,20 +261,20 @@
         </button>
     </div>
 
-    @foreach ($navbarSecciones as $sec)
+    @foreach ($navbarSecciones ?? [] as $sec)
         <div class="paste-button">
             <button class="button"
-                onclick="window.location='{{ route('navbar.secciones.mostrar', $sec->slug) }}'">
+                onclick="window.location='{{ route('public.navbar.secciones.show', $sec->slug) }}'">
                 {{ $sec->nombre }}
-                @if ($sec->contenidosNavbar->where('oculto_publico', false)->count())
+                @if(optional($sec->contenidosNavbar)->where('oculto_publico', false)->count())
                     ▼
                 @endif
             </button>
 
-            @if ($sec->contenidosNavbar->where('oculto_publico', false)->count())
+            @if(optional($sec->contenidosNavbar)->where('oculto_publico', false)->count())
                 <div class="dropdown-content">
-                    @foreach ($sec->contenidosNavbar->where('oculto_publico', false) as $contenido)
-                        <a href="{{ route('navbar.contenido.show', $contenido->slug) }}">
+                    @foreach ($sec->contenidosNavbar->where('oculto_publico', false) ?? [] as $contenido)
+                        <a href="{{ route('public.navbar.contenido.show', $contenido->slug) }}">
                             {{ $contenido->titulo }}
                         </a>
                     @endforeach
@@ -289,134 +286,134 @@
 </nav>
 
 <div class="layout">
-    <aside class="sidebar">
-       
- <ul class="nav flex-column">
-                 @if(isset($seccion))
-                    <ul class="nav flex-column">
-            @foreach($seccion->contenidos ?? [] as $cont)
-            <li class="mb-2">
-                <a href="{{ route('public.contenidos.show', $cont->id) }}" class="fancy">{{ $cont->titulo }}</a>
-@endforeach
-@endif
+ <aside class="sidebar">
 
-            @if (!empty($secciones))
-                @foreach ($secciones as $sec)
-                    @if (!$sec->oculto_publico)
-                        <li class="mb-2">
-                            <a href="{{ route('public.secciones.show', $sec->slug) }}" class="fancy">{{ $sec->nombre }}</a>
-                        </li>
-                    @endif
-                @endforeach
-            @else
-                <li>No hay secciones disponibles</li>
-            @endif
-            
-            
-
-
-            <div class="contenido-fixed">
-                <button class="fancy" onclick="window.location='{{ route('public.personas.index') }}'">
-                    Académicos
-                </button>
-            </div>
-
-            <div class="mb-3">
-                <a href="{{ route('videoteca') }}" class="fancy d-block text-center py-2">
-                    Videoteca
-                </a>
-            </div>
-
+  
+    @if(isset($seccion) && optional($seccion->contenidos)->count())
+        <ul class="nav flex-column">
+            @foreach($seccion->contenidos ?? [] as $contenidoItem)
+                <li class="mb-2">
+                    <a href="{{ route('public.contenidos.show', $contenidoItem->slug) }}" class="fancy
+                        {{ (isset($contenido) && $contenido->id === $contenidoItem->id) ? 'active' : '' }}">
+                        {{ $contenidoItem->titulo }}
+                    </a>
+                </li>
+            @endforeach
         </ul>
-    </aside>
 
-    <main class="content">
-        @yield('contenido')
-    </main>
-</div>
+  
+    @elseif(isset($secciones) && optional($secciones)->count())
+        <ul class="nav flex-column">
+            @foreach($secciones ?? [] as $sec)
+                @if(!$sec->oculto_publico)
+                    <li class="mb-2">
+                        <a href="{{ route('public.secciones.show', $sec->slug) }}" class="fancy">
+                            {{ $sec->nombre }}
+                        </a>
+                    </li>
+                @endif
+            @endforeach
+        </ul>
+    @endif
 
-<footer>
-    <p class="fw-bold">CENTRO UNIVERSITARIO DE CIENCIAS SOCIALES Y HUMANIDADES</p>
-    <p>Los Belenes. Av. José Parres Arias #150, Zapopan, Jalisco, México.</p>
-    <p>© 1997 - 2025 Universidad de Guadalajara</p>
-</footer>
+    <div class="contenido-fixed mt-3">
+        <button class="fancy w-100" onclick="window.history.back()">
+            ← Regresar
+        </button>
+    </div>
+</aside>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-@yield('scripts')
+        <main class="content">
+            @yield('contenido')
+        </main>
+    </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('searchInput');
-    const searchBox = document.getElementById('searchBox');
-    const searchUrl = "{{ route('buscador.autocomplete') }}";
+    <footer>
+        <p class="fw-bold">CENTRO UNIVERSITARIO DE CIENCIAS SOCIALES Y HUMANIDADES</p>
+        <p>Los Belenes. Av. José Parres Arias #150, Zapopan, Jalisco, México.</p>
+        <p>© 1997 - 2025 Universidad de Guadalajara</p>
+    </footer>
 
-    let searchResults = document.getElementById('searchResults');
-    if (!searchResults) {
-        searchResults = document.createElement('div');
-        searchResults.id = 'searchResults';
-        searchResults.style.position = 'absolute';
-        searchResults.style.background = '#fff';
-        searchResults.style.border = '1px solid #ccc';
-        searchResults.style.zIndex = '1000';
-        searchResults.style.width = searchInput.offsetWidth + 'px';
-        searchResults.style.maxHeight = '300px';
-        searchResults.style.overflowY = 'auto';
-        searchResults.style.display = 'none';
-        searchBox.appendChild(searchResults);
-    }
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @yield('scripts')
 
-    searchInput.addEventListener('input', function() {
-        const q = this.value.trim().toLowerCase();
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const searchBox = document.getElementById('searchBox');
+            const searchUrl = "{{ route('buscador.autocomplete') }}";
 
-       
-        if (q.length < 2) {
-            searchResults.style.display = 'none';
-            return;
-        }
+            let searchResults = document.getElementById('searchResults');
+            if (!searchResults) {
+                searchResults = document.createElement('div');
+                searchResults.id = 'searchResults';
+                searchResults.style.position = 'absolute';
+                searchResults.style.background = '#fff';
+                searchResults.style.border = '1px solid #ccc';
+                searchResults.style.zIndex = '1000';
+                searchResults.style.width = searchInput.offsetWidth + 'px';
+                searchResults.style.maxHeight = '300px';
+                searchResults.style.overflowY = 'auto';
+                searchResults.style.display = 'none';
+                searchBox.appendChild(searchResults);
+            }
 
-        fetch(searchUrl + '?q=' + encodeURIComponent(q))
-            .then(res => res.json())
-            .then(data => {
-                searchResults.innerHTML = '';
+            searchInput.addEventListener('input', function() {
+                const q = this.value.trim().toLowerCase();
 
-                if (!data.length) {
-                    searchResults.innerHTML = '<div class="p-2 text-muted text-center">Sin resultados</div>';
-                } else {
-                    let hasResults = false;
 
-                    data.forEach(item => {
-                       
-                        if (item.nombre.toLowerCase().startsWith(q)) {
-                            const link = document.createElement('a');
-                            link.href = item.url || '#';
-                            link.textContent = item.nombre;
-                            link.className = 'd-block p-2 text-decoration-none text-primary';
-                            searchResults.appendChild(link);
-                            hasResults = true;
-                        }
-                    });
-
-                    if (!hasResults) {
-                        searchResults.innerHTML = '<div class="p-2 text-muted text-center">Sin resultados</div>';
-                    }
+                if (q.length < 2) {
+                    searchResults.style.display = 'none';
+                    return;
                 }
 
-                searchResults.style.display = 'block';
-            })
-            .catch(err => console.error(err));
-    });
+                fetch(searchUrl + '?q=' + encodeURIComponent(q))
+                    .then(res => res.json())
+                    .then(data => {
+                        searchResults.innerHTML = '';
 
-    document.addEventListener('click', function(e) {
-        if (!searchBox.contains(e.target)) {
-            searchResults.style.display = 'none';
-        }
-    });
+                        if (!data.length) {
+                            searchResults.innerHTML =
+                                '<div class="p-2 text-muted text-center">Sin resultados</div>';
+                        } else {
+                            let hasResults = false;
 
-    window.addEventListener('resize', () => {
-        searchResults.style.width = searchInput.offsetWidth + 'px';
-    });
-});
-</script>
+                            data.forEach(item => {
+
+                                if (item.nombre.toLowerCase().startsWith(q)) {
+                                    const link = document.createElement('a');
+                                    link.href = item.url || '#';
+                                    link.textContent = item.nombre;
+                                    link.className =
+                                        'd-block p-2 text-decoration-none text-primary';
+                                    searchResults.appendChild(link);
+                                    hasResults = true;
+                                }
+                            });
+
+                            if (!hasResults) {
+                                searchResults.innerHTML =
+                                    '<div class="p-2 text-muted text-center">Sin resultados</div>';
+                            }
+                        }
+
+                        searchResults.style.display = 'block';
+                    })
+                    .catch(err => console.error(err));
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!searchBox.contains(e.target)) {
+                    searchResults.style.display = 'none';
+                }
+            });
+
+            window.addEventListener('resize', () => {
+                searchResults.style.width = searchInput.offsetWidth + 'px';
+            });
+        });
+    </script>
 
 </body>
+
 </html>

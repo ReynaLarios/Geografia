@@ -39,12 +39,12 @@
         </div>
     @endif
 
- {{-- Cuadros con filtro --}}
+ 
     @if($contenido->cuadros->isNotEmpty())
         <div class="cuadros-box">
             <h5>Cuadros</h5>
 
-            {{-- Dropdown filtro --}}
+           
             <select id="filter-dropdown" class="form-select form-select-sm">
                 <option value="all">Todos</option>
                 @foreach(range('A','Z') as $letter)

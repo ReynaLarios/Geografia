@@ -3,7 +3,7 @@
 @section('contenido')
 <div class="container mt-4">
 
-    {{-- --- CARRUSEL --- --}}
+   
     @if($imagenesCarrusel->count() > 0)
         <div id="carouselPublico" class="carousel slide mb-4" data-bs-ride="carousel">
             <div class="carousel-inner text-center">
@@ -29,7 +29,7 @@
         <p class="text-center text-muted">No hay imágenes en el carrusel.</p>
     @endif
 
-    {{-- --- NOTICIAS --- --}}
+  
     <h2 class="mb-3 mt-5">Noticias</h2>
 
     @if($noticias->count() > 0)
@@ -37,7 +37,7 @@
             @foreach($noticias as $noticia)
                 <li class="list-group-item mb-3 p-3 shadow-sm rounded">
                     <div class="d-flex align-items-start">
-                        {{-- Imagen de la noticia --}}
+                        
                         @if($noticia->imagen)
                             <img src="{{ asset('storage/'.$noticia->imagen) }}" 
                                  alt="{{ $noticia->titulo }}" 
@@ -49,7 +49,7 @@
                             <h4>{{ $noticia->titulo }}</h4>
                             <p>{{ strip_tags($noticia->descripcion) }}</p>
 
-                            {{-- Archivos adjuntos --}}
+                           
                             @if($noticia->archivos->count() > 0)
                                 <h6>Archivos adjuntos:</h6>
                                 <ul>
@@ -74,7 +74,7 @@
 
 </div>
 
-{{-- --- Estilos personalizados --- --}}
+
 <style>
 .btn-info {
     background-color: #A0C4FF;
