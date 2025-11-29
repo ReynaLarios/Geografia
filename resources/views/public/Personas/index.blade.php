@@ -25,18 +25,18 @@
                    <div class="fw-bold persona-nombre">
                        {{ $persona->nombre }}
                     </div>
-           
-
             </a>
         @endforeach
     </div>
-
 
     <div class="d-flex justify-content-center mt-4">
         {{ $personas->links('pagination::bootstrap-5') }}
     </div>
 </div>
 
+ <div class="mt-3">
+        <button class="fancy" onclick="window.history.back()">← Regresar</button>
+    </div>
 <style>
 .persona-card {
     width: 180px;

@@ -4,8 +4,7 @@
 <div class="container py-5">
 
     <h2 class="fw-bold mb-3 text-center text-primary"> Videoteca </h2>
-    <p class="text-center mb-5 text-muted">Visualiza los videos disponibles.</p>
-
+   
     @if($videos->count() > 0)
         <div class="row">
             @foreach($videos as $video)
@@ -41,8 +40,10 @@
     @endif
 
 </div>
+ <div class="mt-3">
+        <button class="fancy" onclick="window.history.back()">← Regresar</button>
+    </div>
 
-{{-- MODAL --}}
 <div class="modal fade" id="videoModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content border-0 shadow-lg rounded-4">
@@ -59,7 +60,8 @@
   </div>
 </div>
 
-{{-- ESTILOS --}}
+
+
 <style>
 .video-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;

@@ -224,10 +224,10 @@
 
 <body>
 
-    <nav class="navbar navbar-top d-flex justify-content-between align-items-center">
-        <a href="{{ route('public.inicio.index') }}" class="navbar-brand d-flex align-items-center">
-            <img src="{{ asset('/logo.png') }}" alt="Logo">
-        </a>
+<nav class="navbar navbar-top d-flex justify-content-between align-items-center">
+    <a href="https://www.udg.mx/es" class="navbar-brand d-flex align-items-center" target="_blank">
+        <img src="{{ asset('/logo.png') }}" alt="Logo">
+    </a>
 
         <div class="container mt-4 d-flex justify-content-end">
             <form action="{{ route('buscador.resultados') }}" method="get" class="d-flex">
@@ -293,7 +293,12 @@
               Académicos
             </button>
         </div>
-
+        
+      <div class="videoteca-fixed">
+            <button class="fancy" onclick="window.location='{{ route('videoteca') }}'">
+                Videoteca
+            </button>
+        </div>
   
     @if(isset($seccion) && optional($seccion->contenidos)->count())
         <ul class="nav flex-column">
@@ -305,8 +310,13 @@
                     </a>
                 </li>
             @endforeach
+       
         </ul>
-
+      <div class="contenido-fixed mt-3">
+        <button class="fancy w-100" onclick="window.history.back()">
+            ← Regresar
+        </button>
+    </div>
   
     @elseif(isset($secciones) && optional($secciones)->count())
         <ul class="nav flex-column">
@@ -322,17 +332,7 @@
         </ul>
     @endif
 
-        <div class="videoteca-fixed">
-            <button class="fancy" onclick="window.location='{{ route('videoteca') }}'">
-                Videoteca
-            </button>
-        </div>
 
-    <div class="contenido-fixed mt-3">
-        <button class="fancy w-100" onclick="window.history.back()">
-            ← Regresar
-        </button>
-    </div>
 </aside>
 
         <main class="content">
