@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+
 
 class Contenidos extends Model
 {
@@ -53,4 +55,11 @@ class Contenidos extends Model
     {
         return $this->morphMany(Cuadro::class, 'cuadrobable');
     }
+    public function getSizeMbAttribute()
+{
+    return Storage::disk('public')->exists($this->ruta) 
+        ? Storage::disk('public')->size($this->ruta) / 1024 / 1024 
+        : 0;
+}
+
 }

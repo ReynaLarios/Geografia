@@ -22,10 +22,6 @@
             <input type="file" name="imagen" class="form-control">
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Archivos adjuntos (opcional)</label>
-            <input type="file" name="archivos[]" multiple class="form-control">
-        </div>
 
         <button type="submit" class="btn btn-success">Guardar</button>
         <a href="{{ route('inicio.index') }}" class="btn btn-secondary">Cancelar</a>

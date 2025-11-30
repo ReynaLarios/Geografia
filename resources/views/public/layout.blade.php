@@ -302,14 +302,15 @@
   
     @if(isset($seccion) && optional($seccion->contenidos)->count())
         <ul class="nav flex-column">
-            @foreach($seccion->contenidos ?? [] as $contenidoItem)
-                <li class="mb-2">
-                    <a href="{{ route('public.contenidos.show', $contenidoItem->slug) }}" class="fancy
-                        {{ (isset($contenido) && $contenido->id === $contenidoItem->id) ? 'active' : '' }}">
-                        {{ $contenidoItem->titulo }}
-                    </a>
-                </li>
-            @endforeach
+            @foreach(($seccion->contenidos ?? [])->where('oculto_publico', 0) as $contenidoItem)
+    <li class="mb-2">
+        <a href="{{ route('public.contenidos.show', $contenidoItem->slug) }}" class="fancy
+            {{ (isset($contenido) && $contenido->id === $contenidoItem->id) ? 'active' : '' }}">
+            {{ $contenidoItem->titulo }}
+        </a>
+    </li>
+@endforeach
+
        
         </ul>
       <div class="contenido-fixed mt-3">

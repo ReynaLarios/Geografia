@@ -7,68 +7,64 @@ use App\Models\Inicio;
 use App\Models\Archivo;
 use App\Models\Carrusel;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Str;
 
 class InicioController extends Controller
 {
-  public function index()
-{
-    $noticias = Inicio::with('archivos')->get();
-   $imagenesCarrusel = Carrusel::all(); 
-return view('Inicio.index', compact('noticias', 'imagenesCarrusel'));
+   
+    public function index()
+    {
+        $noticias = Inicio::with('archivos')->get();
+        $imagenesCarrusel = Carrusel::all();
+        return view('Inicio.index', compact('noticias', 'imagenesCarrusel'));
+    }
 
-}
+    public function show($slug)
+    {
+        $noticia = Inicio::with('archivos')->findOrFail($slug);
+        return view('Inicio.show', compact('noticia'));
+    }
 
-
-
-  
+   
     public function create()
     {
         return view('Inicio.create');
     }
 
+  
     public function store(Request $request)
     {
         $request->validate([
             'titulo' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'archivos.*' => 'nullable|file|max:5120',
+            
         ]);
 
         $inicio = new Inicio();
         $inicio->titulo = $request->titulo;
+        $inicio->slug = Str::slug($request->titulo); 
         $inicio->descripcion = $request->descripcion ?? '';
 
-       
         if ($request->hasFile('imagen')) {
             $inicio->imagen = $request->file('imagen')->store('inicio', 'public');
         }
 
         $inicio->save();
 
-       
-        if ($request->hasFile('archivos')) {
-            foreach ($request->file('archivos') as $archivo) {
-                $inicio->archivos()->create([
-                    'nombre_real' => $archivo->getClientOriginalName(),
-                    'archivo' => $archivo->store('archivos', 'public'),
-                ]);
-            }
-        }
 
         return redirect()->route('inicio.index')->with('success', 'Noticia creada correctamente.');
     }
 
- 
-    public function edit($id)
+   
+    public function edit($slug)
     {
-        $noticia = Inicio::with('archivos')->findOrFail($id);
+        $noticia = Inicio::with('archivos')->findOrFail($slug);
         return view('Inicio.edit', compact('noticia'));
     }
 
-   
-    public function update(Request $request, $id)
+ 
+    public function update(Request $request, $slug)
     {
         $request->validate([
             'titulo' => 'required|string|max:255',
@@ -77,11 +73,16 @@ return view('Inicio.index', compact('noticias', 'imagenesCarrusel'));
             'archivos.*' => 'nullable|file|max:5120',
         ]);
 
-        $noticia = Inicio::findOrFail($id);
+        $noticia = Inicio::findOrFail($slug);
+
+        // Actualizar slug solo si cambia el título
+        if ($noticia->titulo !== $request->titulo) {
+            $noticia->slug = Str::slug($request->titulo);
+        }
+
         $noticia->titulo = $request->titulo;
         $noticia->descripcion = $request->descripcion;
 
-     
         if ($request->hasFile('imagen')) {
             if ($noticia->imagen && Storage::disk('public')->exists($noticia->imagen)) {
                 Storage::disk('public')->delete($noticia->imagen);
@@ -91,32 +92,21 @@ return view('Inicio.index', compact('noticias', 'imagenesCarrusel'));
 
         $noticia->save();
 
-  
-        if ($request->hasFile('archivos')) {
-            foreach ($request->file('archivos') as $archivo) {
-                $noticia->archivos()->create([
-                    'nombre_real' => $archivo->getClientOriginalName(),
-                    'archivo' => $archivo->store('archivos', 'public'),
-                ]);
-            }
-        }
 
         return redirect()->route('inicio.index')->with('success', 'Noticia actualizada correctamente.');
     }
 
- 
-    public function destroy($id)
+   
+    public function destroy($slug)
     {
-        $noticia = Inicio::with('archivos')->findOrFail($id);
+        $noticia = Inicio::with('archivos')->findOrFail($slug);
 
-       
         if ($noticia->imagen && Storage::disk('public')->exists($noticia->imagen)) {
             Storage::disk('public')->delete($noticia->imagen);
         }
 
-     
         foreach ($noticia->archivos as $archivo) {
-            if ($archivo->archivo && Storage::disk('public')->exists($archivo->archivo)) {
+            if (Storage::disk('public')->exists($archivo->archivo)) {
                 Storage::disk('public')->delete($archivo->archivo);
             }
             $archivo->delete();
@@ -127,6 +117,7 @@ return view('Inicio.index', compact('noticias', 'imagenesCarrusel'));
         return redirect()->route('inicio.index')->with('success', 'Noticia eliminada correctamente.');
     }
 
+    
     public function createImagen()
     {
         return view('Inicio.createImagen');
@@ -144,19 +135,19 @@ return view('Inicio.index', compact('noticias', 'imagenesCarrusel'));
         return redirect()->route('inicio.index')->with('success', 'Imagen agregada correctamente.');
     }
 
-    public function editImagen($id)
+    public function editImagen($slug)
     {
-        $imagen = Carrusel::findOrFail($id);
+        $imagen = Carrusel::findOrFail($slug);
         return view('Inicio.editImagen', compact('imagen'));
     }
 
-    public function updateImagen(Request $request, $id)
+    public function updateImagen(Request $request, $slug)
     {
         $request->validate([
             'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
         ]);
 
-        $imagen = Carrusel::findOrFail($id);
+        $imagen = Carrusel::findOrFail($slug);
 
         if ($request->hasFile('imagen')) {
             if ($imagen->imagen && Storage::disk('public')->exists($imagen->imagen)) {
@@ -170,11 +161,11 @@ return view('Inicio.index', compact('noticias', 'imagenesCarrusel'));
         return redirect()->route('inicio.index')->with('success', 'Imagen actualizada correctamente.');
     }
 
-    public function destroyImagen($id)
+    public function destroyImagen($slug)
     {
-        $imagen = Carrusel::findOrFail($id);
+        $imagen = Carrusel::findOrFail($slug);
 
-        if ($imagen->imagen && Storage::disk('public')->exists($imagen->imagen)) {
+        if (Storage::disk('public')->exists($imagen->imagen)) {
             Storage::disk('public')->delete($imagen->imagen);
         }
 

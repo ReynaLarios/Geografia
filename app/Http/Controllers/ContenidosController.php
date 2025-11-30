@@ -113,10 +113,14 @@ class ContenidosController extends Controller
     }
 
     public function mostrar($slug)
-    {
-        $contenido = Contenidos::with(['seccion','archivos','cuadros'])->where('slug',$slug)->firstOrFail();
-        return view('contenidos.mostrar', compact('contenido'));
-    }
+{
+    $contenido = Contenidos::with(['seccion','archivos','cuadros'])
+                           ->where('slug', $slug)
+                           ->firstOrFail();
+
+    return view('contenidos.mostrar', compact('contenido'));
+}
+
 
     private function guardarArchivos(Request $request, $contenido)
     {

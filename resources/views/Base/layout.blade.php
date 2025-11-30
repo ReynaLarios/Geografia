@@ -142,7 +142,7 @@ $banner = Banner::latest()->first();
 <nav class="navbar-bottom">
 
     <div class="paste-button">
-        <button class="button" onclick="window.location='{{ route('dashboard') }}'">Inicio</button>
+        <button class="button" onclick="window.location='{{ route('inicio.index') }}'">Inicio</button>
     </div>
 
    
@@ -227,12 +227,13 @@ $banner = Banner::latest()->first();
 
                               
                                     <button class="small-btn toggle-visibility"
-                                            data-id="{{ $contenido->slug }}"
+                                            data-id="{{ $contenido->id }}"
                                             data-model="NavbarContenido"
                                             style="{{ $contenido->oculto_publico ? 'opacity:0.4;' : '' }}">
                                         👁
                                     </button>
                                 </div>
+                                
 
                             </div>
                         @endforeach
@@ -282,11 +283,11 @@ $banner = Banner::latest()->first();
             <li class="mb-2 d-flex justify-content-between align-items-center">
                 <a href="{{ route('contenidos.mostrar', $cont->slug) }}" class="fancy flex-grow-1">{{ $cont->titulo }}</a>
                 <div class="d-flex gap-1">
-                    <a href="{{ route('contenidos.editar', $cont->id) }}" class="small-btn">✏️</a>
+                    <a href="{{ route('contenidos.editar', $cont->slug) }}" class="small-btn">✏️</a>
                     <form action="{{ route('contenidos.borrar', $cont->slug) }}" method="POST">@csrf @method('DELETE')
                         <button class="small-btn btn-borrar" type="submit">🗑</button>
                     </form>
-                    <button class="small-btn toggle-visibility" data-id="{{ $cont->id }}" data-model="Contenido" style="{{ $cont->oculto_publico ? 'opacity:0.4;' : '' }}">👁</button>
+                    <button class="small-btn toggle-visibility" data-id="{{ $cont->id}}" data-model="Contenido" style="{{ $cont->oculto_publico ? 'opacity:0.4;' : '' }}">👁</button>
                 </div>
             </li>
             @endforeach
@@ -303,9 +304,7 @@ $banner = Banner::latest()->first();
                     <form action="{{ route('secciones.borrar', $sec->slug) }}" method="POST">@csrf @method('DELETE')
                         <button class="small-btn btn-borrar" type="submit">🗑</button>
                     </form>
-                    <button class="small-btn toggle-visibility" data-slug=""="{{ $sec->slug }}" data-model="Seccion" style="{{ $sec->oculto_publico ? 'opacity:0.4;' : '' }}">👁</button>
-                </div>
-            </li>
+                    <button class="small-btn toggle-visibility" data-id="{{ $sec->id}}" data-model="Seccion" style="{{ $sec->oculto_publico ? 'opacity:0.4;' : '' }}">👁</button>
             @endforeach
         </ul> 
         @endif

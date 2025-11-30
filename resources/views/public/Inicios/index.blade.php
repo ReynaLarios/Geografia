@@ -47,7 +47,8 @@
 
                         <div class="flex-grow-1">
                             <h4>{{ $noticia->titulo }}</h4>
-                            <p>{{ strip_tags($noticia->descripcion) }}</p>
+                         <div>{!! $noticia->descripcion !!}</div>
+
 
                            
                             @if($noticia->archivos->count() > 0)

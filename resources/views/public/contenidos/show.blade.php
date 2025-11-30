@@ -107,16 +107,26 @@
                         <tr class="detalle-item" data-letter="{{ strtoupper(substr($detalle->titulo,0,1)) }}">
                             <td>{{ $detalle->titulo }}</td>
                             <td>{{ $detalle->autor ?? '-' }}</td>
-                            <td>
-                                @if($detalle->archivo)
-                                    <a href="{{ asset('storage/' . $detalle->archivo) }}" target="_blank">Ver Archivo</a>
-                                    <small class="text-muted">
-                                        {{ number_format(Storage::disk('public')->size($detalle->archivo)/1024/1024, 2) }} MB
-                                    </small>
-                                @else
-                                    <span class="text-muted">-</span>
-                                @endif
-                            </td>
+                            @foreach($contenido->archivos as $archivo)
+    <tr>
+        <td>
+            @php
+                // Asegurarnos de tener un string
+                $ruta = is_string($archivo->ruta) ? $archivo->ruta : null;
+                $size = $ruta ? @Storage::disk('public')->size($ruta) / 1024 / 1024 : 0;
+            @endphp
+
+            @if($ruta)
+                <a href="{{ asset('storage/' . $ruta) }}" target="_blank">Ver Archivo</a>
+                <small class="text-muted">{{ number_format($size, 2) }} MB</small>
+            @else
+                <span class="text-muted">-</span>
+            @endif
+        </td>
+    </tr>
+@endforeach
+
+
                         </tr>
                     @endforeach
                 </tbody>

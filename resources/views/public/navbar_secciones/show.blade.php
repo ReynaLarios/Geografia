@@ -61,7 +61,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($contenido->cuadros->sortBy('titulo') as $cuadro)
+                  @foreach($seccion->cuadros->sortBy('titulo') as $cuadro)
                         <tr class="cuadro-item" data-letter="{{ strtoupper(substr($cuadro->titulo,0,1)) }}">
                             <td>{{ $cuadro->titulo }}</td>
                             <td>{{ $cuadro->autor ?? '-' }}</td>

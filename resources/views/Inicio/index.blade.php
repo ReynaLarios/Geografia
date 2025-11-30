@@ -43,7 +43,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
         <h2>Noticias</h2>
-        <a href="{{ route('inicio.create') }}" class="btn btn-success">➕ Nueva Noticia</a>
+        <a href="{{ route('admin.inicio.create') }}" class="btn btn-success">➕ Nueva Noticia</a>
     </div>
 
     @if(session('success'))
@@ -65,7 +65,7 @@
                     </div>
                 </div>
                 <div>
-                    <a href="{{ route('inicio.show', $noticia->id) }}" class="btn btn-sm btn-info">Ver</a>
+                  
                     <a href="{{ route('inicio.edit', $noticia->id) }}" class="btn btn-sm btn-warning">Editar</a>
                     <form action="{{ route('inicio.destroy', $noticia->id) }}" method="POST" style="display:inline;">
                         @csrf

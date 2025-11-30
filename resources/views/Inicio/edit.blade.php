@@ -28,24 +28,6 @@
             <input type="file" name="imagen" class="form-control">
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Archivos adjuntos</label>
-            @if($noticia->archivos->count())
-                <ul>
-                    @foreach($noticia->archivos as $archivo)
-                        <li>
-                            <a href="{{ asset('storage/' . $archivo->archivo) }}" target="_blank">{{ $archivo->nombre_real }}</a>
-                            <form action="{{ route('archivos.destroy', $archivo->id) }}" method="POST" style="display:inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit">Eliminar</button>
-                            </form>
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
-            <input type="file" name="archivos[]" multiple class="form-control">
-        </div>
 
         <button type="submit" class="btn btn-success">Actualizar</button>
         <a href="{{ route('inicio.index') }}" class="btn btn-secondary">Cancelar</a>

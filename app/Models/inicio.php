@@ -13,12 +13,11 @@ class Inicio extends Model
         'titulo',
         'descripcion',
         'imagen',
+        'slug', 
     ];
 
-   
     public function archivos()
     {
         return $this->morphMany(Archivo::class, 'archivable');
     }
 }
-
