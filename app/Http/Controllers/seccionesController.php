@@ -194,7 +194,7 @@ class SeccionesController extends Controller
             $archivo      = $archivos[$i] ?? null;
             $hayArchivo   = $archivo && $archivo->isValid();
 
-            if (empty($tituloLimpio) && empty($autorLimpio) && !$hayArchivo) continue;
+            if (isset($tituloLimpio) && isset($autorLimpio) && !$hayArchivo) continue;
 
             if ($id > 0) {
                 $cuadro = Cuadro::find($id);

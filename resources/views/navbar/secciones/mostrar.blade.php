@@ -61,20 +61,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($seccion->cuadros->sortBy('titulo') as $cuadro)
-                        <tr>
-                            <td>{{ $cuadro->titulo }}</td>
-                            <td>{{ $cuadro->autor ?? '-' }}</td>
-                            <td>
-                                @if($cuadro->ruta)
-                                    <a href="{{ asset('storage/' . $cuadro->ruta) }}" target="_blank">Ver archivo</a>
-                                    <small class="text-muted">{{ number_format(Storage::disk('public')->size($cuadro->ruta)/1024/1024,2) }} MB</small>
-                                @else
-                                    <span class="text-muted">Sin archivo</span>
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
+                   @foreach($seccion->cuadros->sortBy('titulo') as $cuadro)
+    <tr>
+        <td>{{ $cuadro->titulo }}</td>
+        <td>{{ $cuadro->autor ?? '-' }}</td>
+        <td>
+            @if($cuadro->archivo)
+                <a href="{{ asset('storage/' . $cuadro->archivo) }}" target="_blank">Ver archivo</a>
+                <br>
+                <small class="text-muted">
+                    {{ number_format(Storage::disk('public')->exists($cuadro->archivo) ? Storage::disk('public')->size($cuadro->archivo)/1024/1024 : 0, 2) }} MB
+                </small>
+            @else
+                <span class="text-muted">Sin archivo</span>
+            @endif
+        </td>
+    </tr>
+@endforeach
                 </tbody>
             </table>
         </div>

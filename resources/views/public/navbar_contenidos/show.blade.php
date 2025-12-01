@@ -22,17 +22,14 @@
         </div>
     @endif
 
-    
-    @if($contenido->archivos && count($contenido->archivos) > 0)
+    @if($contenido->archivos && $contenido->archivos->count())
         <div class="mb-4">
-            <h5>Archivos adjuntos</h5>
+            <h5>Archivos adicionales</h5>
             <ul class="list-group">
-                @foreach ($contenido->archivos as $archivo)
+                @foreach($contenido->archivos as $archivo)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <a href="{{ asset('storage/' . $archivo) }}" target="_blank">{{ basename($archivo) }}</a>
-                        <small class="text-muted">
-                            {{ number_format(Storage::disk('public')->size($archivo)/1024/1024, 2) }} MB
-                        </small>
+                        <a href="{{ asset('storage/' . $archivo->ruta) }}" target="_blank">{{ $archivo->nombre }}</a>
+                        <small class="text-muted">{{ number_format(Storage::disk('public')->size($archivo->ruta)/1024/1024, 2) }} MB</small>
                     </li>
                 @endforeach
             </ul>

@@ -167,7 +167,7 @@ class ContenidosController extends Controller
             $archivo = $archivos[$i] ?? null;
             $hayArchivo = $archivo && $archivo->isValid();
 
-            if(!$id && empty($tituloLimpio) && empty($autorLimpio) && !$hayArchivo) continue;
+            if(!$id && isset($tituloLimpio) && isset($autorLimpio) && !$hayArchivo) continue;
 
             if($id > 0){
                 $cuadro = Cuadro::find($id);

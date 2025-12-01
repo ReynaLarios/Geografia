@@ -59,23 +59,22 @@
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    let index = 0;
     const tabla = document.getElementById('tabla-cuadro').getElementsByTagName('tbody')[0];
     const btnAgregar = document.getElementById('agregar-fila');
 
     btnAgregar.addEventListener('click', function() {
+              const index = tabla.rows.length;
         const nuevaFila = document.createElement('tr');
         nuevaFila.innerHTML = `
-            <td>
-                <input type="text" name="cuadros[${index}][titulo]" class="form-control">
-                <input type="hidden" name="cuadros[${index}][id]" value="0">
+             <td>
+                <input type="text" name="cuadro_titulo[]" class="form-control">
+                <input type="hidden" name="cuadro_id[]" value="0">
             </td>
-            <td><input type="text" name="cuadros[${index}][autor]" class="form-control"></td>
-            <td><input type="file" name="cuadros[${index}][archivo]" class="form-control"></td>
+            <td><input type="text" name="cuadro_autor[]" class="form-control"></td>
+            <td><input type="file" name="cuadro_archivo[]" class="form-control"></td>
             <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
         `;
         tabla.appendChild(nuevaFila);
-        index++;
     });
 
     tabla.addEventListener('click', function(e){
@@ -84,8 +83,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    ClassicEditor.create(document.querySelector('#descripcion'))
-        .catch(error => console.error(error));
+   
+    ClassicEditor
+        .create(document.querySelector('#descripcion'), {
+            toolbar: [ 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ]
+        })
+        .catch(error => { console.error(error); });
 });
 </script>
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 @endsection
+

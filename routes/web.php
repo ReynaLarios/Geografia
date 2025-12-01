@@ -115,7 +115,10 @@ Route::middleware(['admin'])->group(function () {
         Route::delete('/{slug}/borrar', [NavbarSeccionesController::class, 'borrar'])->name('navbar.secciones.borrar');
         Route::post('/{slug}/cuadro/guardar', [NavbarSeccionesController::class, 'guardarCuadro'])->name('navbar.secciones.guardarCuadro');
         Route::delete('/{slug}/cuadro/eliminar', [NavbarSeccionesController::class, 'eliminarCuadro'])->name('navbar.secciones.eliminarCuadro');
-    });
+        Route::get('/borrarArchivo/{archivoId}', [NavbarSeccionesController::class, 'borrarArchivo'])->name('navbar.secciones.borrarArchivo');
+         Route::get('/borrarImagen/{id}', [NavbarSeccionesController::class, 'borrarImagen'])->name('navbar.secciones.borrarImagen');
+});
+  
 
     // NAVBAR CONTENIDOS
     Route::prefix('navbar/contenidos')->group(function () {

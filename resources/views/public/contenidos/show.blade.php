@@ -69,24 +69,25 @@
         </div>
     @endif
 
-    @if($contenido->archivos && count($contenido->archivos))
+    @if($contenido->archivos && $contenido->archivos->count())
         <div class="mb-4">
-            <h5>Archivos asociados</h5>
+            <h5>Archivos adicionales</h5>
             <ul class="list-group">
                 @foreach($contenido->archivos as $archivo)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <a href="{{ asset('storage/' . $archivo) }}" target="_blank">{{ basename($archivo) }}</a>
-                        <small class="text-muted">
-                            {{ number_format(Storage::disk('public')->size($archivo)/1024/1024, 2) }} MB
-                        </small>
+                        <a href="{{ asset('storage/' . $archivo->ruta) }}" target="_blank">{{ $archivo->nombre }}</a>
+                        <small class="text-muted">{{ number_format(Storage::disk('public')->size($archivo->ruta)/1024/1024, 2) }} MB</small>
                     </li>
                 @endforeach
             </ul>
         </div>
     @endif
 
-    @if($contenido->detalles && $contenido->detalles->count())
-        <div class="contenidos-box">
+    @if($contenido->cuadros->isNotEmpty())
+        <div class="cuadros-box">
+            <h5>Cuadros</h5>
+
+           
             <select id="filter-dropdown" class="form-select form-select-sm">
                 <option value="all">Todos</option>
                 @foreach(range('A','Z') as $letter)
@@ -94,7 +95,7 @@
                 @endforeach
             </select>
 
-            <table class="table table-contenidos">
+            <table class="table table-cuadros">
                 <thead>
                     <tr>
                         <th>Título</th>
@@ -103,60 +104,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($contenido->detalles->sortBy('titulo') as $detalle)
-                        <tr class="detalle-item" data-letter="{{ strtoupper(substr($detalle->titulo,0,1)) }}">
-                            <td>{{ $detalle->titulo }}</td>
-                            <td>{{ $detalle->autor ?? '-' }}</td>
-                            @foreach($contenido->archivos as $archivo)
-    <tr>
-        <td>
-            @php
-                // Asegurarnos de tener un string
-                $ruta = is_string($archivo->ruta) ? $archivo->ruta : null;
-                $size = $ruta ? @Storage::disk('public')->size($ruta) / 1024 / 1024 : 0;
-            @endphp
-
-            @if($ruta)
-                <a href="{{ asset('storage/' . $ruta) }}" target="_blank">Ver Archivo</a>
-                <small class="text-muted">{{ number_format($size, 2) }} MB</small>
-            @else
-                <span class="text-muted">-</span>
-            @endif
-        </td>
-    </tr>
-@endforeach
-
-
+                    @foreach($contenido->cuadros->sortBy('titulo') as $cuadro)
+                        <tr class="cuadro-item" data-letter="{{ strtoupper(substr($cuadro->titulo,0,1)) }}">
+                            <td>{{ $cuadro->titulo }}</td>
+                            <td>{{ $cuadro->autor ?? '-' }}</td>
+                            <td>
+                                @if($cuadro->archivo)
+                                    @php
+                                        $tamano = Storage::disk('public')->size($cuadro->archivo);
+                                        $tamanoMB = number_format($tamano / 1024 / 1024, 2);
+                                    @endphp
+                                    <a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">{{ basename($cuadro->archivo) }}</a>
+                                    <small class="text-muted d-block">({{ $tamanoMB }} MB)</small>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
     @endif
-
-    <div class="mt-3">
+      <div class="mt-3">
         <button class="fancy" onclick="window.history.back()">← Regresar</button>
     </div>
 
-</main>
-@endsection
-
-@section('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const dropdown = document.getElementById('filter-dropdown');
-    const detalles = document.querySelectorAll('.detalle-item');
-
-    dropdown.addEventListener('change', function() {
-        const val = this.value;
-        detalles.forEach(d => {
-            if(val === 'all' || d.dataset.letter === val) {
-                d.style.display = 'table-row';
-            } else {
-                d.style.display = 'none';
-            }
-        });
-    });
-});
-</script>
+</div>
 @endsection

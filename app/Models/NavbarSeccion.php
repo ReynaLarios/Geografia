@@ -15,10 +15,10 @@ class NavbarSeccion extends Model
     protected $fillable = [
         'nombre',
         'descripcion',
-        'slug',
         'imagen',
-        
+        'slug',  
     ];
+        
 
    
     public function contenidosNavbar()
@@ -36,21 +36,4 @@ class NavbarSeccion extends Model
         return $this->morphMany(Cuadro::class, 'cuadrobable');
     }
 
-    
-    protected static function booted()
-    {
-       
-        static::creating(function ($seccion) {
-            if (!$seccion->slug) {
-                $seccion->slug = Str::slug($seccion->nombre);
-            }
-        });
-
-       
-        static::updating(function ($seccion) {
-            if ($seccion->isDirty('nombre')) { 
-                $seccion->slug = Str::slug($seccion->nombre);
-            }
-        });
-    }
 }

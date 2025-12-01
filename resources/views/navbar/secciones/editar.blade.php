@@ -8,44 +8,48 @@
         @csrf
         @method('PUT')
 
-       
+        
         <div class="mb-3">
             <label class="form-label">Nombre</label>
-            <input type="text" name="nombre" class="form-control" value="{{ old('nombre', $seccion->nombre) }}" required>
+            <input type="text" name="nombre" class="form-control" value="{{ old('nombre',$seccion->nombre) }}" required>
         </div>
 
        
         <div class="mb-3">
             <label class="form-label">Descripción</label>
-            <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion', $seccion->descripcion) }}</textarea>
+            <textarea name="descripcion" id="descripcion" class="form-control">{{ old('descripcion',$seccion->descripcion) }}</textarea>
         </div>
 
-    
+        
         <div class="mb-3">
-            <label class="form-label">Imagen principal (opcional)</label>
+            <label class="form-label">Imagen principal</label>
             <input type="file" name="imagen" class="form-control">
             @if($seccion->imagen)
-                <img src="{{ asset('storage/'.$seccion->imagen) }}" class="img-fluid mt-2 rounded" style="max-height:200px;">
+                <div class="mt-2">
+                    <img src="{{ asset('storage/'.$seccion->imagen) }}" class="img-fluid rounded" style="max-height:200px;">
+                    <a href="{{ route('navbar.secciones.borrarImagen', $seccion->id) }}" class="btn btn-danger btn-sm mt-1">Eliminar imagen</a>
+                </div>
             @endif
         </div>
 
-       
+        
         <div class="mb-3">
             <label class="form-label">Archivos adicionales</label>
             <input type="file" name="archivos[]" multiple class="form-control">
-            @if(($seccion->archivos ?? null) && $seccion->archivos->count())
+            @if($seccion->archivos->count())
                 <ul class="mt-2">
                     @foreach($seccion->archivos as $archivo)
                         <li>
                             <a href="{{ asset('storage/'.$archivo->ruta) }}" target="_blank">{{ $archivo->nombre }}</a>
                             <small class="text-muted">{{ number_format(Storage::disk('public')->size($archivo->ruta)/1024/1024,2) }} MB</small>
+                            <a href="{{ route('navbar.secciones.borrarArchivo', $archivo->id) }}" class="btn btn-danger btn-sm">Eliminar</a>
                         </li>
                     @endforeach
                 </ul>
             @endif
         </div>
 
-        
+        <!-- Cuadros -->
         <h5 class="mt-4">Cuadros</h5>
         <table class="table table-bordered" id="tabla-cuadro">
             <thead>
@@ -57,8 +61,8 @@
                 </tr>
             </thead>
             <tbody>
-                @php $index = 0; @endphp
-                @foreach($seccion->cuadros ?? [] as $cuadro)
+                @php $index=0; @endphp
+                @foreach($seccion->cuadros as $cuadro)
                     <tr>
                         <td>
                             <input type="text" name="cuadros[{{ $index }}][titulo]" class="form-control" value="{{ $cuadro->titulo }}">
@@ -69,8 +73,8 @@
                         </td>
                         <td>
                             <input type="file" name="cuadros[{{ $index }}][archivo]" class="form-control">
-                            @if($cuadro->ruta)
-                                <small class="d-block mt-1"><a href="{{ asset('storage/'.$cuadro->ruta) }}" target="_blank">Archivo actual</a></small>
+                            @if($cuadro->archivo)
+                                <small class="d-block mt-1"><a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">Archivo actual</a></small>
                             @endif
                         </td>
                         <td class="text-center">
@@ -81,10 +85,8 @@
                 @endforeach
             </tbody>
         </table>
-
         <button type="button" id="agregar-fila" class="btn btn-secondary mb-3">+ Agregar fila</button>
         <br>
-
         <button type="submit" class="btn btn-primary mt-1">Actualizar Sección</button>
     </form>
 </div>
@@ -111,13 +113,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     tabla.addEventListener('click', function(e){
-        if(e.target && e.target.classList.contains('eliminar-fila')){
+        if(e.target.classList.contains('eliminar-fila')){
             e.target.closest('tr').remove();
         }
     });
 
-    ClassicEditor.create(document.querySelector('#descripcion'))
-        .catch(error => console.error(error));
+    ClassicEditor.create(document.querySelector('#descripcion')).catch(console.error);
 });
 </script>
 @endsection
