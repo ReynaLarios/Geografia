@@ -163,7 +163,7 @@ $banner = Banner::latest()->first();
         <div class="paste-button section-hover" style="position: relative;">
 
         
-            <button class="button" onclick="window.location='{{ route('navbar.secciones.mostrar', $sec->id) }}'">
+            <button class="button" onclick="window.location='{{ route('navbar.secciones.mostrar', $sec->slug) }}'">
                 {{ $sec->nombre }}
                 @if($sec->contenidosNavbar && $sec->contenidosNavbar->count())
                     ▼
@@ -177,10 +177,10 @@ $banner = Banner::latest()->first();
                 
                     <button title="Editar sección" class="small-btn"
                             style="width:40px; height:40px; font-size:18px;"
-                            onclick="window.location='{{ route('navbar.secciones.editar', $sec->id) }}'">✏️</button>
+                            onclick="window.location='{{ route('navbar.secciones.editar', $sec->slug) }}'">✏️</button>
 
                   
-                    <form action="{{ route('navbar.secciones.borrar', $sec->id) }}" 
+                    <form action="{{ route('navbar.secciones.borrar', $sec->slug) }}" 
                           method="POST" style="margin:0;">
                         @csrf @method('DELETE')
                         <button type="submit" class="small-btn btn-borrar"
@@ -194,7 +194,7 @@ $banner = Banner::latest()->first();
                         👁
                     </button>
 
-                    <a href="{{ route('navbar.contenidos.crear') }}?seccion_id={{ $sec->id }}"
+                    <a href="{{ route('navbar.contenidos.crear') }}?seccion_id={{ $sec->slug }}"
                        class="small-btn"
                        style="width:40px; height:40px; font-size:18px;">+
                     </a>
@@ -212,7 +212,7 @@ $banner = Banner::latest()->first();
                                         gap:2px; margin:2px 0; padding:3px 6px; border-radius:6px;
                                         background: rgba(255,255,255,0.15);">
 
-                                <a href="{{ route('navbar.contenidos.mostrar', $contenido->id) }}"
+                                <a href="{{ route('navbar.contenidos.mostrar', $contenido->slug) }}"
                                    style="flex-grow:1; color:white; text-decoration:none;">
                                    {{ $contenido->titulo }}
                                 </a>
@@ -221,12 +221,12 @@ $banner = Banner::latest()->first();
 
                   
                                     <button title="Editar contenido" class="small-btn"
-                                            onclick="window.location='{{ route('navbar.contenidos.editar', $contenido->id) }}'">
+                                            onclick="window.location='{{ route('navbar.contenidos.editar', $contenido->slug) }}'">
                                         ✏️
                                     </button>
 
                                   
-                                    <form action="{{ route('navbar.contenidos.borrar', $contenido->id) }}"
+                                    <form action="{{ route('navbar.contenidos.borrar', $contenido->slug) }}"
                                           method="POST">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="small-btn btn-borrar">🗑️</button>

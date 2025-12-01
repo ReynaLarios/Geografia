@@ -61,7 +61,7 @@
         </div>
     @endif
 
-    <!-- Archivos adicionales -->
+ 
     @if($seccion->archivos && $seccion->archivos->count())
         <div class="mb-4">
             <h5>Archivos adicionales</h5>

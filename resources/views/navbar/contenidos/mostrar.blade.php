@@ -35,25 +35,31 @@
     @endif
 
     
-    @if($contenido->archivos->count())
+     @if($contenido->archivos && $contenido->archivos->count())
         <div class="mb-4">
-            <h5>Archivos adicionales del contenido</h5>
+            <h5>Archivos asociados</h5>
             <ul class="list-group">
                 @foreach($contenido->archivos as $archivo)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <a href="{{ asset('storage/' . $archivo->ruta) }}" target="_blank">{{ $archivo->nombre }}</a>
-                        <small class="text-muted">{{ number_format(Storage::disk('public')->size($archivo->ruta)/1024/1024,2) }} MB</small>
+                        <small class="text-muted">
+                            @if($archivo->ruta && Storage::disk('public')->exists($archivo->ruta))
+                                {{ number_format(Storage::disk('public')->size($archivo->ruta)/1024/1024, 2) }} MB
+                            @else
+                                0 MB
+                            @endif
+                        </small>
                     </li>
                 @endforeach
             </ul>
         </div>
     @endif
 
- 
-    @if($contenido->cuadros->count())
-        <div class="cuadros-box">
-        
-   <select id="filter-dropdown"
+
+  @if($contenido->cuadros && $contenido->cuadros->count())
+        <div class="mb-4 p-3 bg-light rounded shadow-sm">
+           
+ <select id="filter-dropdown"
         class="form-select form-select-sm mb-3 d-inline-block"
         style="width:160px;">
             <option value="all">Todos</option>
@@ -62,29 +68,27 @@
             @endforeach
         </select>
 
-            <table class="table table-cuadros">
+            <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th>Título</th>
                         <th>Autor</th>
-                        <th>Archivo principal</th>
+                        <th>Archivo</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($contenido->cuadros->sortBy('titulo') as $cuadro)
-                        <tr><tr class="cuadro-item" data-letter="{{ strtoupper(substr($cuadro->titulo,0,1)) }}">
-
-                            <td>{{ $cuadro->titulo }}</td>
-                            <td>{{ $cuadro->autor ?? '-' }}</td>
-                            <td>
-                                @if($cuadro->archivo)
-                                    <a href="{{ asset('storage/' . $cuadro->archivo) }}" target="_blank">Ver archivo</a>
-                                    <small class="text-muted">{{ number_format(Storage::disk('public')->size($cuadro->archivo)/1024/1024,2) }} MB</small>
-                                @else
-                                    <span class="text-muted">Sin archivo</span>
-                                @endif
-                            </td>
-                        </tr>
+                    @foreach($contenido->cuadros as $cuadro)
+                    <tr><tr class="cuadro-item" data-letter="{{ strtoupper(substr($cuadro->titulo,0,1)) }}">
+                        <td>{{ $cuadro->titulo }}</td>
+                        <td>{{ $cuadro->autor ?? '-' }}</td>
+                        <td>
+                            @if($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo))
+                                <a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">Ver archivo</a>
+                            @else
+                                <span class="text-muted">Sin archivo</span>
+                            @endif
+                        </td>
+                    </tr>
                     @endforeach
                     <script>
 document.addEventListener("DOMContentLoaded", function () {

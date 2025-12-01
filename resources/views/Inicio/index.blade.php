@@ -74,8 +74,8 @@
     </div>
 
     <div>
-        <a href="{{ route('inicio.edit', $noticia->id) }}" class="btn btn-sm btn-warning">Editar</a>
-        <form action="{{ route('inicio.destroy', $noticia->id) }}" method="POST" style="display:inline;">
+        <a href="{{ route('inicio.edit', $noticia->slug) }}" class="btn btn-sm btn-warning">Editar</a>
+        <form action="{{ route('inicio.destroy', $noticia->slug) }}" method="POST" style="display:inline;">
             @csrf
             @method('DELETE')
             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar noticia?')">Borrar</button>

@@ -4,7 +4,7 @@
 <div class="container mt-4">
     <h2 class="mb-4 text-center">Editar Contenido del Navbar</h2>
 
-    <form action="{{ route('navbar.contenidos.actualizar', $contenido->id) }}" method="POST" enctype="multipart/form-data" class="p-4 bg-light rounded shadow-sm">
+    <form action="{{ route('navbar.contenidos.actualizar', $contenido->slug) }}" method="POST" enctype="multipart/form-data" class="p-4 bg-light rounded shadow-sm">
         @csrf
         @method('PUT')
 

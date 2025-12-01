@@ -97,7 +97,7 @@ Route::middleware(['admin'])->group(function () {
         Route::get('/show/{slug}', [InicioController::class, 'show'])->name('inicio.show');
         Route::get('/editar/{slug}', [InicioController::class, 'edit'])->name('inicio.edit');
         Route::put('/update/{slug}', [InicioController::class, 'update'])->name('inicio.update');
-        Route::delete('/{slug}', [InicioController::class, 'destroy'])->name('inicio.destroy');
+        Route::delete('/destroy/{slug}', [InicioController::class, 'destroy'])->name('inicio.destroy');
    
 
         // CARRUSEL

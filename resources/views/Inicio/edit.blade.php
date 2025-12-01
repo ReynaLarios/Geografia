@@ -4,7 +4,7 @@
 <div class="container mt-4">
     <h3>Editar Noticia</h3>
 
-    <form action="{{ route('inicio.update', $noticia->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('inicio.update', $noticia->slug) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 

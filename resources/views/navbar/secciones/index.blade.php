@@ -78,9 +78,9 @@
                 <h5>{{ $seccion->nombre }}</h5>
                 <p>{{ Str::limit(strip_tags($seccion->descripcion), 120) }}</p>
                 <div class="card-actions">
-                    <a href="{{ route('navbar.secciones.mostrar', $seccion->id) }}" class="btn-modern" style="color:#0d6efd;">Ver</a>
-                    <a href="{{ route('navbar.secciones.editar', $seccion->id) }}" class="btn-modern" style="color:#ffc107;">Editar</a>
-                    <form action="{{ route('navbar.secciones.borrar', $seccion->id) }}" method="POST" style="display:inline-block;">
+                    <a href="{{ route('navbar.secciones.mostrar', $seccion->slug) }}" class="btn-modern" style="color:#0d6efd;">Ver</a>
+                    <a href="{{ route('navbar.secciones.editar', $seccion->slug) }}" class="btn-modern" style="color:#ffc107;">Editar</a>
+                    <form action="{{ route('navbar.secciones.borrar', $seccion->slug) }}" method="POST" style="display:inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn-modern" style="color:#dc3545;" onclick="return confirm('¿Seguro que deseas eliminar esta sección?')">Borrar</button>

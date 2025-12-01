@@ -31,13 +31,15 @@
                     <a href="{{ route('inicio.show', $noticia->slug) }}" class="btn btn-sm btn-outline-primary">
                         Leer más
                     </a>
-
-                    <form action="{{ route('noticias.destroy', $noticia->slug) }}" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta noticia?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-                    </form>
-                </div>
+                   <div>
+        <a href="{{ route('inicio.edit', $noticia->slug) }}" class="btn btn-sm btn-warning">Editar</a>
+        <form action="{{ route('inicio.destroy', $noticia->slug) }}" method="POST" style="display:inline;">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar noticia?')">Borrar</button>
+        </form>
+    </div>
+</li>
 
             </div>
 

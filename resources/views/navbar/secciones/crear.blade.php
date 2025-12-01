@@ -32,8 +32,9 @@
         </div>
 
         
+       
         <h5 class="mt-4">Cuadros</h5>
-        <table class="table table-bordered" id="tabla-cuadro">
+        <table class="table table-bordered table-cuadros" id="tabla-cuadro">
             <thead>
                 <tr>
                     <th>Título</th>
@@ -43,7 +44,17 @@
                 </tr>
             </thead>
             <tbody>
-               
+                <tr>
+                    <td>
+                        <input type="hidden" name="cuadro_id[]" value="0">
+                        <input type="text" name="cuadro_titulo[]" class="form-control">
+                    </td>
+                    <td><input type="text" name="cuadro_autor[]" class="form-control"></td>
+                    <td><input type="file" name="cuadro_archivo[]" class="form-control"></td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button>
+                    </td>
+                </tr>
             </tbody>
         </table>
 

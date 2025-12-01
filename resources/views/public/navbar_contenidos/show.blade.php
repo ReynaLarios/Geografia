@@ -36,6 +36,7 @@
         </div>
     @endif
 
+
  
     @if($contenido->cuadros->isNotEmpty())
         <div class="cuadros-box">

@@ -153,8 +153,8 @@
                     </tr>
                 @endforeach
                 <script>
-                     <script>
-document.addEventListener("DOMContentLoaded", function () {
+                    
+    document.addEventListener("DOMContentLoaded", function () {
 
     const rows = Array.from(document.querySelectorAll(".cuadro-item"));
     const filter = document.getElementById("filter-dropdown");
@@ -202,6 +202,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>
+<script>
 document.getElementById('filter-dropdown').addEventListener('change', function() {
     const selected = this.value;
     const rows = document.querySelectorAll('.cuadro-item');

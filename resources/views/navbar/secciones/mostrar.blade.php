@@ -34,63 +34,72 @@
         <div class="mb-4 p-3 bg-light rounded shadow-sm">{!! $seccion->descripcion !!}</div>
     @endif
 
-    @if($seccion->archivos?->count())
-        <div class="mb-4">
-            <h5>Archivos adicionales</h5>
-            <ul class="list-group">
-                @foreach($seccion->archivos as $archivo)
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <a href="{{ asset('storage/' . $archivo->ruta) }}" target="_blank">{{ $archivo->nombre }}</a>
-                        <small class="text-muted">{{ number_format(Storage::disk('public')->size($archivo->ruta)/1024/1024,2) }} MB</small>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+   
+@if($seccion->archivos && $seccion->archivos->count())
+    <div class="mb-4">
+        <ul class="list-group">
+            @foreach($seccion->archivos as $archivo)
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{{ asset('storage/' . $archivo->ruta) }}" target="_blank">{{ $archivo->nombre }}</a>
+                    <small class="text-muted">
+                        @if($archivo->ruta && Storage::disk('public')->exists($archivo->ruta))
+                            {{ number_format(Storage::disk('public')->size($archivo->ruta)/1024/1024, 2) }} MB
+                        @else
+                            0 MB
+                        @endif
+                    </small>
+                </li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
   
-    @if($seccion->cuadros?->count())
-        <div class="cuadros-box">
+   @if($seccion->cuadros && $seccion->cuadros->count())
+    <div class="cuadros-box">
 
-
-            <select id="filter-dropdown"
-        class="form-select form-select-sm mb-3 d-inline-block"
-        style="width:160px;">
+    
+        <select id="filter-dropdown" class="form-select form-select-sm mb-2">
             <option value="all">Todos</option>
             @foreach(range('A','Z') as $letter)
                 <option value="{{ $letter }}">{{ $letter }}</option>
             @endforeach
         </select>
 
-            <table class="table table-cuadros">
-                <thead>
-                    <tr>
-                        <th>Título</th>
-                        <th>Autor</th>
-                        <th>Archivo principal</th>
+        <table class="table table-cuadros">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Archivo</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($seccion->cuadros->sortBy('titulo') as $cuadro)
+                    <tr class="cuadro-item" data-letter="{{ strtoupper(substr($cuadro->titulo,0,1)) }}">
+                        <td>{{ $cuadro->titulo }}</td>
+                        <td>{{ $cuadro->autor ?? '-' }}</td>
+                        <td>
+                            @if($cuadro->archivos && $cuadro->archivos->count())
+                                @foreach($cuadro->archivos as $archivo)
+                                    <a href="{{ asset('storage/' . $archivo->ruta) }}" target="_blank">Ver archivo</a>
+                                    <small class="text-muted">
+                                        @if($archivo->ruta && Storage::disk('public')->exists($archivo->ruta))
+                                            {{ number_format(Storage::disk('public')->size($archivo->ruta)/1024/1024, 2) }} MB
+                                        @else
+                                            0 MB
+                                        @endif
+                                    </small>
+                                @endforeach
+                            @else
+                                <span class="text-muted">Sin archivo</span>
+                            @endif
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                   @foreach($seccion->cuadros->sortBy('titulo') as $cuadro)
-    <tr><tr class="cuadro-item" data-letter="{{ strtoupper(substr($cuadro->titulo,0,1)) }}">
-
-        <td>{{ $cuadro->titulo }}</td>
-        <td>{{ $cuadro->autor ?? '-' }}</td>
-        <td>
-            @if($cuadro->archivo)
-                <a href="{{ asset('storage/' . $cuadro->archivo) }}" target="_blank">Ver archivo</a>
-                <br>
-                <small class="text-muted">
-                    {{ number_format(Storage::disk('public')->exists($cuadro->archivo) ? Storage::disk('public')->size($cuadro->archivo)/1024/1024 : 0, 2) }} MB
-                </small>
-            @else
-                <span class="text-muted">Sin archivo</span>
-            @endif
-        </td>
-    </tr>
-@endforeach
- <script>
-document.addEventListener("DOMContentLoaded", function () {
+                @endforeach
+                <script>
+                    
+    document.addEventListener("DOMContentLoaded", function () {
 
     const rows = Array.from(document.querySelectorAll(".cuadro-item"));
     const filter = document.getElementById("filter-dropdown");
@@ -138,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>
- <script>
+<script>
 document.getElementById('filter-dropdown').addEventListener('change', function() {
     const selected = this.value;
     const rows = document.querySelectorAll('.cuadro-item');
@@ -154,15 +163,34 @@ document.getElementById('filter-dropdown').addEventListener('change', function()
     });
 });
 </script>
-                </tbody>
-            </table>
-        </div>
-    @endif
 
-    
-    <div class="mt-3">
+            </tbody>
+        </table>
+    </div>
+@endif
+
+   <div class="mt-3">
         <button class="fancy" onclick="window.history.back()">← Regresar</button>
     </div>
-
 </main>
+@endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdown = document.getElementById('filter-dropdown');
+    const cuadros = document.querySelectorAll('.cuadro-item');
+
+    dropdown.addEventListener('change', function() {
+        const val = this.value;
+        cuadros.forEach(c => {
+            if(val === 'all' || c.dataset.letter === val) {
+                c.style.display = 'table-row';
+            } else {
+                c.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
 @endsection

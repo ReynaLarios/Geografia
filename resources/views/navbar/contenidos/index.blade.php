@@ -36,10 +36,10 @@
                         <a href="{{ route('navbar.contenidos.mostrar', $contenido->id) }}" 
                            class="fancy">👁</a>
 
-                        <a href="{{ route('navbar.contenidos.editar', $contenido->id) }}" 
+                        <a href="{{ route('navbar.contenidos.editar', $contenido->slug) }}" 
                            class="fancy">✎</a>
 
-                        <form action="{{ route('navbar.contenidos.borrar', $contenido->id) }}" 
+                        <form action="{{ route('navbar.contenidos.borrar', $contenido->slug) }}" 
                               method="POST" onsubmit="return confirm('¿Seguro que deseas borrar este contenido?');">
                             @csrf
                             @method('DELETE')

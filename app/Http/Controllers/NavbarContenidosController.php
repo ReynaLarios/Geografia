@@ -81,20 +81,21 @@ public function guardar(Request $request)
 
     
 
-public function editar($id)
+public function editar($slug)
 {
-    $contenido = NavbarContenido::with(['seccion', 'archivos', 'cuadros.archivos'])->findOrFail($id);
+    $contenido = NavbarContenido::with(['seccion', 'archivos', 'cuadros.archivos'])->where('slug', $slug)
+                          ->firstOrFail();
 
     $navbarSecciones = NavbarSeccion::all();
 
     return view('navbar.contenidos.editar', compact('contenido', 'navbarSecciones'));
 }
-    public function actualizar(Request $request, $id)
+    public function actualizar(Request $request, $slug)
     {
-        $contenido = NavbarContenido::with(['cuadros.archivos', 'archivos'])->findOrFail($id);
-
+        $contenido = NavbarContenido::with(['cuadros.archivos', 'archivos'])->where('slug', $slug)
+                          ->firstOrFail();
         $request->validate([
-            'navbar_seccion_id' => 'required|exists:navbar_secciones,id',
+ 'navbar_seccion_id' => 'required|exists:navbar_secciones,id',
             'titulo' => 'required|string|max:255',
         ]);
 
@@ -175,13 +176,20 @@ public function editar($id)
     }
 
   
-    public function borrar($id)
-    {
-        $contenido = NavbarContenido::with(['archivos', 'cuadros.archivos'])->findOrFail($id);
+    public function borrar($slug)
+{
+    $contenido = NavbarContenido::
+                        where('slug', $slug)
+                          ->firstOrFail();
+  
+    if ($contenido->imagen && Storage::disk('public')->exists($contenido->imagen)) {
+        Storage::disk('public')->delete($contenido->imagen);
+    }
 
-        if ($contenido->imagen && Storage::disk('public')->exists($contenido->imagen)) {
-            Storage::disk('public')->delete($contenido->imagen);
-        }
+   
+    $contenido->delete();
+
+    return back()->with('success', 'Contenido eliminado correctamente.');
 
        
         foreach ($contenido->archivos as $archivo) {
@@ -212,9 +220,11 @@ public function editar($id)
     }
 
   
-    public function mostrar($id)
+    public function mostrar($slug)
     {
-        $contenido = NavbarContenido::with(['seccion', 'archivos', 'cuadros.archivos'])->findOrFail($id);
+        $contenido = NavbarContenido::with(['seccion', 'archivos', 'cuadros.archivos'])->where('slug', $slug)
+                          ->firstOrFail();
+;
         return view('navbar.contenidos.mostrar', compact('contenido'));
     }
 
