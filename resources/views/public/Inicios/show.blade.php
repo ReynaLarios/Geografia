@@ -4,7 +4,6 @@
 <div class="container mt-4">
   <div class="card shadow p-3">
 
-  
     @if($inicio->imagen)
       <div class="text-center mb-3">
         <img src="{{ asset('storage/'.$inicio->imagen) }}" 
@@ -16,13 +15,14 @@
 
     <div class="card-body">
       <h3 class="card-title">{{ $inicio->titulo }}</h3>
-      
-    
-      <p>{{ strip_tags($inicio->descripcion) }}</p>
-
-      
+      <p class="text-muted" style="font-size: 14px;">
+        Publicado el {{ $inicio->created_at->format('d/m/Y') }}
+      </p>
+      <div class="mt-3">
+        {!! $inicio->descripcion !!}
+      </div>
       @if($inicio->archivos->count())
-        <h5>Archivos adjuntos:</h5>
+        <h5 class="mt-4">Archivos adjuntos:</h5>
         <ul>
           @foreach($inicio->archivos as $archivo)
             <li>

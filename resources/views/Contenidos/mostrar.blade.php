@@ -39,7 +39,16 @@
 
     @if($contenido->cuadros && $contenido->cuadros->count())
         <div class="mb-4 p-3 bg-light rounded shadow-sm">
-            <h5>Cuadros</h5>
+           
+ <select id="filter-dropdown"
+        class="form-select form-select-sm mb-3 d-inline-block"
+        style="width:160px;">
+            <option value="all">Todos</option>
+            @foreach(range('A','Z') as $letter)
+                <option value="{{ $letter }}">{{ $letter }}</option>
+            @endforeach
+        </select>
+
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -50,7 +59,7 @@
                 </thead>
                 <tbody>
                     @foreach($contenido->cuadros as $cuadro)
-                    <tr>
+                    <tr><tr class="cuadro-item" data-letter="{{ strtoupper(substr($cuadro->titulo,0,1)) }}">
                         <td>{{ $cuadro->titulo }}</td>
                         <td>{{ $cuadro->autor ?? '-' }}</td>
                         <td>
@@ -62,6 +71,72 @@
                         </td>
                     </tr>
                     @endforeach
+                    <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const rows = Array.from(document.querySelectorAll(".cuadro-item"));
+    const filter = document.getElementById("filter-dropdown");
+    const paginationBox = document.createElement("div");
+    paginationBox.classList.add("mt-3");
+    paginationBox.style.textAlign = "center";
+    rows[0].closest("tbody").parentElement.appendChild(paginationBox);
+
+    let itemsPerPage = 10; 
+
+    function updateTable() {
+        const selected = filter.value;
+        let visibleRows = rows;
+
+        if (selected !== "all") {
+            visibleRows = rows.filter(row => row.dataset.letter === selected);
+        }
+
+        let totalPages = Math.ceil(visibleRows.length / itemsPerPage);
+        let currentPage = window.currentPage || 1;
+
+        if (currentPage > totalPages) currentPage = 1;
+        window.currentPage = currentPage;
+
+        rows.forEach(r => r.style.display = "none");
+
+        let start = (currentPage - 1) * itemsPerPage;
+        let end = start + itemsPerPage;
+        visibleRows.slice(start, end).forEach(r => r.style.display = "");
+
+        let html = "";
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<button class="btn btn-sm ${i === currentPage ? 'btn-primary' : 'btn-outline-primary'} mx-1" onclick="window.currentPage=${i}; updateTable();">${i}</button>`;
+        }
+
+        paginationBox.innerHTML = html;
+    }
+
+    filter.addEventListener("change", () => {
+        window.currentPage = 1;
+        updateTable();
+    });
+
+    updateTable();
+
+});
+</script>
+
+                    <script>
+document.getElementById('filter-dropdown').addEventListener('change', function() {
+    const selected = this.value;
+    const rows = document.querySelectorAll('.cuadro-item');
+
+    rows.forEach(row => {
+        const letter = row.getAttribute('data-letter');
+
+        if (selected === 'all' || letter === selected) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+</script>
                 </tbody>
             </table>
         </div>

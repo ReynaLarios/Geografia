@@ -152,6 +152,72 @@
                         </td>
                     </tr>
                 @endforeach
+                <script>
+                     <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const rows = Array.from(document.querySelectorAll(".cuadro-item"));
+    const filter = document.getElementById("filter-dropdown");
+    const paginationBox = document.createElement("div");
+    paginationBox.classList.add("mt-3");
+    paginationBox.style.textAlign = "center";
+    rows[0].closest("tbody").parentElement.appendChild(paginationBox);
+
+    let itemsPerPage = 10; 
+
+    function updateTable() {
+        const selected = filter.value;
+        let visibleRows = rows;
+
+        if (selected !== "all") {
+            visibleRows = rows.filter(row => row.dataset.letter === selected);
+        }
+
+        let totalPages = Math.ceil(visibleRows.length / itemsPerPage);
+        let currentPage = window.currentPage || 1;
+
+        if (currentPage > totalPages) currentPage = 1;
+        window.currentPage = currentPage;
+
+        rows.forEach(r => r.style.display = "none");
+
+        let start = (currentPage - 1) * itemsPerPage;
+        let end = start + itemsPerPage;
+        visibleRows.slice(start, end).forEach(r => r.style.display = "");
+
+        let html = "";
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<button class="btn btn-sm ${i === currentPage ? 'btn-primary' : 'btn-outline-primary'} mx-1" onclick="window.currentPage=${i}; updateTable();">${i}</button>`;
+        }
+
+        paginationBox.innerHTML = html;
+    }
+
+    filter.addEventListener("change", () => {
+        window.currentPage = 1;
+        updateTable();
+    });
+
+    updateTable();
+
+});
+</script>
+document.getElementById('filter-dropdown').addEventListener('change', function() {
+    const selected = this.value;
+    const rows = document.querySelectorAll('.cuadro-item');
+
+    rows.forEach(row => {
+        const letter = row.getAttribute('data-letter');
+
+        if (selected === 'all' || letter === selected) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+</script>
+
             </tbody>
         </table>
     </div>

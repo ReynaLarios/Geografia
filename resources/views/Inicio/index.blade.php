@@ -54,27 +54,42 @@
     <ul class="list-group">
         @foreach ($noticias as $noticia)
             <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                    @if($noticia->imagen)
-                        <img src="{{ asset('storage/'.$noticia->imagen) }}" alt="{{ $noticia->titulo }}" 
-                             style="width:80px; height:80px; object-fit:cover; border-radius:5px; margin-right:10px;">
-                    @endif
-                    <div>
-                        <strong>{{ $noticia->titulo }}</strong><br>
-                        <small>{{ \Illuminate\Support\Str::limit($noticia->descripcion, 80) }}</small>
-                    </div>
-                </div>
-                <div>
-                  
-                    <a href="{{ route('inicio.edit', $noticia->id) }}" class="btn btn-sm btn-warning">Editar</a>
-                    <form action="{{ route('inicio.destroy', $noticia->id) }}" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar noticia?')">Borrar</button>
-                    </form>
-                </div>
-            </li>
+    <div class="d-flex align-items-center">
+        @if($noticia->imagen)
+            <img src="{{ asset('storage/'.$noticia->imagen) }}" alt="{{ $noticia->titulo }}" 
+                 style="width:80px; height:80px; object-fit:cover; border-radius:5px; margin-right:10px;">
+        @endif
+
+        <div>
+            <strong>{{ $noticia->titulo }}</strong><br>
+
+            <small class="text-muted">
+                Publicado el {{ $noticia->created_at->format('d/m/Y') }}
+            </small>
+
+            <div>
+                <small>{{ \Illuminate\Support\Str::limit(strip_tags($noticia->descripcion), 80) }}</small>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <a href="{{ route('inicio.edit', $noticia->id) }}" class="btn btn-sm btn-warning">Editar</a>
+        <form action="{{ route('inicio.destroy', $noticia->id) }}" method="POST" style="display:inline;">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar noticia?')">Borrar</button>
+        </form>
+    </div>
+</li>
+
         @endforeach
+        <div class="text-center mt-4">
+    <a href="{{ route('inicio.historial') }}" class="btn btn-primary">
+        Ver + noticias
+    </a>
+</div>
+
     </ul>
     @else
         <p class="text-center">No hay noticias aún.</p>

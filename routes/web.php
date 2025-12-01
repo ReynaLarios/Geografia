@@ -84,13 +84,15 @@ Route::middleware(['admin'])->group(function () {
 
     // PAGINA DE INICIO (admin)
     Route::prefix('inicio')->group(function () {
+        Route::get('historial', [InicioController::class, 'historial'])->name('inicio.historial');
         Route::get('/', [InicioController::class, 'index'])->name('inicio.index');
         Route::get('/admin/create', [InicioController::class, 'create'])->name('admin.inicio.create');
         Route::post('/store', [InicioController::class, 'store'])->name('inicio.store');
-       Route::get('/show/{slug}', [InicioController::class, 'show'])->name('inicio.show');;
+        Route::get('/show/{slug}', [InicioController::class, 'show'])->name('inicio.show');;
         Route::get('/editar/{slug}', [InicioController::class, 'edit'])->name('inicio.edit');
         Route::put('/update/{slug}', [InicioController::class, 'update'])->name('inicio.update');
         Route::delete('/{slug}', [InicioController::class, 'destroy'])->name('inicio.destroy');
+   
 
         // CARRUSEL
         Route::get('/carrusel/create', [InicioController::class, 'createImagen'])->name('inicio.createImagen');

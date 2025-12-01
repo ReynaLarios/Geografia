@@ -13,17 +13,26 @@ class InicioController extends Controller
 {
    
     public function index()
-    {
-        $noticias = Inicio::with('archivos')->get();
-        $imagenesCarrusel = Carrusel::all();
-        return view('Inicio.index', compact('noticias', 'imagenesCarrusel'));
-    }
+{
+    $noticias = Inicio::with('archivos')
+        ->orderBy('created_at', 'desc')
+        ->take(5)
+        ->get();
 
-    public function show($slug)
-    {
-        $noticia = Inicio::with('archivos')->findOrFail($slug);
-        return view('Inicio.show', compact('noticia'));
-    }
+    $imagenesCarrusel = Carrusel::all();
+
+    return view('Inicio.index', compact('noticias', 'imagenesCarrusel'));
+}
+
+
+  public function show($slug)
+{
+    $inicio = Inicio::where('slug', $slug)->firstOrFail();
+
+    return view('Inicio.show', compact('inicio'));
+}
+
+
 
    
     public function create()
@@ -58,48 +67,39 @@ class InicioController extends Controller
 
    
     public function edit($slug)
-    {
-        $noticia = Inicio::with('archivos')->findOrFail($slug);
-        return view('Inicio.edit', compact('noticia'));
+{
+    $noticia = Inicio::with('archivos')->where('slug', $slug)->firstOrFail();
+    return view('Inicio.edit', compact('noticia'));
+}
+
+ public function update(Request $request, $slug)
+{
+    $noticia = Inicio::where('slug', $slug)->firstOrFail();
+
+    if ($noticia->titulo !== $request->titulo) {
+        $noticia->slug = Str::slug($request->titulo);
     }
 
- 
-    public function update(Request $request, $slug)
-    {
-        $request->validate([
-            'titulo' => 'required|string|max:255',
-            'descripcion' => 'required|string',
-            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'archivos.*' => 'nullable|file|max:5120',
-        ]);
+    $noticia->titulo = $request->titulo;
+    $noticia->descripcion = $request->descripcion;
 
-        $noticia = Inicio::findOrFail($slug);
-
-       
-        if ($noticia->titulo !== $request->titulo) {
-            $noticia->slug = Str::slug($request->titulo);
+    if ($request->hasFile('imagen')) {
+        if ($noticia->imagen && Storage::disk('public')->exists($noticia->imagen)) {
+            Storage::disk('public')->delete($noticia->imagen);
         }
-
-        $noticia->titulo = $request->titulo;
-        $noticia->descripcion = $request->descripcion;
-
-        if ($request->hasFile('imagen')) {
-            if ($noticia->imagen && Storage::disk('public')->exists($noticia->imagen)) {
-                Storage::disk('public')->delete($noticia->imagen);
-            }
-            $noticia->imagen = $request->file('imagen')->store('inicio', 'public');
-        }
-
-        $noticia->save();
-
-
-        return redirect()->route('inicio.index')->with('success', 'Noticia actualizada correctamente.');
+        $noticia->imagen = $request->file('imagen')->store('inicio', 'public');
     }
+
+    $noticia->save();
+
+    return redirect()->route('inicio.index')->with('success', 'Noticia actualizada correctamente.');
+}
+
 
    
-    public function destroy($slug)
-    {
-        $noticia = Inicio::with('archivos')->findOrFail($slug);
+   public function destroy($slug)
+{
+    $noticia = Inicio::with('archivos')->where('slug', $slug)->firstOrFail();
 
         if ($noticia->imagen && Storage::disk('public')->exists($noticia->imagen)) {
             Storage::disk('public')->delete($noticia->imagen);
@@ -173,4 +173,13 @@ class InicioController extends Controller
 
         return back()->with('success', 'Imagen eliminada correctamente.');
     }
+    public function historial()
+{
+    $noticias = Inicio::with('archivos')
+        ->orderBy('created_at', 'desc')
+        ->paginate(10); // 10 por página
+
+    return view('Inicio.historial', compact('noticias'));
+}
+
 }

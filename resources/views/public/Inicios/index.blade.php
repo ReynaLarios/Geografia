@@ -3,15 +3,15 @@
 @section('contenido')
 <div class="container mt-4">
 
-   
+    
     @if($imagenesCarrusel->count() > 0)
         <div id="carouselPublico" class="carousel slide mb-4" data-bs-ride="carousel">
             <div class="carousel-inner text-center">
                 @foreach($imagenesCarrusel as $index => $img)
                     <div class="carousel-item @if($index == 0) active @endif">
-                        <img src="{{ asset('storage/'.$img->imagen) }}" 
-                             class="d-block mx-auto" 
-                             style="width:100%; max-height:400px; object-fit:cover;" 
+                        <img src="{{ asset('storage/'.$img->imagen) }}"
+                             class="d-block mx-auto"
+                             style="width:100%; max-height:400px; object-fit:cover;"
                              alt="Carrusel {{ $index + 1 }}">
                     </div>
                 @endforeach
@@ -29,62 +29,43 @@
         <p class="text-center text-muted">No hay imágenes en el carrusel.</p>
     @endif
 
-  
-    <h2 class="mb-3 mt-5">Noticias</h2>
+    <h2 class="mb-4 text-center">Historial de Noticias</h2>
 
     @if($noticias->count() > 0)
-        <ul class="list-group">
-            @foreach($noticias as $noticia)
-                <li class="list-group-item mb-3 p-3 shadow-sm rounded">
-                    <div class="d-flex align-items-start">
-                        
-                        @if($noticia->imagen)
-                            <img src="{{ asset('storage/'.$noticia->imagen) }}" 
-                                 alt="{{ $noticia->titulo }}" 
-                                 class="rounded me-3" 
-                                 style="width:120px; height:120px; object-fit:cover;">
-                        @endif
+        @foreach($noticias as $noticia)
+            <div class="card mb-3 p-2">
+                <div class="d-flex align-items-start">
 
-                        <div class="flex-grow-1">
-                            <h4>{{ $noticia->titulo }}</h4>
-                         <div>{!! $noticia->descripcion !!}</div>
+                    
+                    @if($noticia->imagen)
+                        <img 
+                            src="{{ asset('storage/'.$noticia->imagen) }}" 
+                            alt="{{ $noticia->titulo }}"
+                            style="width: 90px; height: 90px; object-fit: cover; border-radius: 8px; margin-right: 15px;"
+                        >
+                    @endif
 
+                    <div class="flex-grow-1">
+                        <h4 class="mb-1">{{ $noticia->titulo }}</h4>
 
-                           
-                            @if($noticia->archivos->count() > 0)
-                                <h6>Archivos adjuntos:</h6>
-                                <ul>
-                                    @foreach($noticia->archivos as $archivo)
-                                        <li>
-                                            <a href="{{ asset('storage/archivos/'.$archivo->archivo) }}" target="_blank">
-                                                {{ $archivo->nombre_real }}
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            @endif
+                      
+                        <small class="text-muted">
+                            Publicado el {{ $noticia->created_at->format('d/m/Y') }}
+                        </small>
 
-                        </div>
+                        <p class="mt-2 mb-2">{!! Str::limit($noticia->descripcion, 200) !!}</p>
+
+                        <a href="{{ route('inicio.show', $noticia->slug) }}" class="btn btn-sm btn-outline-primary">
+                            Leer más
+                        </a>
                     </div>
-                </li>
-            @endforeach
-        </ul>
+
+                </div>
+            </div>
+        @endforeach
     @else
         <p class="text-center text-muted">No hay noticias aún.</p>
     @endif
 
 </div>
-
-
-<style>
-.btn-info {
-    background-color: #A0C4FF;
-    border-color: #A0C4FF;
-    color: #03045e;
-}
-.list-group-item {
-    background-color: #dbeafe;
-    border-color:#dbeafe;
-}
-</style>
 @endsection

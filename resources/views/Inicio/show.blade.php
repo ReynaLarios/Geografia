@@ -3,14 +3,33 @@
 @section('contenido')
 <div class="container mt-4">
   <div class="card shadow">
+
     @if($inicio->imagen)
-      <img src="{{ asset('storage/'.$inicio->imagen) }}" class="card-img-top" alt="{{ $inicio->titulo }}">
+     <img 
+        src="{{ asset('storage/'.$inicio->imagen) }}" 
+        class="card-img-top"
+        alt="{{ $inicio->titulo }}"
+        style="max-width: 25%; height: auto; margin: 20px auto; display: block; border-radius: 10px;"
+     >
     @endif
-    <div class="card-body">
+
+    <div class="card-body text-center">
+
+ 
       <h3>{{ $inicio->titulo }}</h3>
-      <p>{{ $inicio->descripcion }}</p>
-      <a href="{{ route('inicio.index') }}" class="btn btn-secondary">Volver</a>
+
+      <p class="text-muted" style="font-size: 14px;">
+        Publicado el {{ $inicio->created_at->format('d/m/Y') }}
+      </p>
+
+  
+      <div class="text-start">
+        {!! $inicio->descripcion !!}
+      </div>
+
+      <a href="{{ route('inicio.index') }}" class="btn btn-secondary mt-3">Volver</a>
     </div>
   </div>
 </div>
 @endsection
+
