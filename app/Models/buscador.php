@@ -40,6 +40,10 @@ class Buscador extends Model
             case 'persona':
                 return route('public.personas.show', ['slug' => $slug]);
 
+            case 'inicios': 
+            return route('public.inicio.show', ['slug' => $slug]);
+
+
             default:
                 return '#';
         }

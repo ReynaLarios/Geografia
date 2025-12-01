@@ -1,4 +1,4 @@
-@extends('base.layout')
+@extends('public.layout')
 
 @section('contenido')
 <main class="container mt-4">
@@ -10,7 +10,7 @@
 
         <div class="d-flex align-items-start">
 
-           
+         
             @if($noticia->imagen)
                 <img 
                     src="{{ asset('storage/'.$noticia->imagen) }}" 
@@ -22,14 +22,14 @@
             <div class="flex-grow-1">
                 <h4 class="mb-1">{{ $noticia->titulo }}</h4>
 
-              
+               
                 <small class="text-muted">
                     Publicado el {{ $noticia->created_at->format('d/m/Y') }}
                 </small>
 
                 <p class="mt-2">{!! Str::limit($noticia->descripcion, 250) !!}</p>
 
-                <a href="{{ route('inicio.show', $noticia->slug) }}" class="btn btn-sm btn-outline-primary">
+                <a href="{{ route('public.inicios.show', $noticia->slug) }}" class="btn btn-sm btn-outline-primary">
                     Leer más
                 </a>
             </div>

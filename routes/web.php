@@ -21,10 +21,11 @@ use App\Http\Controllers\AuthController;
 
 
 
+
     // PÁGINA PRINCIPAL
 Route::get('/', [PublicController::class, 'inicio'])->name('public.inicio.index');
-Route::get('/inicio/{slug}', [PublicController::class, 'inicioShow'])->name('public.inicio.show');
-
+Route::get('/inicio/{slug}', [PublicController::class, 'inicioShow'])->name('public.inicios.show');
+ Route::get('public/historial', [PublicController::class, 'historial'])->name('public.inicio.historial');
 //RUTAS PÚBLICAS 
 
 // PERSONAS
@@ -82,13 +83,17 @@ Route::middleware(['admin'])->group(function () {
         Route::delete('/eliminar/{slug}', [AdministradorController::class, 'eliminar'])->name('administrador.eliminar');
     });
 
+    //Historial
+    Route::prefix('admin/inicio')->middleware('admin')->group(function () {
+          Route::get('/historial', [InicioController::class, 'historial'])->name('inicio.historial');
+    
+          
     // PAGINA DE INICIO (admin)
-    Route::prefix('inicio')->group(function () {
-        Route::get('historial', [InicioController::class, 'historial'])->name('inicio.historial');
+        Route::prefix('inicio')->group(function () {
         Route::get('/', [InicioController::class, 'index'])->name('inicio.index');
         Route::get('/admin/create', [InicioController::class, 'create'])->name('admin.inicio.create');
         Route::post('/store', [InicioController::class, 'store'])->name('inicio.store');
-        Route::get('/show/{slug}', [InicioController::class, 'show'])->name('inicio.show');;
+        Route::get('/show/{slug}', [InicioController::class, 'show'])->name('inicio.show');
         Route::get('/editar/{slug}', [InicioController::class, 'edit'])->name('inicio.edit');
         Route::put('/update/{slug}', [InicioController::class, 'update'])->name('inicio.update');
         Route::delete('/{slug}', [InicioController::class, 'destroy'])->name('inicio.destroy');
@@ -212,3 +217,4 @@ Route::middleware(['admin'])->group(function () {
 
 });
 
+});

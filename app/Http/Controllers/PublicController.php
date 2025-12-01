@@ -24,14 +24,12 @@ class PublicController extends Controller
 
         return view('public.inicios.index', compact('imagenesCarrusel', 'noticias', 'secciones'));
     }
-
-    public function inicioShow($id)
-    {
-        $noticia = Inicio::findOrFail($id);
-        $secciones = Seccion::where('oculto_publico', false)->get();
-
-        return view('public.inicios.show', compact('noticia', 'secciones'));
-    }
+public function inicioShow($slug)
+{
+    $inicio = Inicio::where('slug', $slug)->firstOrFail();
+    $secciones = Seccion::where('oculto_publico', false)->get();
+    return view('public.inicios.show', compact('inicio', 'secciones'));
+}
 
     public function carrusel()
     {
@@ -40,6 +38,13 @@ class PublicController extends Controller
 
         return view('public.inicio', compact('imagenesCarrusel', 'noticias'));
     }
+
+    public function historial()
+{
+    $noticias = Inicio::orderBy('created_at', 'desc')->paginate(5); 
+    return view('public.historial', compact('noticias'));
+}
+
 
     
     public function navbarSeccionesIndex()

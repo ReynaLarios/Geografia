@@ -96,7 +96,7 @@
     @endif
 </div>
 
-{{-- --- Estilos personalizados --- --}}
+
 <style>
 .carousel-caption .btn {
     margin: 2px;
@@ -132,10 +132,10 @@
     color: #fff;
 }
 
-/* --- Responsivo --- */
+
 @media (max-width: 576px) {
     .carousel-inner img {
-        height: 250px; /* Altura más pequeña en móviles */
+        height: 250px; 
     }
     .carousel-caption {
         font-size: 0.8rem;

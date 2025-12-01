@@ -177,8 +177,7 @@ class InicioController extends Controller
 {
     $noticias = Inicio::with('archivos')
         ->orderBy('created_at', 'desc')
-        ->paginate(10); // 10 por página
-
+        ->paginate(10); 
     return view('Inicio.historial', compact('noticias'));
 }
 

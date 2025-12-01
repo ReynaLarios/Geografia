@@ -29,43 +29,100 @@
         <p class="text-center text-muted">No hay imágenes en el carrusel.</p>
     @endif
 
-    <h2 class="mb-4 text-center">Historial de Noticias</h2>
+     @if($noticias->count())
+    <ul class="list-group">
+        @foreach ($noticias as $noticia)
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+        @if($noticia->imagen)
+            <img src="{{ asset('storage/'.$noticia->imagen) }}" alt="{{ $noticia->titulo }}" 
+                 style="width:80px; height:80px; object-fit:cover; border-radius:5px; margin-right:10px;">
+        @endif
 
-    @if($noticias->count() > 0)
-        @foreach($noticias as $noticia)
-            <div class="card mb-3 p-2">
-                <div class="d-flex align-items-start">
+        <div>
+            <strong>{{ $noticia->titulo }}</strong><br>
 
-                    
-                    @if($noticia->imagen)
-                        <img 
-                            src="{{ asset('storage/'.$noticia->imagen) }}" 
-                            alt="{{ $noticia->titulo }}"
-                            style="width: 90px; height: 90px; object-fit: cover; border-radius: 8px; margin-right: 15px;"
-                        >
-                    @endif
+            <small class="text-muted">
+                Publicado el {{ $noticia->created_at->format('d/m/Y') }}
+            </small>
 
-                    <div class="flex-grow-1">
-                        <h4 class="mb-1">{{ $noticia->titulo }}</h4>
-
-                      
-                        <small class="text-muted">
-                            Publicado el {{ $noticia->created_at->format('d/m/Y') }}
-                        </small>
-
-                        <p class="mt-2 mb-2">{!! Str::limit($noticia->descripcion, 200) !!}</p>
-
-                        <a href="{{ route('inicio.show', $noticia->slug) }}" class="btn btn-sm btn-outline-primary">
-                            Leer más
-                        </a>
-                    </div>
-
-                </div>
+            <div>
+                <small>{{ \Illuminate\Support\Str::limit(strip_tags($noticia->descripcion), 80) }}</small>
             </div>
-        @endforeach
-    @else
-        <p class="text-center text-muted">No hay noticias aún.</p>
-    @endif
+        </div>
+    </div>
 
+    <div>
+        <a href="{{ route('inicio.edit', $noticia->id) }}" class="btn btn-sm btn-warning">Editar</a>
+        <form action="{{ route('inicio.destroy', $noticia->id) }}" method="POST" style="display:inline;">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar noticia?')">Borrar</button>
+        </form>
+    </div>
+</li>
+
+        @endforeach
+        <div class="text-center mt-4">
+    <a href="{{ route('public.inicio.historial') }}" class="btn btn-primary">
+        Ver + noticias
+    </a>
 </div>
+
+    </ul>
+    @else
+        <p class="text-center">No hay noticias aún.</p>
+    @endif
+</div>
+
+
+<style>
+.carousel-caption .btn {
+    margin: 2px;
+}
+
+.btn-success {
+    background-color: #FFB77D;
+    border-color: #FFB77D;
+    color: #663300;
+}
+
+.btn-info {
+    background-color: #A0C4FF;
+    border-color: #A0C4FF;
+    color: #03045e;
+}
+
+.btn-warning {
+    background-color: #FFF3B0;
+    border-color: #FFF3B0;
+    color: #664d03;
+}
+
+.btn-danger {
+    background-color: #DDB892;
+    border-color: #DDB892;
+    color: #5C4033;
+}
+
+.carousel-caption .btn-primary {
+    background-color: #79A7D3;
+    border-color: #79A7D3;
+    color: #fff;
+}
+
+
+@media (max-width: 576px) {
+    .carousel-inner img {
+        height: 250px; 
+    }
+    .carousel-caption {
+        font-size: 0.8rem;
+    }
+    .list-group-item .d-flex img {
+        width: 60px;
+        height: 60px;
+    }
+}
+</style>
 @endsection

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Seccion;
 use App\Models\Contenidos;
+use App\Models\Inicio;
 use App\Models\Persona;
 use App\Models\NavbarSeccion;
 use App\Models\NavbarContenido;
@@ -41,6 +42,12 @@ class BuscadorController extends Controller
             'model'  => NavbarContenido::class,
             'titulo' => 'titulo',
             'campos' => ['titulo', 'descripcion', 'slug', 'imagen', 'archivos'],
+            'oculto' => true,
+        ],
+ 'inicios' => [
+            'model'  => Inicio::class,
+            'titulo' => 'titulo',
+            'campos' => ['titulo', 'descripcion', 'slug', 'imagen'],
             'oculto' => true,
         ],
     ];
@@ -112,8 +119,10 @@ class BuscadorController extends Controller
                 $item->nombre = $item->titulo ?? 'Sin título';
             } elseif ($tipo === 'personas') {
                 $item->nombre = $item->nombre ?? 'Sin nombre';
+             } elseif ($tipo === 'inicios') {
+             $item->nombre = $item->titulo ?? 'Sin título';
             } else {
-                $item->nombre = $item->nombre ?? 'Sin nombre';
+            $item->nombre = $item->nombre ?? 'Sin nombre';
             }
 
             switch ($tipo) {
@@ -131,6 +140,9 @@ class BuscadorController extends Controller
                     break;
                 case 'navbar_contenidos':
                     $item->url = route('public.navbar.contenido.show', $item->slug);
+                    break;
+                    case 'inicios':
+                    $item->url = route('public.inicios.show', $item->slug);
                     break;
                 default:
                     $item->url = '#';
