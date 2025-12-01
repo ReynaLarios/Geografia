@@ -78,7 +78,7 @@ public function guardar(Request $request)
         'cuadros' => 'nullable|array',
     ]);
 
-    // 1️⃣ Imagen principal
+  
     if ($request->hasFile('imagen')) {
         if ($seccion->imagen && Storage::disk('public')->exists($seccion->imagen)) {
             Storage::disk('public')->delete($seccion->imagen);
@@ -90,7 +90,7 @@ public function guardar(Request $request)
     $seccion->descripcion = $request->descripcion;
     $seccion->save();
 
-    // 2️⃣ Archivos adicionales
+   
     if ($request->hasFile('archivos')) {
         foreach ($request->file('archivos') as $archivo) {
             $seccion->archivos()->create([
@@ -101,7 +101,7 @@ public function guardar(Request $request)
         }
     }
 
-    // 3️⃣ Cuadros
+   
     $cuadros = $request->input('cuadros', []);
     foreach ($cuadros as $index => $data) {
         $cuadro = isset($data['id']) && $data['id'] > 0 ? Cuadro::find($data['id']) : new Cuadro();
@@ -109,7 +109,6 @@ public function guardar(Request $request)
         $cuadro->autor = $data['autor'] ?? null;
       
 
-        // Subida de archivo del cuadro
         if (isset($data['archivo']) && $request->hasFile("cuadros.$index.archivo")) {
             if ($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo)) {
                 Storage::disk('public')->delete($cuadro->archivo);
@@ -125,7 +124,6 @@ public function guardar(Request $request)
 }
 
 
-   // Eliminar archivo adicional
 public function borrarArchivo($archivoId)
 {
     $archivo = \App\Models\Archivo::findOrFail($archivoId);
@@ -139,8 +137,7 @@ public function borrarArchivo($archivoId)
     return back()->with('success', 'Archivo eliminado correctamente.');
 }
 
-// Eliminar imagen principal de la sección
-public function borrarImagen($id)
+public function borrarImagen($id) 
 {
     $seccion = NavbarSeccion::findOrFail($id);
 
@@ -152,6 +149,22 @@ public function borrarImagen($id)
     $seccion->save();
 
     return back()->with('success', 'Imagen eliminada correctamente.');
+}
+
+
+public function borrar($id)
+{
+    $seccion = NavbarSeccion::findOrFail($id);
+
+  
+    if ($seccion->imagen && Storage::disk('public')->exists($seccion->imagen)) {
+        Storage::disk('public')->delete($seccion->imagen);
+    }
+
+   
+    $seccion->delete();
+
+    return back()->with('success', 'Sección eliminada correctamente.');
 }
 
     
@@ -189,7 +202,7 @@ public function borrarImagen($id)
     $autores = $request->input('cuadro_autor', []);
     $ids = $request->input('cuadro_id', []);
 
-    // Aquí Laravel devuelve un array asociativo correctamente
+    
     $archivos = $request->file('cuadro_archivo') ?? [];
 
     foreach ($titulos as $i => $titulo) {
@@ -197,14 +210,13 @@ public function borrarImagen($id)
         $tituloLimpio = isset($titulo) ? trim($titulo) : null;
         $autorLimpio = isset($autores[$i]) ? trim($autores[$i]) : null;
 
-        // Aquí obtenemos el archivo correcto
         $archivo = isset($archivos[$i]) ? $archivos[$i] : null;
         $hayArchivo = isset($archivo) && $archivo->isValid();
 
-        // Saltar si no hay nada que guardar
+        
         if (!$tituloLimpio && !$autorLimpio && !$hayArchivo) continue;
 
-        // Crear nuevo cuadro
+        
         $nuevo = [];
         if ($tituloLimpio) $nuevo['titulo'] = $tituloLimpio;
         if ($autorLimpio) $nuevo['autor'] = $autorLimpio;

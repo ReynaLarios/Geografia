@@ -136,7 +136,7 @@ class ContenidosController extends Controller
             ]);
         }
 
-        // Eliminar archivos marcados
+       
         if($request->archivos_eliminados){
             foreach($request->archivos_eliminados as $id){
                 $a = $contenido->archivos()->find($id);
@@ -190,7 +190,7 @@ class ContenidosController extends Controller
             $contenido->cuadros()->create($nuevo);
         }
 
-        // Eliminar cuadros que no se enviaron
+    
         $paraBorrar = array_diff($idsExistentes,$idsRecibidos);
         foreach($paraBorrar as $idBorrar){
             $c = Cuadro::find($idBorrar);

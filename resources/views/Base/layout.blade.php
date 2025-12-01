@@ -100,6 +100,13 @@ footer { position:relative; background:linear-gradient(135deg, #60a5fa, #1e3a8a)
     #searchResults a:hover {
         background: #f0f8ff;
     }
+
+    .small-btn {
+    font-size: 0.7rem; 
+    padding: 5px 3px;  
+    line-height: 1;
+}
+
 </style>
 
         <form action="{{ route('logout') }}" method="POST">@csrf

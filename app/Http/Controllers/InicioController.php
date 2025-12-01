@@ -75,7 +75,7 @@ class InicioController extends Controller
 
         $noticia = Inicio::findOrFail($slug);
 
-        // Actualizar slug solo si cambia el título
+       
         if ($noticia->titulo !== $request->titulo) {
             $noticia->slug = Str::slug($request->titulo);
         }
