@@ -44,38 +44,45 @@ class PersonaController extends Controller
         return redirect()->route('personas.index')->with('success', 'Persona creada correctamente');
     }
 
-    public function editar(Persona $persona)
-    {
+    
+        public function editar($slug)
+{
+    $persona = Persona::where('slug', $slug)
+                          ->firstOrFail();
         return view('personas.editar', compact('persona'));
     }
 
-    public function actualizar(Request $request, Persona $persona)
-    {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'email' => 'required|email|unique:personas,email,' . $persona->id,
-            'datos_personales' => 'nullable|string',
-            'foto' => 'nullable|image|max:2048',
-        ]);
+  public function actualizar(Request $request, $slug)
+{
+    $persona = Persona::where('slug', $slug)->firstOrFail();
 
-        $data = $request->except('foto');
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'email' => 'required|email|unique:personas,email,' . $persona->id,
+        'datos_personales' => 'nullable|string',
+        'foto' => 'nullable|image|max:2048',
+    ]);
 
-        if ($request->hasFile('foto')) {
-            if ($persona->foto) {
-                Storage::disk('public')->delete($persona->foto);
-            }
-            $data['foto'] = $request->file('foto')->store('fotos', 'public');
-        }
+    $data = $request->except('foto');
 
+    if ($request->hasFile('foto')) {
         
-        $data['slug'] = Str::slug($request->nombre, '-');
-
-        $persona->update($data);
-
-        return redirect()->route('personas.index')->with('success', 'Persona actualizada correctamente');
+        if ($persona->foto) {
+            Storage::disk('public')->delete($persona->foto);
+        }
+        $data['foto'] = $request->file('foto')->store('fotos', 'public');
     }
 
-    public function borrar(Persona $persona)
+    $data['slug'] = Str::slug($request->nombre, '-');
+
+    $persona->update($data);
+
+    return redirect()->route('personas.index')->with('success', 'Persona actualizada correctamente');
+}
+
+    public function borrar($slug)  {
+    $persona = Persona::where('slug', $slug)->firstOrFail();
+  
     {
         if ($persona->foto) {
             Storage::disk('public')->delete($persona->foto);
@@ -85,7 +92,7 @@ class PersonaController extends Controller
 
         return redirect()->route('personas.index')->with('success', 'Persona eliminada correctamente');
     }
-
+}
     
      public function mostrar($slug) {
     $persona = Persona::where('slug', $slug)->firstOrFail();

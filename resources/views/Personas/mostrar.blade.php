@@ -14,8 +14,8 @@
                      class="rounded-circle mb-3"
                      style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #90caf9;">
             @else
-                <div class="rounded-circle mb-3 d-flex align-items-center justify-content-center" 
-                     style="width: 150px; height: 150px; background-color: #bbdefb; color: #1565c0; font-size: 48px;">
+                 <div class="rounded-circle d-flex align-items-center justify-content-center mb-2"
+                             style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #90caf9;margin:auto">
                     {{ strtoupper(substr($persona->nombre, 0, 1)) }}
                 </div>
             @endif
@@ -34,12 +34,12 @@
             <div class="mt-4 d-flex justify-content-center gap-3">
 
                
-                <a href="{{ route('personas.editar', $persona->id) }}" 
+                <a href="{{ route('personas.editar', $persona->slug) }}" 
                    class="btn btn-primary">
                     Editar
                 </a>
 
-                <form action="{{ route('personas.borrar', $persona->id) }}" 
+                <form action="{{ route('personas.borrar', $persona->slug) }}" 
                       method="POST"
                       onsubmit="return confirm('¿Seguro que deseas eliminar esta persona?');">
                     @csrf

@@ -17,7 +17,7 @@
                              style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #90caf9;">
                     @else
                         <div class="rounded-circle d-flex align-items-center justify-content-center mb-2"
-                             style="width: 100px; height: 100px; background-color: #90caf9; color: white; font-weight: bold; font-size: 1.2rem;">
+                             style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #90caf9;margin:auto">
                              {{ strtoupper(substr($persona->nombre, 0, 1)) }}
                         </div>
                     @endif
