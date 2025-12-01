@@ -86,7 +86,8 @@ Route::middleware(['admin'])->group(function () {
     //Historial
     Route::prefix('admin/inicio')->middleware('admin')->group(function () {
           Route::get('/historial', [InicioController::class, 'historial'])->name('inicio.historial');
-    
+    Route::delete('/noticias/{slug}', [InicioController::class, 'destroy'])->name('noticias.destroy');
+
           
     // PAGINA DE INICIO (admin)
         Route::prefix('inicio')->group(function () {

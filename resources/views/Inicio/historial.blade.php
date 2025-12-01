@@ -10,7 +10,6 @@
 
         <div class="d-flex align-items-start">
 
-           
             @if($noticia->imagen)
                 <img 
                     src="{{ asset('storage/'.$noticia->imagen) }}" 
@@ -22,16 +21,24 @@
             <div class="flex-grow-1">
                 <h4 class="mb-1">{{ $noticia->titulo }}</h4>
 
-              
                 <small class="text-muted">
                     Publicado el {{ $noticia->created_at->format('d/m/Y') }}
                 </small>
 
                 <p class="mt-2">{!! Str::limit($noticia->descripcion, 250) !!}</p>
 
-                <a href="{{ route('inicio.show', $noticia->slug) }}" class="btn btn-sm btn-outline-primary">
-                    Leer más
-                </a>
+                <div class="d-flex gap-2">
+                    <a href="{{ route('inicio.show', $noticia->slug) }}" class="btn btn-sm btn-outline-primary">
+                        Leer más
+                    </a>
+
+                    <form action="{{ route('noticias.destroy', $noticia->slug) }}" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta noticia?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                    </form>
+                </div>
+
             </div>
 
         </div>
