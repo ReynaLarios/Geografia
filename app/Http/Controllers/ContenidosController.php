@@ -60,37 +60,47 @@ class ContenidosController extends Controller
     }
 
     public function actualizar(Request $request, $slug)
-    {
-        $request->validate([
-            'titulo' => 'required|string|max:255',
-            'seccion_id' => 'required|exists:secciones,id',
-            'descripcion' => 'nullable|string',
-            'imagen' => 'nullable|image|max:2048',
-            'archivos.*' => 'nullable|file|max:10240',
-            'cuadro_titulo.*' => 'nullable|string|max:255',
-            'cuadro_autor.*' => 'nullable|string|max:255',
-            'cuadro_archivo.*' => 'nullable|file|max:5120',
-        ]);
+{
+    $request->validate([
+        'titulo' => 'required|string|max:255',
+        'seccion_id' => 'required|exists:secciones,id',
+        'descripcion' => 'nullable|string',
+        'imagen' => 'nullable|image|max:2048',
+        'archivos.*' => 'nullable|file|max:10240',
+        'cuadro_titulo.*' => 'nullable|string|max:255',
+        'cuadro_autor.*' => 'nullable|string|max:255',
+        'cuadro_archivo.*' => 'nullable|file|max:5120',
+    ]);
 
-        $contenido = Contenidos::where('slug',$slug)->firstOrFail();
-        $datos = $request->only(['titulo','descripcion','seccion_id']);
+    $contenido = Contenidos::where('slug',$slug)->firstOrFail();
+    $datos = $request->only(['titulo','descripcion','seccion_id']);
 
-        if($contenido->titulo !== $request->titulo){
-            $datos['slug'] = Str::slug($request->titulo) . '-' . uniqid();
-        }
-
-        if($request->hasFile('imagen')){
-            if($contenido->imagen) Storage::disk('public')->delete($contenido->imagen);
-            $datos['imagen'] = $request->file('imagen')->store('contenidos','public');
-        }
-
-        $contenido->update($datos);
-
-        $this->guardarArchivos($request, $contenido);
-        $this->guardarCuadros($request, $contenido);
-
-        return redirect()->route('contenidos.listado')->with('success','Contenido actualizado correctamente.');
+    if($contenido->titulo !== $request->titulo){
+        $datos['slug'] = Str::slug($request->titulo) . '-' . uniqid();
     }
+
+    // --- ELIMINAR SOLO LA IMAGEN PRINCIPAL ---
+    if ($request->eliminar_imagen == "1") {
+        if ($contenido->imagen) {
+            Storage::disk('public')->delete($contenido->imagen);
+            $contenido->imagen = null;
+            $contenido->save();
+        }
+    }
+
+    if($request->hasFile('imagen')){
+        if($contenido->imagen) Storage::disk('public')->delete($contenido->imagen);
+        $datos['imagen'] = $request->file('imagen')->store('contenidos','public');
+    }
+
+    $contenido->update($datos);
+
+    $this->guardarArchivos($request, $contenido);
+    $this->guardarCuadros($request, $contenido);
+
+    return redirect()->route('contenidos.listado')->with('success','Contenido actualizado correctamente.');
+}
+
 
     public function borrar($slug)
     {
@@ -136,69 +146,95 @@ class ContenidosController extends Controller
             ]);
         }
 
-       
-        if($request->archivos_eliminados){
-            foreach($request->archivos_eliminados as $id){
-                $a = $contenido->archivos()->find($id);
-                if($a){
-                    if($a->ruta) Storage::disk('public')->delete($a->ruta);
-                    $a->delete();
-                }
+       if($request->archivos_eliminados){
+    $archivosEliminados = $request->archivos_eliminados;
+
+    // Si es string (JSON) lo decodificamos
+    if(is_string($archivosEliminados)){
+        $archivosEliminados = json_decode($archivosEliminados, true);
+    }
+
+    if(is_array($archivosEliminados)){
+        foreach($archivosEliminados as $id){
+            $a = $contenido->archivos()->find($id);
+            if($a){
+                Storage::disk('public')->delete($a->ruta);
+                $a->delete();
             }
         }
     }
+}
+}
 
     private function guardarCuadros(Request $request, $contenido)
-    {
-        $ids = $request->cuadro_id ?? [];
-        $titulos = $request->cuadro_titulo ?? [];
-        $autores = $request->cuadro_autor ?? [];
-        $archivos = $request->file('cuadro_archivo') ?? [];
+{
+    $ids = $request->cuadro_id ?? [];
+    $titulos = $request->cuadro_titulo ?? [];
+    $autores = $request->cuadro_autor ?? [];
+    $archivos = $request->file('cuadro_archivo') ?? [];
 
-        $idsExistentes = $contenido->cuadros()->pluck('id')->toArray();
-        $idsRecibidos = [];
+ 
+    $eliminadosArchivo = $request->cuadro_archivo_eliminado ?? [];
 
-        foreach($titulos as $i => $titulo){
-            $id = intval($ids[$i] ?? 0);
-            $idsRecibidos[] = $id;
+    if (is_string($eliminadosArchivo)) {
+        $eliminadosArchivo = json_decode($eliminadosArchivo, true);
+    }
 
-            $tituloLimpio = trim($titulo ?? '');
-            $autorLimpio = trim($autores[$i] ?? '');
-            $archivo = $archivos[$i] ?? null;
-            $hayArchivo = $archivo && $archivo->isValid();
-
-            if ($tituloLimpio === '' && $autorLimpio === '' && !$hayArchivo) continue;
-
-
-            if($id > 0){
-                $cuadro = Cuadro::find($id);
-                if(!$cuadro) continue;
-                $cuadro->titulo = $tituloLimpio;
-                $cuadro->autor = $autorLimpio;
-
-                if($hayArchivo){
-                    if($cuadro->archivo) Storage::disk('public')->delete($cuadro->archivo);
-                    $cuadro->archivo = $archivo->store('cuadros','public');
-                }
-
+    if (is_array($eliminadosArchivo)) {
+        foreach ($eliminadosArchivo as $idCuadro) {
+            $cuadro = Cuadro::find($idCuadro);
+            if ($cuadro && $cuadro->archivo) {
+                Storage::disk('public')->delete($cuadro->archivo);
+                $cuadro->archivo = null;
                 $cuadro->save();
-                continue;
-            }
-
-            $nuevo = ['titulo'=>$tituloLimpio, 'autor'=>$autorLimpio];
-            if($hayArchivo) $nuevo['archivo'] = $archivo->store('cuadros','public');
-
-            $contenido->cuadros()->create($nuevo);
-        }
-
-    
-        $paraBorrar = array_diff($idsExistentes,$idsRecibidos);
-        foreach($paraBorrar as $idBorrar){
-            $c = Cuadro::find($idBorrar);
-            if($c){
-                if($c->archivo) Storage::disk('public')->delete($c->archivo);
-                $c->delete();
             }
         }
     }
+ 
+
+
+    $idsExistentes = $contenido->cuadros()->pluck('id')->toArray();
+    $idsRecibidos = [];
+
+    foreach($titulos as $i => $titulo){
+        $id = intval($ids[$i] ?? 0);
+        $idsRecibidos[] = $id;
+
+        $tituloLimpio = trim($titulo ?? '');
+        $autorLimpio = trim($autores[$i] ?? '');
+        $archivo = $archivos[$i] ?? null;
+        $hayArchivo = $archivo && $archivo->isValid();
+
+        if ($tituloLimpio === '' && $autorLimpio === '' && !$hayArchivo) continue;
+
+        if($id > 0){
+            $cuadro = Cuadro::find($id);
+            if(!$cuadro) continue;
+            $cuadro->titulo = $tituloLimpio;
+            $cuadro->autor = $autorLimpio;
+
+            if($hayArchivo){
+                if($cuadro->archivo) Storage::disk('public')->delete($cuadro->archivo);
+                $cuadro->archivo = $archivo->store('cuadros','public');
+            }
+
+            $cuadro->save();
+            continue;
+        }
+
+        $nuevo = ['titulo'=>$tituloLimpio, 'autor'=>$autorLimpio];
+        if($hayArchivo) $nuevo['archivo'] = $archivo->store('cuadros','public');
+
+        $contenido->cuadros()->create($nuevo);
+    }
+
+    $paraBorrar = array_diff($idsExistentes,$idsRecibidos);
+    foreach($paraBorrar as $idBorrar){
+        $c = Cuadro::find($idBorrar);
+        if($c){
+            if($c->archivo) Storage::disk('public')->delete($c->archivo);
+            $c->delete();
+        }
+    }
+}
 }

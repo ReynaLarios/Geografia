@@ -301,6 +301,7 @@ $banner = Banner::latest()->first();
         </ul>
         @else
         <button class="fancy mb-2" onclick="window.location='{{ route('secciones.crear') }}'">Crear Sección</button>
+         <hr style="border: 0; height: 2px; background: #90caf9; margin: 12px 0; border-radius: 4px;">
 
         <ul class="nav flex-column">
             @foreach($secciones ?? [] as $sec)

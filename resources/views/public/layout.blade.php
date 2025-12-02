@@ -299,7 +299,10 @@
                 Videoteca
             </button>
         </div>
-  
+
+        <!-- Línea divisoria -->
+        <hr style="border: 0; height: 2px; background: #90caf9; margin: 15px 0; border-radius: 4px;">
+
     @if(isset($seccion) && optional($seccion->contenidos)->count())
         <ul class="nav flex-column">
             @foreach(($seccion->contenidos ?? [])->where('oculto_publico', 0) as $contenidoItem)

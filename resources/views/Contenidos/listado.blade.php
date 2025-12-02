@@ -1,93 +1,97 @@
 @extends('base.layout')
 
 @section('contenido')
-<main class="container mt-5">
+<div class="container mt-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold" style="letter-spacing:.5px;">Listado de Contenidos</h2>
+    <h2 class="mb-4 text-center" style="color: var(--azul-oscuro);">
+        Listado de Contenidos
+    </h2>
 
-        <a href="{{ route('contenidos.crear') }}" class="btn btn-primary rounded-pill px-4 shadow-sm">
-            + Agregar Contenido
-        </a>
-    </div>
+    <button class="btn btn-primary mb-3"
+        onclick="window.location='{{ route('contenidos.crear') }}'">
+        + Agregar Contenido
+    </button>
 
-    {{-- Mensajes --}}
     @if(session('success'))
-        <div class="alert alert-success shadow-sm rounded-3">{{ session('success') }}</div>
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
     @endif
 
-    {{-- Tabla --}}
-    <div class="card shadow-sm border-0 rounded-4">
-        <div class="card-body p-0">
+    <style>
+        .btn-accion {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 32px;
+            width: 32px;
+            padding: 0;
+            font-size: 16px;
+            border-radius: 6px;
+        }
+        .btn-accion:hover {
+            transform: scale(1.1);
+        }
+        .acciones-flex {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+    </style>
 
-            <table class="table table-hover mb-0 align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th class="py-3">Título</th>
-                        <th class="py-3">Sección</th>
-                        <th class="py-3 text-center">Acciones</th>
-                    </tr>
-                </thead>
+    @if($contenidos && $contenidos->count() > 0)
 
-                <tbody>
-                    @forelse($contenidos as $contenido)
-                        <tr>
-                            <td class="fw-semibold">
-                                <a href="{{ route('contenidos.mostrar', $contenido->slug) }}"
-                                   class="text-decoration-none text-primary hover-text">
-                                    {{ $contenido->titulo }}
-                                </a>
-                            </td>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Descripción</th>
+                <th style="width: 120px;">Acciones</th>
+            </tr>
+        </thead>
 
-                            <td class="text-muted">
-                                {{ $contenido->seccion->nombre ?? 'Sin sección' }}
-                            </td>
+        <tbody>
+            @foreach($contenidos as $contenido)
+                <tr>
 
-                            <td class="text-center">
-                                <div class="d-inline-flex gap-2">
+                    <td>{{ $contenido->titulo }}</td>
 
-                                    <a href="{{ route('contenidos.editar', $contenido->slug) }}"
-                                       class="btn btn-outline-warning btn-sm rounded-pill px-3 shadow-sm">
-                                        Editar
-                                    </a>
+                    <td>{{ Str::limit($contenido->descripcion, 80) ?? 'Sin descripción' }}</td>
 
-                                    <form action="{{ route('contenidos.borrar', $contenido->slug) }}"
-                                          method="POST"
-                                          onsubmit="return confirm('¿Seguro que quieres borrar este contenido?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-sm">
-                                            Eliminar
-                                        </button>
-                                    </form>
+                    <td>
+                        <div class="acciones-flex">
 
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="3" class="text-center py-4 text-muted fs-5">
-                                No hay contenidos registrados.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
+                            {{-- Ver --}}
+                            <a href="{{ route('contenidos.mostrar', $contenido->slug) }}"
+                               class="btn btn-secondary btn-accion">Ver</a>
 
-            </table>
+                            {{-- Editar --}}
+                            <a href="{{ route('contenidos.editar', $contenido->slug) }}"
+                               class="btn btn-warning btn-accion">✎</a>
 
+                            {{-- Borrar --}}
+                            <form action="{{ route('contenidos.borrar', $contenido->slug) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('¿Seguro que deseas borrar este contenido?');">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger btn-accion">🗑</button>
+                            </form>
+
+                        </div>
+                    </td>
+
+                </tr>
+            @endforeach
+        </tbody>
+
+    </table>
+
+    @else
+        <div class="text-center mt-5">
+            <p class="text-muted fs-5">No hay contenidos registrados.</p>
         </div>
-    </div>
+    @endif
 
-</main>
-
-<style>
-.hover-text:hover {
-    color: #0a58ca !important;
-    text-decoration: underline !important;
-}
-
-table tbody tr:hover {
-    background-color: #f8f9fa;
-}
-</style>
+</div>
 @endsection

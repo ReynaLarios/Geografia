@@ -6,7 +6,7 @@
         Listado de Contenidos Navbar
     </h2>
 
-    <button class="fancy mb-3" onclick="window.location='{{ route('navbar.contenidos.crear') }}'">
+    <button class="btn btn-primary mb-3" onclick="window.location='{{ route('navbar.contenidos.crear') }}'">
         + Agregar Contenido
     </button>
 
@@ -16,11 +16,32 @@
         </div>
     @endif
 
+    <style>
+        .btn-accion {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 32px;
+            width: 32px;
+            padding: 0;
+            font-size: 16px;
+            border-radius: 6px;
+        }
+        .btn-accion:hover {
+            transform: scale(1.1);
+        }
+        .acciones-flex {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+    </style>
+
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>Título</th>
-                <th>Acciones</th>
+                <th style="width: 120px;">Acciones</th>
             </tr>
         </thead>
 
@@ -29,28 +50,30 @@
                 <tr>
                     <td>{{ $contenido->titulo }}</td>
 
+                    <td>
+                        <div class="acciones-flex">
 
-                    </td>
+                            <a href="{{ route('navbar.contenidos.mostrar', $contenido->slug) }}" 
+                               class="btn btn-secondary btn-accion">Ver</a>
 
-                    <td class="d-flex gap-1">
-                        <a href="{{ route('navbar.contenidos.mostrar', $contenido->id) }}" 
-                           class="fancy">👁</a>
+                            <a href="{{ route('navbar.contenidos.editar', $contenido->slug) }}" 
+                               class="btn btn-warning btn-accion">✎</a>
 
-                        <a href="{{ route('navbar.contenidos.editar', $contenido->slug) }}" 
-                           class="fancy">✎</a>
+                            <form action="{{ route('navbar.contenidos.borrar', $contenido->slug) }}" 
+                                  method="POST"
+                                  onsubmit="return confirm('¿Seguro que deseas borrar este contenido?');">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger btn-accion">🗑</button>
+                            </form>
 
-                        <form action="{{ route('navbar.contenidos.borrar', $contenido->slug) }}" 
-                              method="POST" onsubmit="return confirm('¿Seguro que deseas borrar este contenido?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="fancy btn-borrar">🗑</button>
-                        </form>
+                        </div>
                     </td>
                 </tr>
 
             @empty
                 <tr>
-                    <td colspan="3" class="text-center text-muted">
+                    <td colspan="2" class="text-center text-muted">
                         No hay contenidos registrados aún.
                     </td>
                 </tr>

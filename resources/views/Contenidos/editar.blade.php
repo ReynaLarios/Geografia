@@ -8,13 +8,12 @@
         @csrf
         @method('PUT')
 
-        {{-- Título --}}
+      
         <div class="mb-3">
             <label class="form-label">Título</label>
             <input type="text" name="titulo" class="form-control" value="{{ old('titulo', $contenido->titulo) }}" required>
         </div>
 
-        {{-- Sección --}}
         <div class="mb-3">
             <label class="form-label">Sección</label>
             <select name="seccion_id" class="form-select" required>
@@ -27,13 +26,13 @@
             </select>
         </div>
 
-        {{-- Descripción --}}
+     
         <div class="mb-3">
             <label class="form-label">Descripción</label>
             <textarea name="descripcion" id="descripcion" class="form-control" rows="10">{!! old('descripcion', $contenido->descripcion) !!}</textarea>
         </div>
 
-        {{-- Imagen principal --}}
+       
         <div class="mb-3">
             <label class="form-label">Imagen principal (opcional)</label>
             <input type="file" name="imagen" class="form-control">
@@ -41,14 +40,15 @@
                 <div class="mt-2 d-flex align-items-center">
                     <img src="{{ asset('storage/'.$contenido->imagen) }}" alt="Imagen" style="max-width: 150px; border-radius: 6px; margin-right:10px;">
                     <div class="form-check">
-                        <input type="checkbox" name="eliminar_imagen" class="form-check-input" id="eliminarImagen">
-                        <label class="form-check-label text-danger" for="eliminarImagen">Eliminar imagen actual</label>
+                        <input type="checkbox" name="eliminar_imagen" value="1" class="form-check-input" id="eliminarImagen">
+<label class="form-check-label text-danger" for="eliminarImagen">Eliminar imagen actual</label>
+
                     </div>
                 </div>
             @endif
         </div>
 
-        {{-- Archivos adicionales --}}
+        
         <div class="mb-3">
             <label class="form-label">Archivos adicionales</label>
             <input type="file" name="archivos[]" multiple class="form-control">
@@ -78,7 +78,7 @@
             @endif
         </div>
 
-        {{-- Cuadros tipo tabla --}}
+       
         <h5 class="mt-4">Cuadro tipo tabla</h5>
         <table class="table table-bordered" id="tabla-cuadro">
             <thead>
@@ -100,10 +100,7 @@
                     <td>
                         @if($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo))
                             <a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">Ver archivo</a>
-                            <div class="form-check mt-1">
-                                <input type="checkbox" name="cuadro_archivo_eliminado[]" value="{{ $cuadro->id }}" class="form-check-input">
-                                <label class="form-check-label text-danger">Eliminar archivo</label>
-                            </div>
+                            
                         @endif
                         <input type="file" name="cuadro_archivo[]" class="form-control mt-1">
                     </td>

@@ -1,76 +1,97 @@
 @extends('base.layout')
 
 @section('contenido')
-<main class="container mt-5">
+<div class="container mt-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold" style="letter-spacing:.5px;">Listado de Secciones</h2>
+    <h2 class="mb-4 text-center" style="color: var(--azul-oscuro);">
+        Listado de Secciones
+    </h2>
 
-        <a href="{{ route('secciones.crear') }}"
-           class="btn btn-primary rounded-pill px-4 shadow-sm">
-           + Crear Sección
-        </a>
-    </div>
+    <button class="btn btn-primary mb-3"
+        onclick="window.location='{{ route('secciones.crear') }}'">
+        + Crear Sección
+    </button>
+
+    @if(session('ok'))
+        <div class="alert alert-success">
+            {{ session('ok') }}
+        </div>
+    @endif
+
+    <style>
+        .btn-accion {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 32px;
+            width: 32px;
+            padding: 0;
+            font-size: 16px;
+            border-radius: 6px;
+        }
+        .btn-accion:hover {
+            transform: scale(1.1);
+        }
+        .acciones-flex {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+    </style>
 
     @if($secciones && $secciones->count() > 0)
 
-        <div class="row g-4">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Cuadros</th>
+                <th style="width: 120px;">Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
             @foreach($secciones as $seccion)
-                <div class="col-md-6 col-lg-4">
-                    <div class="card shadow-sm border-0 rounded-4 card-hover">
-                        <div class="card-body d-flex flex-column">
+                <tr>
+                    <td>{{ $seccion->nombre }}</td>
 
-                            
-                            <h5 class="card-title fw-semibold text-primary">
-                                {{ $seccion->nombre }}
-                            </h5>
+                    <td>
+                        {{ Str::limit($seccion->descripcion, 80) ?? 'Sin descripción' }}
+                    </td>
 
-                          
-                            @if($seccion->descripcion)
-                                <p class="text-muted small mt-2">
-                                    {{ Str::limit($seccion->descripcion, 80) }}
-                                </p>
-                            @endif
+                    <td>
+                        {{ $seccion->cuadros && $seccion->cuadros->count() > 0
+                            ? $seccion->cuadros->count() . ' cuadros'
+                            : 'Sin cuadros' }}
+                    </td>
 
-                           
-                            @if($seccion->cuadros && $seccion->cuadros->count() > 0)
-                                <span class="badge bg-light text-dark mt-1 px-3 py-2 rounded-pill shadow-sm w-fit">
-                                    {{ $seccion->cuadros->count() }} cuadros
-                                </span>
-                            @else
-                                <span class="badge bg-secondary-subtle text-dark mt-1 px-3 py-2 rounded-pill w-fit">
-                                    Sin cuadros
-                                </span>
-                            @endif
+                    <td>
+                        <div class="acciones-flex">
 
-                       
-                            <div class="mt-auto pt-3 d-flex justify-content-between">
+                            {{-- Ver --}}
+                            <a href="{{ route('secciones.mostrar', $seccion->slug) }}"
+                               class="btn btn-secondary btn-accion">Ver</a>
 
-                                <a href="{{ route('secciones.mostrar', $seccion->slug) }}"
-                                   class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                                   Ver
-                                </a>
+                            {{-- Editar --}}
+                            <a href="{{ route('secciones.editar', $seccion->slug) }}"
+                               class="btn btn-warning btn-accion">✎</a>
 
-                                <a href="{{ route('secciones.editar', $seccion->slug) }}"
-                                   class="btn btn-outline-warning btn-sm rounded-pill px-3">
-                                   Editar
-                                </a>
+                            {{-- Borrar --}}
+                            <form action="{{ route('secciones.borrar', $seccion->slug) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('¿Seguro que deseas borrar esta sección?');">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger btn-accion">🗑</button>
+                            </form>
 
-                                <form action="{{ route('secciones.borrar', $seccion->slug) }}" method="POST" style="display:inline-block;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm"
-                                            onclick="return confirm('¿Seguro que quieres borrar esta sección?')">
-                                        Borrar
-                                    </button>
-                                </form>
-
-                            </div>
                         </div>
-                    </div>
-                </div>
+                    </td>
+                </tr>
             @endforeach
-        </div>
+        </tbody>
+    </table>
 
     @else
         <div class="text-center mt-5">
@@ -78,19 +99,5 @@
         </div>
     @endif
 
-</main>
-
-<style>
-.card-hover {
-    transition: .25s ease;
-}
-.card-hover:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-}
-.w-fit {
-    width: fit-content;
-}
-</style>
-
+</div>
 @endsection

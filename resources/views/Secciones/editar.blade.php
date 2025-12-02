@@ -71,10 +71,11 @@
                     <td><input type="text" name="cuadro_autor[]" class="form-control" value="{{ $cuadro->autor }}"></td>
                     <td>
                         <input type="file" name="cuadro_archivo[]" class="form-control">
-                        @if($cuadro->archivo)
-                            <small>Archivo actual: <a href="{{ asset('storage/' . $cuadro->archivo) }}" target="_blank">Ver</a></small>
+                         @if($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo))
+                            <a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">Ver archivo</a>
                         @endif
                     </td>
+                    
                     <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
                 </tr>
                 @empty

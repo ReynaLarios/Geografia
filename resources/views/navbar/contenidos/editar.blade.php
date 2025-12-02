@@ -85,10 +85,11 @@
                         <td><input type="text" name="cuadros[{{ $index }}][autor]" class="form-control" value="{{ $cuadro->autor }}"></td>
                         <td>
                             <input type="file" name="cuadros[{{ $index }}][archivo]" class="form-control">
-                            @if($cuadro->archivo)
-                                <small class="d-block mt-1"><a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">Archivo actual</a></small>
-                            @endif
+                             @if($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo))
+                            <a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">Ver archivo</a>
+                        @endif
                         </td>
+                        
                         <td class="text-center">
                             <button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button>
                         </td>

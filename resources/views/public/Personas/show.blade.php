@@ -5,7 +5,7 @@
 
     <a href="{{ route('public.personas.index') }}" class="btn btn-secondary mb-4">← Volver al listado</a>
 
-    <div class="card mx-auto" style="max-width: 500px; background-color: #dbeafe; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+    <div class="card mx-auto" style="max-width: 900px; background-color: #dbeafe; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
         <div class="card-body text-center p-4">
 
             @if($persona->foto)
@@ -30,8 +30,11 @@
                 </div>
             @endif
 
-    <div class="mt-3">
-        <button class="fancy" onclick="window.history.back()">← Regresar</button>
+            <div class="mt-3">
+                <button class="fancy" onclick="window.history.back()">← Regresar</button>
+            </div>
+
+        </div>
     </div>
 
 </div>

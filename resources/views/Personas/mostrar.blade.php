@@ -5,7 +5,7 @@
 
     <a href="{{ route('personas.index') }}" class="btn btn-secondary mb-4">← Volver al listado</a>
 
-    <div class="card mx-auto" style="max-width: 500px; background-color: #dbeafe; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+    <div class="card mx-auto" style="max-width: 900px; background-color: #dbeafe; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
         <div class="card-body text-center p-4">
 
             @if($persona->foto)
@@ -14,8 +14,8 @@
                      class="rounded-circle mb-3"
                      style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #90caf9;">
             @else
-                 <div class="rounded-circle d-flex align-items-center justify-content-center mb-2"
-                             style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #90caf9;margin:auto">
+                <div class="rounded-circle d-flex align-items-center justify-content-center mb-2"
+                     style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #90caf9; margin:auto; font-size:40px;">
                     {{ strtoupper(substr($persona->nombre, 0, 1)) }}
                 </div>
             @endif
@@ -30,10 +30,8 @@
                 </div>
             @endif
 
-       
             <div class="mt-4 d-flex justify-content-center gap-3">
 
-               
                 <a href="{{ route('personas.editar', $persona->slug) }}" 
                    class="btn btn-primary">
                     Editar
