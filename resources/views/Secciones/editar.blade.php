@@ -69,12 +69,23 @@
                         <input type="text" name="cuadro_titulo[]" class="form-control" value="{{ $cuadro->titulo }}">
                     </td>
                     <td><input type="text" name="cuadro_autor[]" class="form-control" value="{{ $cuadro->autor }}"></td>
-                    <td>
-                        <input type="file" name="cuadro_archivo[]" class="form-control">
-                         @if($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo))
-                            <a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">Ver archivo</a>
-                        @endif
-                    </td>
+                   <td>
+    <input type="file" name="cuadro_archivo[]" class="form-control">
+
+    @if($cuadro->archivos && $cuadro->archivos->count())
+        @foreach($cuadro->archivos as $archivo)
+            <div class="mt-1">
+                <a href="{{ asset('storage/' . $archivo->ruta) }}" 
+                   target="_blank"
+                   style="text-decoration: underline;">
+                     Ver archivo 
+                </a>
+            </div>
+        @endforeach
+    @endif
+</td>
+
+
                     
                     <td class="text-center"><button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button></td>
                 </tr>
