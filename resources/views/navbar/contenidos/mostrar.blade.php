@@ -25,8 +25,10 @@
    
     @if($contenido->imagen)
         <div class="mb-4 text-center">
-            <img src="{{ asset('storage/'.$contenido->imagen) }}" class="img-fluid rounded shadow-sm" style="max-height:300px; object-fit:cover;">
-        </div>
+            <img src="{{ asset('storage/'.$contenido->imagen) }}" 
+     class="img-fluid rounded shadow-sm" 
+     style="width:100%; height:auto; max-width:700px; margin:auto; display:block;">
+
     @endif
 
    
