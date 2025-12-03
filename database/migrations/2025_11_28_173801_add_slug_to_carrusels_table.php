@@ -18,7 +18,7 @@ return new class extends Migration
 
 public function down()
 {
-    Schema::table('carusels', function (Blueprint $table) {
+    Schema::table('carrusels', function (Blueprint $table) {
         $table->dropColumn('slug');
     });
 }
