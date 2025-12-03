@@ -38,12 +38,8 @@
             max-height: 90px;
         }
 
-        .banner {
-            width: 100%;
-            object-fit: contain;
-            display: block;
-        }
-
+      .banner { width:100%; object-fit:contain; display:block; }
+      
         .navbar-bottom {
             background-color: var(--azul-oscuro);
             padding: 1rem;
@@ -231,7 +227,6 @@
                 <input type="text" name="q" placeholder="Buscar..." class="form-control me-2" required>
                 <button type="submit" class="btn btn-primary">🔍</button>
             </form>
-      
 
     </nav>
 

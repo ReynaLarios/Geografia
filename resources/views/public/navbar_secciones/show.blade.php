@@ -20,9 +20,6 @@
         </div>
     @endif
 
-
-   
-
    
    @if($seccion->archivos && $seccion->archivos->count())
     <div class="mb-4">
