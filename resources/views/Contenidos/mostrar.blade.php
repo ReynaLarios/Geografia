@@ -10,6 +10,7 @@
             <img src="{{ asset('storage/'.$contenido->imagen) }}" 
      class="img-fluid rounded shadow-sm"
      style="width:100%; height:auto; max-width:700px; margin:0 auto; display:block;">
+    @endif
 
     @if($contenido->descripcion)
         <div class="mb-4 p-3 bg-light rounded shadow-sm">

@@ -41,6 +41,7 @@
 
     @if($contenidos && $contenidos->count() > 0)
 
+    <div class="table-responsive">
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -61,15 +62,15 @@
                     <td>
                         <div class="acciones-flex">
 
-                            {{-- Ver --}}
+                           
                             <a href="{{ route('contenidos.mostrar', $contenido->slug) }}"
                                class="btn btn-secondary btn-accion">Ver</a>
 
-                            {{-- Editar --}}
+                           
                             <a href="{{ route('contenidos.editar', $contenido->slug) }}"
                                class="btn btn-warning btn-accion">✎</a>
 
-                            {{-- Borrar --}}
+                       
                             <form action="{{ route('contenidos.borrar', $contenido->slug) }}"
                                   method="POST"
                                   onsubmit="return confirm('¿Seguro que deseas borrar este contenido?');">
