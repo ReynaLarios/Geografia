@@ -109,6 +109,22 @@
                             @endif
                         </td>
                     </tr>
+                    <script>
+document.getElementById('filter-dropdown').addEventListener('change', function() {
+    const selected = this.value;
+    const rows = document.querySelectorAll('.cuadro-item');
+
+    rows.forEach(row => {
+        const letter = row.getAttribute('data-letter');
+
+        if (selected === 'all' || letter === selected) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+</script>
                 @endforeach
             </tbody>
         </table>
