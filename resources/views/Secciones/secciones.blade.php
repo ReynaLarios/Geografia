@@ -30,7 +30,7 @@
         </div>
 
   
-        <h5 class="mt-4">Cuadros</h5>
+         <th>No subir archivos mayor a 5 MB</th>
         <table class="table table-bordered table-cuadros" id="tabla-cuadro">
             <thead>
                 <tr>

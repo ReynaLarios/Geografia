@@ -48,7 +48,7 @@
             <input type="file" name="archivos[]" multiple class="form-control">
         </div>
     
-        <h5 class="mt-4">Cuadro tipo tabla</h5>
+         <th>No subir archivos mayor a 5 MB</th>
         <table class="table table-bordered" id="tabla-cuadro">
             <thead>
                 <tr>
