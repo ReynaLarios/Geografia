@@ -12,7 +12,7 @@
                 <img src="{{ asset('storage/' . $persona->foto) }}" 
                      alt="Foto de {{ $persona->nombre }}" 
                      class="rounded-circle mb-3"
-                     style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #90caf9;">
+                     style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #90caf9;margin:auto">
             @else
                 <div class="rounded-circle mb-3 d-flex align-items-center justify-content-center" 
                      style="width: 150px; height: 150px; background-color: #bbdefb; color: #1565c0; font-size: 48px;">
