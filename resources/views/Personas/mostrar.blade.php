@@ -1,48 +1,119 @@
 @extends('base.layout')
 
 @section('contenido')
+
+<style>
+/* ===== FOTO PERFIL (MISMO QUE PUBLIC) ===== */
+.foto-public-wrap {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: auto;
+}
+
+.foto-public-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #93c5fd, #bfdbfe);
+    clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
+    border-radius: 16px;
+    transform: translate(8px, 8px);
+}
+
+.foto-public {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    background: #fff;
+    clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 12px 26px rgba(0,0,0,0.2);
+}
+
+.foto-public img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.foto-public-fallback {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #2563eb, #60a5fa);
+    color: #fff;
+    font-size: 64px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== TARJETA ===== */
+.card-public {
+    max-width: 900px;
+    margin: auto;
+    background: #f8fbff;
+    border-radius: 20px;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.1);
+}
+</style>
+
 <div class="container mt-5">
 
-    <a href="{{ route('personas.index') }}" class="btn btn-secondary mb-4">← Volver al listado</a>
+    <a href="{{ route('personas.index') }}"
+       class="btn btn-secondary mb-4">
+        ← Volver al listado
+    </a>
 
-    <div class="card mx-auto" style="max-width: 900px; background-color: #dbeafe; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-        <div class="card-body text-center p-4">
+    <div class="card card-public">
+        <div class="card-body text-center p-5">
 
-            @if($persona->foto)
-                <img src="{{ asset('storage/' . $persona->foto) }}" 
-                     alt="Foto de {{ $persona->nombre }}" 
-                     class="rounded-circle mb-3"
-                     style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #90caf9;">
-            @else
-                <div class="rounded-circle d-flex align-items-center justify-content-center mb-2"
-                     style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #90caf9; margin:auto; font-size:40px;">
-                    {{ strtoupper(substr($persona->nombre, 0, 1)) }}
+            {{-- FOTO --}}
+            <div class="foto-public-wrap mb-4">
+                <div class="foto-public-bg"></div>
+
+                <div class="foto-public">
+                    @if($persona->foto)
+                        <img src="{{ asset('storage/' . $persona->foto) }}"
+                             alt="Foto de {{ $persona->nombre }}">
+                    @else
+                        <div class="foto-public-fallback">
+                            {{ strtoupper(substr($persona->nombre, 0, 1)) }}
+                        </div>
+                    @endif
                 </div>
-            @endif
+            </div>
 
-            <h3 class="card-title fw-bold">{{ $persona->nombre }}</h3>
+            {{-- NOMBRE --}}
+            <h2 class="fw-bold mb-1">{{ $persona->nombre }}</h2>
 
-            <p class="text-muted mb-2">{{ $persona->email }}</p>
-           
+            {{-- EMAIL --}}
+            <p class="text-muted mb-4">{{ $persona->email }}</p>
+
+            {{-- DATOS --}}
             @if($persona->datos_personales)
-                <div class="card-text text-start mt-3 p-3" style="background-color: #bbdefb; border-radius: 10px;">
+                <div class="text-start p-4"
+                     style="background:#e0efff; border-radius:16px;">
                     {!! $persona->datos_personales !!}
                 </div>
             @endif
 
-            <div class="mt-4 d-flex justify-content-center gap-3">
+            {{-- BOTONES ADMIN --}}
+            <div class="mt-4 d-flex justify-content-center gap-3 flex-wrap">
 
-                <a href="{{ route('personas.editar', $persona->slug) }}" 
-                   class="btn btn-primary">
+                <a href="{{ route('personas.editar', $persona->slug) }}"
+                   class="btn btn-primary px-4 rounded-pill">
                     Editar
                 </a>
 
-                <form action="{{ route('personas.borrar', $persona->slug) }}" 
+                <form action="{{ route('personas.borrar', $persona->slug) }}"
                       method="POST"
                       onsubmit="return confirm('¿Seguro que deseas eliminar esta persona?');">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
+                    <button type="submit"
+                            class="btn btn-danger px-4 rounded-pill">
                         Eliminar
                     </button>
                 </form>
@@ -51,5 +122,7 @@
 
         </div>
     </div>
+
 </div>
+
 @endsection
