@@ -7,9 +7,9 @@
     @if($inicio->imagen)
       <div class="text-center mb-3">
         <img src="{{ asset('storage/'.$inicio->imagen) }}" 
-             alt="{{ $inicio->titulo }}" 
-             class="img-fluid rounded" 
-             style="max-width:500px;">
+     alt="{{ $inicio->titulo }}" 
+     class="img-fluid rounded">
+
       </div>
     @endif
 

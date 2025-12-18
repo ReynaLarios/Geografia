@@ -9,8 +9,8 @@
         src="{{ asset('storage/'.$inicio->imagen) }}" 
         class="card-img-top"
         alt="{{ $inicio->titulo }}"
-        style="max-width: 25%; height: auto; margin: 20px auto; display: block; border-radius: 10px;"
-     >
+        style="width: 100%; max-width: 500px; height: auto; margin: 20px auto; display: block; border-radius: 10px;">
+
     @endif
 
     <div class="card-body text-center">

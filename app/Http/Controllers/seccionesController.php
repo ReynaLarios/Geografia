@@ -117,6 +117,7 @@ class SeccionesController extends Controller
             }
         }
 
+        
         $this->guardarArchivos($request, $seccion);
         $this->guardarCuadros($request, $seccion);
 

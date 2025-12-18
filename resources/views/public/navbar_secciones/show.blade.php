@@ -6,19 +6,17 @@
     
     <h2 class="mb-4 text-center text-primary"><strong>{{ $seccion->nombre }}</strong></h2>
 
-  
-    @if(!empty($seccion->descripcion))
-        <div class="mb-4 p-3 bg-light rounded shadow-sm">
-            {!! $seccion->descripcion !!}
-        </div>
-    @endif
-
-
-    @if(!empty($seccion->imagen))
+     @if(!empty($seccion->imagen))
         <div class="mb-4 text-center">
             <img src="{{ asset('storage/' . $seccion->imagen) }}" 
                  class="img-fluid rounded shadow-sm" 
                  style="max-height: 300px; object-fit: cover;">
+        </div>
+    @endif
+  
+    @if(!empty($seccion->descripcion))
+        <div class="mb-4 p-3 bg-light rounded shadow-sm">
+            {!! $seccion->descripcion !!}
         </div>
     @endif
 

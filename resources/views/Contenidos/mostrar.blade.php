@@ -7,8 +7,9 @@
 
     @if($contenido->imagen)
         <div class="mb-4 text-center">
-            <img src="{{ asset('storage/'.$contenido->imagen) }}" class="img-fluid rounded shadow-sm" style="max-height: 300px; object-fit: cover;">
-        </div>
+            <img src="{{ asset('storage/'.$contenido->imagen) }}" 
+     class="img-fluid rounded shadow-sm"
+     style="width:100%; height:auto; max-width:700px; margin:0 auto; display:block;">
     @endif
 
     @if($contenido->descripcion)
@@ -40,9 +41,8 @@
     @if($contenido->cuadros && $contenido->cuadros->count())
         <div class="mb-4 p-3 bg-light rounded shadow-sm">
            
- <select id="filter-dropdown"
-        class="form-select form-select-sm mb-3 d-inline-block"
-        style="width:160px;">
+
+        <select id="filter-dropdown" class="form-select form-select-sm mb-2">
             <option value="all">Todos</option>
             @foreach(range('A','Z') as $letter)
                 <option value="{{ $letter }}">{{ $letter }}</option>

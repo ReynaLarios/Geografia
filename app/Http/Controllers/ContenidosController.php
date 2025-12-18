@@ -26,6 +26,7 @@ class ContenidosController extends Controller
 
     public function guardar(Request $request)
     {
+        
         $request->validate([
             'titulo' => 'required|string|max:255',
             'seccion_id' => 'required|exists:secciones,id',
@@ -61,6 +62,7 @@ class ContenidosController extends Controller
 
     public function actualizar(Request $request, $slug)
 {
+   
     $request->validate([
         'titulo' => 'required|string|max:255',
         'seccion_id' => 'required|exists:secciones,id',
@@ -79,7 +81,7 @@ class ContenidosController extends Controller
         $datos['slug'] = Str::slug($request->titulo) . '-' . uniqid();
     }
 
-    // --- ELIMINAR SOLO LA IMAGEN PRINCIPAL ---
+  
     if ($request->eliminar_imagen == "1") {
         if ($contenido->imagen) {
             Storage::disk('public')->delete($contenido->imagen);
@@ -92,6 +94,8 @@ class ContenidosController extends Controller
         if($contenido->imagen) Storage::disk('public')->delete($contenido->imagen);
         $datos['imagen'] = $request->file('imagen')->store('contenidos','public');
     }
+
+    
 
     $contenido->update($datos);
 

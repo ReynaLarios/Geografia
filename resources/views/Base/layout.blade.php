@@ -24,7 +24,7 @@ body { margin:0; display:flex; flex-direction:column; min-height:100vh; font-fam
 .navbar-top .button { background: var(--azul-medio); color: var(--blanco); border:none; border-radius:25px; padding:8px 20px; font-weight:600; }
 .navbar-top .button:hover { background: var(--azul-oscuro); transform: scale(1.05); }
 
-.banner { width:100%; height:350px; object-fit:cover; display:block; }
+.banner { width:100%; object-fit:contain; display:block; }
 
 .navbar-bottom { background-color: var(--azul-oscuro); padding:1rem; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
 .navbar-bottom .paste-button { position: relative; display:inline-block; }

@@ -103,6 +103,13 @@
 }
 
 
+.carousel-inner img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+
 @media (max-width: 576px) {
     .carousel-inner img {
         height: 250px; 

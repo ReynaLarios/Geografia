@@ -69,6 +69,7 @@
     <div class="card card-public">
         <div class="card-body text-center p-5">
 
+<<<<<<< HEAD
             {{-- FOTO --}}
             <div class="foto-public-wrap mb-4">
                 <div class="foto-public-bg"></div>
@@ -82,6 +83,17 @@
                             {{ strtoupper(substr($persona->nombre, 0, 1)) }}
                         </div>
                     @endif
+=======
+            @if($persona->foto)
+                <img src="{{ asset('storage/' . $persona->foto) }}" 
+                     alt="Foto de {{ $persona->nombre }}" 
+                     class="rounded-circle mb-3"
+                     style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #90caf9;margin:auto">
+            @else
+                <div class="rounded-circle mb-3 d-flex align-items-center justify-content-center" 
+                     style="width: 150px; height: 150px; background-color: #bbdefb; color: #1565c0; font-size: 48px;">
+                    {{ strtoupper(substr($persona->nombre, 0, 1)) }}
+>>>>>>> eba1e1b56ca3de689a61e55a63036367aaf40903
                 </div>
             </div>
 

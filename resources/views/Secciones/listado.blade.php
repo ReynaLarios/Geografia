@@ -41,6 +41,7 @@
 
     @if($secciones && $secciones->count() > 0)
 
+    <div class="table-responsive">
     <table class="table table-bordered table-striped">
         <thead>
             <tr>

@@ -38,13 +38,8 @@
             max-height: 90px;
         }
 
-        .banner {
-            width: 100%;
-            height: 350px;
-            object-fit: cover;
-            display: block;
-        }
-
+      .banner { width:100%; object-fit:contain; display:block; }
+      
         .navbar-bottom {
             background-color: var(--azul-oscuro);
             padding: 1rem;
@@ -228,13 +223,10 @@
     <a href="https://www.udg.mx/es" class="navbar-brand d-flex align-items-center" target="_blank">
         <img src="{{ asset('/logo.png') }}" alt="Logo">
     </a>
-
-        <div class="container mt-4 d-flex justify-content-end">
             <form action="{{ route('buscador.resultados') }}" method="get" class="d-flex">
                 <input type="text" name="q" placeholder="Buscar..." class="form-control me-2" required>
                 <button type="submit" class="btn btn-primary">🔍</button>
             </form>
-        </div>
 
     </nav>
 
@@ -300,7 +292,7 @@
             </button>
         </div>
 
-        <!-- Línea divisoria -->
+        
         <hr style="border: 0; height: 2px; background: #90caf9; margin: 15px 0; border-radius: 4px;">
 
     @if(isset($seccion) && optional($seccion->contenidos)->count())

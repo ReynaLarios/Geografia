@@ -79,7 +79,7 @@
         </div>
 
        
-        <h5 class="mt-4">Cuadro tipo tabla</h5>
+         <th>No subir archivos mayor a 5 MB</th>
         <table class="table table-bordered" id="tabla-cuadro">
             <thead>
                 <tr>
@@ -90,20 +90,22 @@
                 </tr>
             </thead>
             <tbody>
+                
                 @foreach($contenido->cuadros as $cuadro)
                 <tr>
+                    
                     <td>
                         <input type="text" name="cuadro_titulo[]" class="form-control" value="{{ $cuadro->titulo }}">
                         <input type="hidden" name="cuadro_id[]" value="{{ $cuadro->id }}">
                     </td>
                     <td><input type="text" name="cuadro_autor[]" class="form-control" value="{{ $cuadro->autor }}"></td>
                     <td>
-                        @if($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo))
+                        <input type="file" name="cuadro_archivo[]" class="form-control">
+                         @if($cuadro->archivo && Storage::disk('public')->exists($cuadro->archivo))
                             <a href="{{ asset('storage/'.$cuadro->archivo) }}" target="_blank">Ver archivo</a>
-                            
                         @endif
-                        <input type="file" name="cuadro_archivo[]" class="form-control mt-1">
                     </td>
+                    
                     <td class="text-center">
                         <button type="button" class="btn btn-danger btn-sm eliminar-fila">✖</button>
                     </td>

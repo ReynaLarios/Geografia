@@ -64,10 +64,41 @@
     color: #555;
 }
 
-
 #filter-dropdown {
     max-width: 200px;
     margin-bottom: 15px;
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+    .cuadros-box { padding: 15px; }
+
+    .table-cuadros thead th {
+        font-size: 13px;
+        padding: 10px;
+    }
+
+    .table-cuadros td {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .table-cuadros tbody tr:hover {
+        transform: scale(1.00);
+        box-shadow: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .cuadros-box h5 {
+        font-size: 16px;
+    }
+
+    .table-cuadros td,
+    .table-cuadros thead th {
+        font-size: 12px;
+        padding: 6px;
+    }
 }
 
 </style>
@@ -78,7 +109,10 @@
 
     @if($seccion->imagen)
         <div class="mb-4 text-center">
-            <img src="{{ asset('storage/'.$seccion->imagen) }}" class="img-fluid rounded shadow-sm" style="max-height: 300px; object-fit: cover;">
+            <img src="{{ asset('storage/'.$contenido->imagen) }}" 
+     class="img-fluid rounded shadow-sm"
+     style="width:100%; height:auto; max-width:700px; margin:0 auto; display:block;">
+
         </div>
     @endif
 
