@@ -72,15 +72,29 @@
             </div>
         </div>
     </div>
+<div class="d-flex justify-content-center align-items-center gap-1">
+    <a href="{{ route('inicio.show', $noticia->slug) }}"
+       class="btn btn-sm btn-secondary btn-accion">
+        Ver
+    </a>
 
-    <div>
-        <a href="{{ route('inicio.edit', $noticia->slug) }}" class="btn btn-sm btn-warning">Editar</a>
-        <form action="{{ route('inicio.destroy', $noticia->slug) }}" method="POST" style="display:inline;">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar noticia?')">Borrar</button>
-        </form>
-    </div>
+    <a href="{{ route('inicio.edit', $noticia->slug) }}"
+       class="btn btn-sm btn-warning">
+        Editar
+    </a>
+
+    <form action="{{ route('inicio.destroy', $noticia->slug) }}"
+          method="POST" class="m-0">
+        @csrf
+        @method('DELETE')
+        <button type="submit"
+                class="btn btn-sm btn-danger"
+                onclick="return confirm('¿Eliminar noticia?')">
+            Borrar
+        </button>
+    </form>
+</div>
+
 </li>
 
         @endforeach

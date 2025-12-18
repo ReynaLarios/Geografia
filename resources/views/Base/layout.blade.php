@@ -111,6 +111,26 @@ footer { position:relative; background:linear-gradient(135deg, #60a5fa, #1e3a8a)
     background:#dbeafe;
 }
 
+.imagen-cuadrada {
+    width: 100%;
+    max-width: 250px;     /* tamaño máximo */
+    aspect-ratio: 1 / 1;  /* siempre cuadrado */
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    margin: 10px auto;
+}
+
+.imagen-cuadrada img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dropdown-small-text .dropdown-item {
+    font-size: 12px;
+    padding: 6px 14px;
+}
 
 </style>
 
@@ -121,7 +141,7 @@ footer { position:relative; background:linear-gradient(135deg, #60a5fa, #1e3a8a)
 </nav>
 <nav class="navbar border-bottom"
      style="background:#f5f6fa; padding:4px 12px; min-height:36px;">
-    <div class="container-fluid d-flex justify-content-start gap-2">
+    <div class="container-fluid d-flex justify-content-start gap-2 align-items-center">
 
         <button class="small-btn"
                 onclick="window.location='{{ route('navbar.secciones.crear') }}'">
@@ -130,7 +150,7 @@ footer { position:relative; background:linear-gradient(135deg, #60a5fa, #1e3a8a)
 
         <button class="small-btn"
                 onclick="window.location='{{ route('navbar.contenidos.crear') }}'">
-            + Sub-Seccion H
+            + Sub-Sección H
         </button>
 
         <button class="small-btn"
@@ -140,13 +160,32 @@ footer { position:relative; background:linear-gradient(135deg, #60a5fa, #1e3a8a)
 
         <button class="small-btn"
                 onclick="window.location='{{ route('contenidos.crear') }}'">
-            + Sub-Seccion V
+            + Sub-Sección V
         </button>
 
         <button class="small-btn"
                 onclick="window.location='{{ route('personas.crear') }}'">
             + Académico
         </button>
+
+        <!-- 🔽 DROPDOWN APARTE -->
+        <div class="dropdown ms-2">
+            <button class="small-btn dropdown-toggle"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+         Listados
+            </button>
+
+           <ul class="dropdown-menu shadow-sm dropdown-small-text">
+     <li><a class="dropdown-item" href="{{ route('navbar.secciones.index') }}">Secciones H</a></li>
+    <li><a class="dropdown-item" href="{{ route('navbar.contenidos.index') }}">Contenidos H</a></li>
+    <li><a class="dropdown-item" href="{{ route('secciones.listado') }}">Secciones V</a></li>
+    <li><a class="dropdown-item" href="{{ route('contenidos.listado') }}">Contenidos V</a></li>
+   
+</ul>
+
+        </div>
 
     </div>
 </nav>

@@ -48,10 +48,20 @@
 
             <div>
                 <small>{{ \Illuminate\Support\Str::limit(strip_tags($noticia->descripcion), 80) }}</small>
+                
             </div>
         </div>
+           <div class="ms-2">
+        <a href="{{ route('public.inicios.show', $noticia->slug) }}"
+           class="btn btn-sm btn-secondary">
+            Ver
+        </a>
     </div>
+    </div>
+    
+
 </li>
+
 
         @endforeach
         <div class="text-center mt-4">

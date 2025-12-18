@@ -56,12 +56,14 @@
 <main class="container mt-4">
 
     <h2 class="mb-4 text-center">{{ $contenido->titulo }}</h2>
+    
+@if($contenido->imagen)
+    <div class="imagen-cuadrada mx-auto mb-4">  <!-- contenedor cuadrado -->
+        <img src="{{ asset('storage/'.$contenido->imagen) }}" 
+             alt="{{ $contenido->titulo ?? 'Imagen' }}">
+    </div>
+@endif
 
-    @if($contenido->imagen)
-        <div class="mb-4 text-center">
-            <img src="{{ asset('storage/'.$contenido->imagen) }}" class="img-fluid rounded shadow-sm" style="max-height: 300px; object-fit: cover;">
-        </div>
-    @endif
 
     @if(!empty($contenido->descripcion))
         <div class="mb-4 p-3 bg-light rounded shadow-sm">

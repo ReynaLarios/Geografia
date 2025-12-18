@@ -4,7 +4,7 @@
 <div class="container mt-4">
 
     <h2 class="mb-4 text-center" style="color: var(--azul-oscuro);">
-        Listado de Navbar Secciones
+        Listado de Nav Horizontal 
     </h2>
 
     <button class="btn btn-primary mb-3"

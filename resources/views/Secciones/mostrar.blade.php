@@ -108,13 +108,12 @@
     <h2 class="mb-4 text-center">{{ $seccion->nombre }}</h2>
 
     @if($seccion->imagen)
-        <div class="mb-4 text-center">
-            <img src="{{ asset('storage/'.$contenido->imagen) }}" 
-     class="img-fluid rounded shadow-sm"
-     style="width:100%; height:auto; max-width:700px; margin:0 auto; display:block;">
+    <div class="imagen-cuadrada mx-auto mb-4">
+        <img src="{{ asset('storage/'.$seccion->imagen) }}" 
+             alt="{{ $seccion->titulo ?? 'Imagen' }}">
+    </div>
+@endif
 
-        </div>
-    @endif
 
     @if($seccion->descripcion)
         <div class="mb-4 p-3 bg-light rounded shadow-sm">

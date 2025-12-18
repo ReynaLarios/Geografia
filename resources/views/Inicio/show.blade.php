@@ -3,15 +3,14 @@
 @section('contenido')
 <div class="container mt-4">
   <div class="card shadow">
+@if($inicio->imagen)
+    <div class="imagen-cuadrada mx-auto my-4">
+        <img 
+            src="{{ asset('storage/'.$inicio->imagen) }}" 
+            alt="{{ $inicio->titulo }}">
+    </div>
+@endif
 
-    @if($inicio->imagen)
-     <img 
-        src="{{ asset('storage/'.$inicio->imagen) }}" 
-        class="card-img-top"
-        alt="{{ $inicio->titulo }}"
-        style="width: 100%; max-width: 500px; height: auto; margin: 20px auto; display: block; border-radius: 10px;">
-
-    @endif
 
     <div class="card-body text-center">
 

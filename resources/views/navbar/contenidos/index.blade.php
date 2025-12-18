@@ -3,7 +3,7 @@
 @section('contenido')
 <div class="container mt-4">
     <h2 class="mb-4 text-center" style="color: var(--azul-oscuro);">
-        Listado de Contenidos Navbar
+        Listado de Contenidos de nav Horizontal
     </h2>
 
     <button class="btn btn-primary mb-3" onclick="window.location='{{ route('navbar.contenidos.crear') }}'">

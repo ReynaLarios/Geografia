@@ -214,6 +214,22 @@
             z-index: 99;
             display: none;
         }
+        .imagen-cuadrada {
+    width: 100%;
+    max-width: 250px;     /* tamaño máximo */
+    aspect-ratio: 1 / 1;  /* siempre cuadrado */
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    margin: 10px auto;
+}
+
+.imagen-cuadrada img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
     </style>
 </head>
 

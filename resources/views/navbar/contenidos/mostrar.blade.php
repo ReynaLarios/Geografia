@@ -22,14 +22,13 @@
 
     <h2 class="mb-4 text-center">{{ $contenido->titulo }}</h2>
 
-   
-    @if($contenido->imagen)
-        <div class="mb-4 text-center">
-            <img src="{{ asset('storage/'.$contenido->imagen) }}" 
-     class="img-fluid rounded shadow-sm" 
-     style="width:100%; height:auto; max-width:700px; margin:auto; display:block;">
+@if($contenido->imagen)
+    <div class="imagen-cuadrada mx-auto mb-4">  <!-- contenedor cuadrado -->
+        <img src="{{ asset('storage/'.$contenido->imagen) }}" 
+             alt="{{ $contenido->titulo ?? 'Imagen' }}">
+    </div>
+@endif
 
-    @endif
 
    
     @if($contenido->descripcion)

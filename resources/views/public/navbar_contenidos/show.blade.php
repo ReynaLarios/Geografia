@@ -6,14 +6,13 @@
   
     <h2 class="mb-4 text-center text-primary"><strong>{{ $contenido->titulo }}</strong></h2>
 
-   
-    @if(!empty($contenido->imagen))
-        <div class="mb-4 text-center">
-            <img src="{{ asset('storage/' . $contenido->imagen) }}" 
-                 class="img-fluid rounded shadow-sm" 
-                 style="max-height: 300px; object-fit: cover;">
-        </div>
-    @endif
+  @if($contenido->imagen)
+    <div class="imagen-cuadrada mx-auto mb-4">  <!-- contenedor cuadrado -->
+        <img src="{{ asset('storage/'.$contenido->imagen) }}" 
+             alt="{{ $contenido->titulo ?? 'Imagen' }}">
+    </div>
+@endif
+
 
 
     @if(!empty($contenido->descripcion))
